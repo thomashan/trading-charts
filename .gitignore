@@ -1,0 +1,11 @@
+*.iml
+.idea
+build
+out
+.gradle
+
+local.properties
+
+# vscode
+.settings
+.project

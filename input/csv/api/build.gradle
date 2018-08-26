@@ -1,0 +1,7 @@
+plugins {
+    id "io.github.thomashan.trading.charts.java-library-conventions"
+}
+
+dependencies {
+    implementation project(":domain")
+}

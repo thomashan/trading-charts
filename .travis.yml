@@ -1,0 +1,15 @@
+language: java
+install: skip
+
+jdk:
+  - openjdk17
+
+jobs:
+  include:
+    - stage: test
+      script:  ./gradlew --scan clean build bytewatcher jacocoTestReport coveralls --stacktrace -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2"
+    - stage: jmh
+      script:  ./gradlew --scan clean jmh --no-daemon --stacktrace -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
