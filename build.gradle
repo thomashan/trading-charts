@@ -1,30 +1,39 @@
 plugins {
-    id "java-library"
+    id "java"
+    id "groovy"
+    id "application"
     id "idea"
     id "eclipse"
-    id "application"
-//    id "org.gradle.java.experimental-jigsaw" version "0.1.1"
-    id 'com.zyxist.chainsaw' version '0.3.1'
+
+//    id "org.javamodularity.moduleplugin" version "1.7.0"
+    id "org.openjfx.javafxplugin" version "0.0.9"
 }
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
-
 group "thomashan.github.io"
+version "0.0.1"
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
-//    testImplementation "org.junit.jupiter:junit-jupiter-api:5.2.0"
-//    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.2.0"
+    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
 }
 
 test {
     useJUnitPlatform()
 }
 
-ext.moduleName = "thomashan.github.io.tradingchart"
-//mainClassName = "thomashan.github.io.tradingchart.CandleStickChartApp"
-mainClassName = "thomashan.github.io.tradingchart.Main"
+javafx {
+    modules = ["javafx.controls"]
+}
 
-javaModule.name = "thomashan.github.io.tradingchart"
-
-//idea.module.outputDir file("out/production/classes")
+mainClassName = "thomashan.github.io.tradingchart.CandleStickChartApp"
