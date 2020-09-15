@@ -5,7 +5,6 @@ plugins {
     id "idea"
     id "eclipse"
 
-//    id "org.javamodularity.moduleplugin" version "1.7.0"
     id "org.openjfx.javafxplugin" version "0.0.9"
 }
 
@@ -36,4 +35,12 @@ javafx {
     modules = ["javafx.controls"]
 }
 
-mainClassName = "thomashan.github.io.tradingchart.CandleStickChartApp"
+java {
+    modularity.inferModulePath = true
+}
+
+application {
+    mainModule = "thomashan.github.io.tradingchart" // name defined in module-info.java
+    mainClass = "thomashan.github.io.tradingchart.CandleStickChartApp"
+//    mainClass = "thomashan.github.io.tradingchart.Runner"
+}
