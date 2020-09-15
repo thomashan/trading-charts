@@ -44,3 +44,7 @@ application {
     mainClass = "thomashan.github.io.tradingchart.CandleStickChartApp"
 //    mainClass = "thomashan.github.io.tradingchart.Runner"
 }
+
+sourceSets {
+    main.output.resourcesDir = main.java.outputDir
+}
