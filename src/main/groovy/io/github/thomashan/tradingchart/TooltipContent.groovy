@@ -1,12 +1,9 @@
-package io.github.thomashan.tradingchart;
+package io.github.thomashan.tradingchart
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label
+import javafx.scene.layout.GridPane
 
-/**
- * The content for Candle tool tips
- */
-public class TooltipContent extends GridPane {
+class TooltipContent extends GridPane {
     private Label openValue = new Label();
     private Label closeValue = new Label();
     private Label highValue = new Label();
