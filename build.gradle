@@ -38,6 +38,6 @@ javafx {
 }
 
 application {
-    mainModule = "thomashan.github.io.tradingchart"
-    mainClass = "thomashan.github.io.tradingchart.CandleStickChartApp"
+    mainModule = "io.github.thomashan.tradingchart"
+    mainClass = "io.github.thomashan.tradingchart.CandleStickChartApp"
 }
