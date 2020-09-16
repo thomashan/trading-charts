@@ -1,4 +1,4 @@
-package thomashan.github.io.tradingchart;
+package io.github.thomashan.tradingchart;
 
 import javafx.scene.Group;
 import javafx.scene.control.Tooltip;

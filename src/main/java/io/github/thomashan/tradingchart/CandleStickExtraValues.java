@@ -1,4 +1,4 @@
-package thomashan.github.io.tradingchart;
+package io.github.thomashan.tradingchart;
 
 /**
  * Data extra values for storing close, high and low.

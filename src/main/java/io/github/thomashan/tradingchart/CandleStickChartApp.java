@@ -1,4 +1,4 @@
-package thomashan.github.io.tradingchart;
+package io.github.thomashan.tradingchart;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
