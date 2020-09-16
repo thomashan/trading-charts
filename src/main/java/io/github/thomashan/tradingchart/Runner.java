@@ -1,4 +1,4 @@
-package thomashan.github.io.tradingchart;
+package io.github.thomashan.tradingchart;
 
 public class Runner {
     public static void main(String[] args) {
