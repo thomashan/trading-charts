@@ -5,6 +5,7 @@ plugins {
     id "idea"
     id "eclipse"
 
+    // FIXME: org.openjfx.javafxplugin currently doesn"t work with gradle 6.6+
     id "org.openjfx.javafxplugin" version "0.0.9"
 }
 
@@ -20,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    implementation "org.codehaus.groovy:groovy-all:3.0.5"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
 
@@ -32,19 +33,11 @@ test {
 }
 
 javafx {
+    version = "15"
     modules = ["javafx.controls"]
 }
 
-java {
-    modularity.inferModulePath = true
-}
-
 application {
-    mainModule = "thomashan.github.io.tradingchart" // name defined in module-info.java
+    mainModule = "thomashan.github.io.tradingchart"
     mainClass = "thomashan.github.io.tradingchart.CandleStickChartApp"
-//    mainClass = "thomashan.github.io.tradingchart.Runner"
-}
-
-sourceSets {
-    main.output.resourcesDir = main.java.outputDir
 }
