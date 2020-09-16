@@ -41,11 +41,3 @@ application {
     mainModule = "io.github.thomashan.tradingchart"
     mainClass = "io.github.thomashan.tradingchart.CandleStickChartApp"
 }
-
-// FIXME: hack to compile java with groovy compiler as :compileJava won't be able to see groovy classes
-sourceSets {
-    main {
-        java { srcDirs = [] }
-        groovy { srcDirs = ["src/main/java", "src/main/groovy"] }
-    }
-}
