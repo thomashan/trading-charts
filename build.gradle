@@ -5,6 +5,7 @@ plugins {
     id "idea"
     id "eclipse"
     id "jacoco"
+    id "com.github.kt3k.coveralls" version "2.8.4"
 
     // FIXME: org.openjfx.javafxplugin currently doesn"t work with gradle 6.6+
     id "org.openjfx.javafxplugin" version "0.0.9"
@@ -53,9 +54,16 @@ sonarqube {
     }
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
 gradleEnterprise {
     buildScan {
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
     }
 }
