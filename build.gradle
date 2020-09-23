@@ -4,6 +4,7 @@ plugins {
     id "application"
     id "idea"
     id "eclipse"
+    id "jacoco"
 
     // FIXME: org.openjfx.javafxplugin currently doesn"t work with gradle 6.6+
     id "org.openjfx.javafxplugin" version "0.0.9"
