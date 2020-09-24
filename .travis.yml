@@ -5,7 +5,7 @@ jdk:
   - openjdk11
 
 script:
-  - ./gradlew --scan build jacocoTestReport coveralls
+  - ./gradlew --scan build jacocoTestReport coveralls --info --stacktrace
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
