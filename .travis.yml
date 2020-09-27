@@ -1,0 +1,11 @@
+language: java
+install: skip
+
+jdk:
+  - openjdk11
+
+script:
+  - ./gradlew --scan build jacocoTestReport coveralls --stacktrace -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
