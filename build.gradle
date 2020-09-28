@@ -25,7 +25,9 @@ repositories {
 }
 
 dependencies {
-    implementation "org.codehaus.groovy:groovy-all:3.0.5"
+    implementation("org.codehaus.groovy:groovy-all:3.0.5") {
+        exclude group: "junit", module: "junit"
+    }
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
 
@@ -59,6 +61,25 @@ jacocoTestReport {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
     }
+}
+
+sourceSets {
+    bytewatcher {
+    }
+}
+
+configurations {
+    bytewatcherImplementation.extendsFrom testImplementation
+    bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
+//    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
+//    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
+//    bytewatcherCompileOnly.extendsFrom testCompileOnly
+}
+
+task bytewatcher(type: Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.bytewatcher.output.classesDirs
+    classpath = sourceSets.bytewatcher.runtimeClasspath
 }
 
 gradleEnterprise {

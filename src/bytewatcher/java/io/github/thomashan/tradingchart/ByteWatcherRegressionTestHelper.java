@@ -39,7 +39,7 @@ public class ByteWatcherRegressionTestHelper {
     }
 
     public ByteWatcherRegressionTestHelper warmUp(Runnable job, long iterations) {
-        for(int i = 0; i < iterations; i++) {
+        for (int i = 0; i < iterations; i++) {
             job.run();
         }
 
@@ -48,7 +48,7 @@ public class ByteWatcherRegressionTestHelper {
 
     public void testAllocationNotExceeded(Runnable job, long limit, long iterations) {
         bw.reset();
-        for(int i = 0; i < iterations; i++) {
+        for (int i = 0; i < iterations; i++) {
             job.run();
         }
 
