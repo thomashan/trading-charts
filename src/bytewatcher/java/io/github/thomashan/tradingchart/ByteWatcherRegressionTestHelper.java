@@ -31,13 +31,6 @@ public class ByteWatcherRegressionTestHelper {
         this(Thread.currentThread());
     }
 
-    public void testAllocationNotExceeded(Runnable job, long limit) {
-        bw.reset();
-        job.run();
-        long size = bw.calculateAllocations();
-        assertTrue(size <= limit, String.format("exceeded limit: %d using: %d%n", limit, size));
-    }
-
     public ByteWatcherRegressionTestHelper warmUp(Runnable job, long iterations) {
         for (int i = 0; i < iterations; i++) {
             job.run();
