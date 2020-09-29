@@ -65,15 +65,19 @@ jacocoTestReport {
 
 sourceSets {
     bytewatcher {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        java { srcDirs = ["src/bytewatcher/java"] }
+        groovy { srcDirs = ["src/bytewatcher/groovy"] }
     }
 }
 
 configurations {
     bytewatcherImplementation.extendsFrom testImplementation
     bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
-//    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
-//    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
-//    bytewatcherCompileOnly.extendsFrom testCompileOnly
+    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
+    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
+    bytewatcherCompileOnly.extendsFrom testCompileOnly
 }
 
 task bytewatcher(type: Test) {
@@ -82,9 +86,9 @@ task bytewatcher(type: Test) {
     classpath = sourceSets.bytewatcher.runtimeClasspath
 }
 
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-    }
-}
+//gradleEnterprise {
+//    buildScan {
+//        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+//        termsOfServiceAgree = "yes"
+//    }
+//}
