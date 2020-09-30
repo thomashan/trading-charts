@@ -16,16 +16,17 @@ class CsvParserUnivocity implements CsvParser {
         @Override
         Ohlc apply(String[] strings) {
             return Ohlc.of(ZonedDateTime.parse(strings[0]),
-                    BidAsk.of(strings[1].toDouble(), strings[2].toDouble()),
-                    BidAsk.of(strings[3].toDouble(), strings[4].toDouble()),
-                    BidAsk.of(strings[5].toDouble(), strings[6].toDouble()),
-                    BidAsk.of(strings[7].toDouble(), strings[8].toDouble()),
+                    BidAsk.of(strings[2].toDouble(), strings[1].toDouble()),
+                    BidAsk.of(strings[4].toDouble(), strings[3].toDouble()),
+                    BidAsk.of(strings[6].toDouble(), strings[5].toDouble()),
+                    BidAsk.of(strings[8].toDouble(), strings[7].toDouble()),
                     strings[9].toDouble())
         }
     }
 
     CsvParserUnivocity() {
         this.csvParserSettings = new CsvParserSettings()
+        csvParserSettings.headerExtractionEnabled = true
         this.csvParser = new com.univocity.parsers.csv.CsvParser(csvParserSettings)
     }
 
