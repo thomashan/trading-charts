@@ -28,6 +28,8 @@ dependencies {
     implementation("org.codehaus.groovy:groovy-all:3.0.5") {
         exclude group: "junit", module: "junit"
     }
+    // csv implementations
+    implementation "com.univocity:univocity-parsers:2.9.0"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
 

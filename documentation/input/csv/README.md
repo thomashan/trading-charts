@@ -10,4 +10,6 @@ By having the dateTime as the first field it should be quite easy to sort it in 
 sort <file>
 ```
 
-Test csv has been uploaded to https://drive.google.com/file/d/1AQcNzrVV4dy5RKzUWQ1cIeFUeN9h4b0n/view?usp=sharing
+## Test CSV file
+Test csv has been uploaded to https://drive.google.com/file/d/1AQcNzrVV4dy5RKzUWQ1cIeFUeN9h4b0n/view?usp=sharing.
+It contains 3,000,000 rows of bid ask OHLC.
