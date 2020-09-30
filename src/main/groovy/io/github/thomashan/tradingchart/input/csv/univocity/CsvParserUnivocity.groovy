@@ -4,15 +4,16 @@ import com.univocity.parsers.csv.CsvParserSettings
 import io.github.thomashan.tradingchart.input.csv.CsvParser
 import io.github.thomashan.tradingchart.ohlc.Ohlc
 import io.github.thomashan.tradingchart.price.BidAsk
+import io.github.thomashan.tradingchart.price.Price
 
 import java.time.ZonedDateTime
 import java.util.function.Function
 import java.util.stream.Stream
 
-class CsvParserUnivocity implements CsvParser {
+class CsvParserUnivocity<P extends Price> implements CsvParser<P> {
     private final CsvParserSettings csvParserSettings
     private final com.univocity.parsers.csv.CsvParser csvParser
-    private final Function<String[], Ohlc> createOhlc = new Function<String[], Ohlc>() {
+    private final Function<String[], Ohlc<P>> createOhlc = new Function<String[], Ohlc<P>>() {
         @Override
         Ohlc apply(String[] strings) {
             return Ohlc.of(ZonedDateTime.parse(strings[0]),
