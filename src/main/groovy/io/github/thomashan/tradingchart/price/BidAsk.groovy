@@ -10,7 +10,7 @@ class BidAsk implements Price {
         this.ask = ask
     }
 
-    static of(double bid, double ask) {
+    static BidAsk of(double bid, double ask) {
         return new BidAsk(bid, ask)
     }
 }
