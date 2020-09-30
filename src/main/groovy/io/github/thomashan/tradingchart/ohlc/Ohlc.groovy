@@ -12,7 +12,7 @@ class Ohlc<P extends Price> {
     P close
     double volume
 
-    static Ohlc<P> of(ZonedDateTime dateTime, P open, P high, P low, P close, double volume) {
+    static <P extends Price> Ohlc<P> of(ZonedDateTime dateTime, P open, P high, P low, P close, double volume) {
         Ohlc<P> ohlc = new Ohlc<P>()
         ohlc.dateTime = dateTime
         ohlc.open = open
