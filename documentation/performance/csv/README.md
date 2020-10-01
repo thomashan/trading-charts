@@ -9,3 +9,9 @@ number of hours = 250,000 / 60 = 4,166.66
 number of days = 4,166.66 / 24 = 173.61
 number of months = 173.61 / 20 = 8.6805
 ```
+
+## Performance results
+
+Benchmark                                                              Mode  Cnt     Score     Error  Units
+i.g.t.t.i.c.stream.CsvParserStreamImplJmhTest.testParse_InputStream      ss    5   431.807 ±  57.530  ms/op
+i.g.t.t.i.c.univocity.CsvParserUnivocityJmhTest.testParse_InputStream    ss    5  1745.991 ± 180.569  ms/op

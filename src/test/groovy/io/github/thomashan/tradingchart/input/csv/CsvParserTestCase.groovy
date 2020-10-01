@@ -2,6 +2,8 @@ package io.github.thomashan.tradingchart.input.csv
 
 import io.github.thomashan.tradingchart.ohlc.Ohlc
 import io.github.thomashan.tradingchart.price.BidAsk
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 import java.time.ZonedDateTime
@@ -10,6 +12,18 @@ import java.util.stream.Stream
 
 trait CsvParserTestCase<C extends CsvParser> {
     C csvParser
+
+    @BeforeAll
+    static void setUpClass() {
+//        File.createTempFile("EURUSD-s5.csv", ".gz").withOutputStream { outputStream ->
+//            outputStream << new URL("https://doc-0c-0g-docs.googleusercontent.com/docs/securesc/3rpa7l0iau6fa4kl1c8r8790kr9j0rg4/scdmbsccqo0lvjnnq0ghqhtn6kit1kd6/1601478675000/08905669649840263172/08905669649840263172/1AQcNzrVV4dy5RKzUWQ1cIeFUeN9h4b0n?e=download&authuser=0&nonce=63b5q6jrdui5c&user=08905669649840263172&hash=u5fgsbdpn1ak1vh8eof2225jltutmp3h").openStream()
+//        }
+    }
+
+    @AfterAll
+    static void tearDownClass() {
+
+    }
 
     @Test
     void testParse_Stream() {
@@ -31,15 +45,11 @@ trait CsvParserTestCase<C extends CsvParser> {
 
     @Test
     void testParse_InputStream() {
-
         InputStream inputStream = this.class.getResourceAsStream("/EURUSD-S5.csv")
-
-//        InputStream inputStream = new URL("https://doc-0c-0g-docs.googleusercontent.com/docs/securesc/3rpa7l0iau6fa4kl1c8r8790kr9j0rg4/sab40qav39vqmvbvlkg1116apca1p5oq/1601459175000/08905669649840263172/08905669649840263172/1AQcNzrVV4dy5RKzUWQ1cIeFUeN9h4b0n?e=download&authuser=0&nonce=a3vtqh14klhek&user=08905669649840263172&hash=sfovqqsvf3ep6etpp06ecv988ej059gr").newInputStream()
-//        GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)
         Stream<Ohlc<BidAsk>> ohlcStream = csvParser.parse(inputStream)
         List<Ohlc<BidAsk>> ohlcs = ohlcStream.collect(Collectors.toList())
 
-        assert 1 == ohlcs.size()
+        assert 3 == ohlcs.size()
         assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
         assert 1.11904 == ohlcs[0].open.ask
         assert 1.11892 == ohlcs[0].open.bid
