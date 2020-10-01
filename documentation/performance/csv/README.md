@@ -12,6 +12,8 @@ number of months = 173.61 / 20 = 8.6805
 
 ## Performance results
 
-Benchmark                                                              Mode  Cnt     Score     Error  Units
-i.g.t.t.i.c.stream.CsvParserStreamImplJmhTest.testParse_InputStream      ss    5   431.807 ±  57.530  ms/op
-i.g.t.t.i.c.univocity.CsvParserUnivocityJmhTest.testParse_InputStream    ss    5  1745.991 ± 180.569  ms/op
+Benchmark                                                                           Mode  Cnt     Score     Error  Units
+i.g.t.t.i.c.stream.CsvParserStreamIndexOfImplJmhTest.testParse_InputStream            ss    5   423.706 ±  27.600  ms/op
+i.g.t.t.i.c.stream.CsvParserStreamSplitImplJmhTest.testParse_InputStream              ss    5   422.415 ±  34.528  ms/op
+i.g.t.t.i.c.stream.CsvParserStreamStringTokeniserImplJmhTest.testParse_InputStream    ss    5   422.590 ±  31.372  ms/op
+i.g.t.t.i.c.univocity.CsvParserUnivocityJmhTest.testParse_InputStream                 ss    5  1629.348 ± 123.398  ms/op
