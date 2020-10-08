@@ -12,6 +12,10 @@ number of months = 173.61 / 20 = 8.6805
 
 ## Performance results
 
+```
+./gradlew clean jmh --no-daemon
+```
+
 Benchmark                                                                           Mode  Cnt     Score     Error  Units
 i.g.t.t.i.c.stream.CsvParserStreamIndexOfImplJmhTest.testParse_InputStream            ss    5   423.706 ±  27.600  ms/op
 i.g.t.t.i.c.stream.CsvParserStreamSplitImplJmhTest.testParse_InputStream              ss    5   422.415 ±  34.528  ms/op
