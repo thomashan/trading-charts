@@ -5,7 +5,7 @@ import io.github.thomashan.tradingchart.price.BidAsk
 import io.github.thomashan.tradingchart.price.Price
 
 import java.time.ZonedDateTime
-import java.util.function.Function
+import java.util.function.BiFunction
 import java.util.stream.Stream
 
 /**
@@ -20,15 +20,28 @@ interface CsvParser<P extends Price> {
 
     Stream<Ohlc<P>> parse(Stream<String> inputRows)
 
-    public static final Function<String[], Ohlc<BidAsk>> createOhlc = new Function<String[], Ohlc<BidAsk>>() {
-        @Override
-        Ohlc apply(String[] strings) {
-            return Ohlc.of(ZonedDateTime.parse(strings[0]),
-                    BidAsk.of(strings[2].toDouble(), strings[1].toDouble()),
-                    BidAsk.of(strings[4].toDouble(), strings[3].toDouble()),
-                    BidAsk.of(strings[6].toDouble(), strings[5].toDouble()),
-                    BidAsk.of(strings[8].toDouble(), strings[7].toDouble()),
-                    strings[9].toDouble())
+    default Map<String, Integer> getDefaultHeaders() {
+        ["dateTime": 0,
+         "openAsk" : 1,
+         "openBid" : 2,
+         "highAsk" : 3,
+         "highBid" : 4,
+         "lowAsk"  : 5,
+         "lowBid"  : 6,
+         "closeAsk": 7,
+         "closeBid": 8,
+         "volume"  : 9,
+        ]
+    }
+
+    default BiFunction<String[], Map<String, Integer>, Ohlc<BidAsk>> getCreateOhlcFunction() {
+        return { String[] strings, Map<String, Integer> stringIntegerMap ->
+            return Ohlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
+                    BidAsk.of(strings[stringIntegerMap["openBid"]].toDouble(), strings[stringIntegerMap["openAsk"]].toDouble()),
+                    BidAsk.of(strings[stringIntegerMap["highBid"]].toDouble(), strings[stringIntegerMap["highAsk"]].toDouble()),
+                    BidAsk.of(strings[stringIntegerMap["lowBid"]].toDouble(), strings[stringIntegerMap["lowAsk"]].toDouble()),
+                    BidAsk.of(strings[stringIntegerMap["closeBid"]].toDouble(), strings[stringIntegerMap["closeAsk"]].toDouble()),
+                    strings[stringIntegerMap["volume"]].toDouble())
         }
     }
 }
