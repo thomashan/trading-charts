@@ -13,7 +13,13 @@ class CsvParserUnivocityTest implements CsvParserTestCase<CsvParserUnivocity<Bid
 
     @Disabled
     @Override
-    void testParse_Stream() {
+    void testParseBidAsk_Stream() {
+
+    }
+
+    @Disabled
+    @Override
+    void testParseMid_Stream() {
 
     }
 }

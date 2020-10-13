@@ -2,6 +2,7 @@ package io.github.thomashan.tradingchart.input.csv
 
 import io.github.thomashan.tradingchart.ohlc.Ohlc
 import io.github.thomashan.tradingchart.price.BidAsk
+import io.github.thomashan.tradingchart.price.Mid
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -26,7 +27,7 @@ trait CsvParserTestCase<C extends CsvParser> {
     }
 
     @Test
-    void testParse_Stream() {
+    void testParseBidAsk_Stream() {
         Stream<Ohlc<BidAsk>> ohlcStream = csvParser.parse(Stream.of("2019-08-13T06:18:15Z,1.11904,1.11892,1.11907,1.11895,1.11904,1.11892,1.11907,1.11895,2"))
         List<Ohlc<BidAsk>> ohlcs = ohlcStream.collect(Collectors.toList())
 
@@ -44,8 +45,22 @@ trait CsvParserTestCase<C extends CsvParser> {
     }
 
     @Test
-    void testParse_InputStream() {
-        InputStream inputStream = this.class.getResourceAsStream("/EURUSD-S5.csv")
+    void testParseMid_Stream() {
+        Stream<Ohlc<Mid>> ohlcStream = csvParser.parse(Stream.of("2019-08-13T06:18:15Z,1.11898,1.11901,1.11898,1.11901,2"))
+        List<Ohlc<Mid>> ohlcs = ohlcStream.collect(Collectors.toList())
+
+        assert 1 == ohlcs.size()
+        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert 1.11898 == ohlcs[0].open.value
+        assert 1.11901 == ohlcs[0].high.value
+        assert 1.11898 == ohlcs[0].low.value
+        assert 1.11901 == ohlcs[0].close.value
+        assert 2 == ohlcs[0].volume
+    }
+
+    @Test
+    void testParseBidAsk_InputStream() {
+        InputStream inputStream = this.class.getResourceAsStream("/EURUSD-S5-bid-ask.csv")
         Stream<Ohlc<BidAsk>> ohlcStream = csvParser.parse(inputStream)
         List<Ohlc<BidAsk>> ohlcs = ohlcStream.collect(Collectors.toList())
 
@@ -59,6 +74,21 @@ trait CsvParserTestCase<C extends CsvParser> {
         assert 1.11892 == ohlcs[0].low.bid
         assert 1.11907 == ohlcs[0].close.ask
         assert 1.11895 == ohlcs[0].close.bid
+        assert 2 == ohlcs[0].volume
+    }
+
+    @Test
+    void testParseMid_InputStream() {
+        InputStream inputStream = this.class.getResourceAsStream("/EURUSD-S5-mid.csv")
+        Stream<Ohlc<Mid>> ohlcStream = csvParser.parse(inputStream)
+        List<Ohlc<Mid>> ohlcs = ohlcStream.collect(Collectors.toList())
+
+        assert 3 == ohlcs.size()
+        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert 1.11898 == ohlcs[0].open.value
+        assert 1.11901 == ohlcs[0].high.value
+        assert 1.11898 == ohlcs[0].low.value
+        assert 1.11901 == ohlcs[0].close.value
         assert 2 == ohlcs[0].volume
     }
 }
