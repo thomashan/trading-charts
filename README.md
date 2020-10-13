@@ -14,6 +14,8 @@ JavaFX implementation of trading charts
 ## Design consideration
 * Keep to the basics and keep it simple!
 * Process massive amounts of data and plot it!
+* Minimal memory requirements
+* Fast!
 
 ## Limitation
 * No JPMS (java platform module system) support.
