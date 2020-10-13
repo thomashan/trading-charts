@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test
  * the results may be vastly different especially if there's not warm up.
  */
 class ObjectSizeGroovyTest {
-    private final long warmUpIterations = 1000
-    private final long iterations = 1000
+    private final long warmUpIterations = 100000
+    private final long iterations = 100000
     private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper
 
 
