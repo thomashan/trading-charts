@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ObjectSizeGroovyTest {
-    private final long warmUpIterations = 10000
-    private final long iterations = 10000
+    private final long warmUpIterations = 100000
+    private final long iterations = 100000
     private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper
 
 
