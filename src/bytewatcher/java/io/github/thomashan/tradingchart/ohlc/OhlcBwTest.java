@@ -9,7 +9,6 @@ import java.time.ZonedDateTime;
 
 public class OhlcBwTest {
     private final long warmUpIterations = 1000;
-    private final long iterations = 1000;
     private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper;
 
     @BeforeEach
@@ -21,16 +20,16 @@ public class OhlcBwTest {
     void testNew() {
         Runnable runnable = () -> {
             Ohlc ohlc = new Ohlc<BidAsk>();        // 48 bytes
-            ohlc.setDateTime(ZonedDateTime.now()); // 264 bytes
-            ohlc.setOpen(BidAsk.of(1, 1.1));      // 32 bytes
-            ohlc.setHigh(BidAsk.of(1, 1.1));      // 32 bytes
-            ohlc.setLow(BidAsk.of(1, 1.1));       // 32 bytes
-            ohlc.setClose(BidAsk.of(1, 1.1));     // 32 bytes
+            ohlc.setDateTime(ZonedDateTime.now()); // 268 bytes
+            ohlc.setOpen(BidAsk.of(1, 1.1));       // 104 bytes
+            ohlc.setHigh(BidAsk.of(1, 1.1));       // 104 bytes
+            ohlc.setLow(BidAsk.of(1, 1.1));        // 104 bytes
+            ohlc.setClose(BidAsk.of(1, 1.1));      // 104 bytes
             ohlc.setVolume(1);
         };
 
         byteWatcherRegressionTestHelper
                 .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 440, 1);
+                .testAllocationNotExceeded(runnable, 728, 1);
     }
 }
