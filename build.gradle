@@ -4,13 +4,15 @@ plugins {
     id "application"
     id "idea"
     id "eclipse"
-    id "jacoco"
-    id "com.github.kt3k.coveralls" version "2.8.4"
 
     // FIXME: org.openjfx.javafxplugin currently doesn"t work with gradle 6.6+
     id "org.openjfx.javafxplugin" version "0.0.9"
 
+    id "jacoco"
     id "org.sonarqube" version "3.0"
+    id "com.github.kt3k.coveralls" version "2.8.4"
+
+    id "me.champeau.gradle.jmh" version "0.5.2"
 }
 
 group "thomashan.github.io"
@@ -22,18 +24,31 @@ targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+    ivy {
+        url "https://dl.bintray.com/trading-chart/trading-chart"
+        patternLayout {
+            artifact "[organization]/[module]/[revision]/[module](.[classifier]).[ext]"
+        }
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 dependencies {
-    implementation "org.codehaus.groovy:groovy-all:3.0.5"
+    implementation("org.codehaus.groovy:groovy-all:3.0.5") {
+        exclude group: "junit", module: "junit"
+    }
+    // csv implementations
+    implementation "com.univocity:univocity-parsers:2.9.0"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-}
+//    testRuntimeOnly "io.github.thomashan:EURUSD-S5-csv:0.0.1@gz"
 
-test {
-    useJUnitPlatform()
+    jmh "org.openjdk.jmh:jmh-core:1.25.2"
+    jmh "org.openjdk.jmh:jmh-generator-annprocess:1.25.2"
 }
 
 javafx {
@@ -58,6 +73,36 @@ jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
+    }
+}
+
+sourceSets {
+    bytewatcher {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        java { srcDirs = ["src/bytewatcher/java"] }
+        groovy { srcDirs = ["src/bytewatcher/groovy"] }
+    }
+}
+
+configurations {
+    bytewatcherImplementation.extendsFrom testImplementation
+    bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
+    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
+    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
+    bytewatcherCompileOnly.extendsFrom testCompileOnly
+}
+
+task bytewatcher(type: Test) {
+    testClassesDirs = sourceSets.bytewatcher.output.classesDirs
+    classpath = sourceSets.bytewatcher.runtimeClasspath
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
     }
 }
 
