@@ -22,10 +22,10 @@ public class OhlcBwTest {
         Runnable runnable = () -> {
             Ohlc ohlc = new Ohlc<BidAsk>();        // 48 bytes
             ohlc.setDateTime(ZonedDateTime.now()); // 264 bytes
-            ohlc.setOpen(new BidAsk(1, 1.1));      // 32 bytes
-            ohlc.setHigh(new BidAsk(1, 1.1));      // 32 bytes
-            ohlc.setLow(new BidAsk(1, 1.1));       // 32 bytes
-            ohlc.setClose(new BidAsk(1, 1.1));     // 32 bytes
+            ohlc.setOpen(BidAsk.of(1, 1.1));      // 32 bytes
+            ohlc.setHigh(BidAsk.of(1, 1.1));      // 32 bytes
+            ohlc.setLow(BidAsk.of(1, 1.1));       // 32 bytes
+            ohlc.setClose(BidAsk.of(1, 1.1));     // 32 bytes
             ohlc.setVolume(1);
         };
 
