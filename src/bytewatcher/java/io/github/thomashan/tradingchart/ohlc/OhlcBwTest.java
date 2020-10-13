@@ -19,7 +19,7 @@ public class OhlcBwTest {
     @Test
     void testNew() {
         Runnable runnable = () -> {
-            Ohlc ohlc = new Ohlc<BidAsk>();        // 48 bytes
+            Ohlc<BidAsk> ohlc = new Ohlc<>();        // 48 bytes
             ohlc.setDateTime(ZonedDateTime.now()); // 268 bytes
             ohlc.setOpen(BidAsk.of(1, 1.1));       // 104 bytes
             ohlc.setHigh(BidAsk.of(1, 1.1));       // 104 bytes
