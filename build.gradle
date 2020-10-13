@@ -51,15 +51,6 @@ dependencies {
     jmh "org.openjdk.jmh:jmh-generator-annprocess:1.25.2"
 }
 
-test {
-    useJUnitPlatform()
-
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
-}
-
 javafx {
     version = "15"
     modules = ["javafx.controls"]
@@ -103,9 +94,16 @@ configurations {
 }
 
 task bytewatcher(type: Test) {
-    useJUnitPlatform()
     testClassesDirs = sourceSets.bytewatcher.output.classesDirs
     classpath = sourceSets.bytewatcher.runtimeClasspath
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
 }
 
 //gradleEnterprise {
