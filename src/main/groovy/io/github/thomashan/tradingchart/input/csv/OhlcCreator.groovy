@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.input.csv
 
+import io.github.thomashan.tradingchart.ohlc.BidAskOhlc
+import io.github.thomashan.tradingchart.ohlc.MidOhlc
 import io.github.thomashan.tradingchart.ohlc.Ohlc
 import io.github.thomashan.tradingchart.price.BidAsk
 import io.github.thomashan.tradingchart.price.Mid
@@ -10,7 +12,7 @@ import java.util.function.BiFunction
 
 class OhlcCreator {
     private OhlcCreator() {
-        throw new AssertionError()
+        throw new AssertionError("not instantiable")
     }
 
     static <P extends Price> BiFunction<String[], Map<String, Integer>, Ohlc<P>> getCreator(String[] row) {
@@ -25,7 +27,7 @@ class OhlcCreator {
     }
 
     static final BiFunction<String[], Map<String, Integer>, Ohlc<BidAsk>> CREATE_BID_ASK = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            Ohlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
+            BidAskOhlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
                     BidAsk.of(strings[stringIntegerMap["openBid"]].toDouble(), strings[stringIntegerMap["openAsk"]].toDouble()),
                     BidAsk.of(strings[stringIntegerMap["highBid"]].toDouble(), strings[stringIntegerMap["highAsk"]].toDouble()),
                     BidAsk.of(strings[stringIntegerMap["lowBid"]].toDouble(), strings[stringIntegerMap["lowAsk"]].toDouble()),
@@ -34,7 +36,7 @@ class OhlcCreator {
 
 
     static final BiFunction<String[], Map<String, Integer>, Ohlc<BidAsk>> CREATE_MID = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            Ohlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
+            MidOhlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
                     Mid.of(strings[stringIntegerMap["open"]].toDouble()),
                     Mid.of(strings[stringIntegerMap["high"]].toDouble()),
                     Mid.of(strings[stringIntegerMap["low"]].toDouble()),
