@@ -1,8 +1,8 @@
 package io.github.thomashan.tradingchart.input.csv.stream
 
-import io.github.thomashan.tradingchart.price.Price
+import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
 
-class CsvParserStreamStringTokeniserImpl<P extends Price> implements CsvParserStream<P> {
+class CsvParserStreamStringTokeniserImpl<O extends Ohlc> implements CsvParserStream<O> {
     @Override
     String[] split(String string) {
         StringTokenizer stringTokenizer = new StringTokenizer(string, ",")

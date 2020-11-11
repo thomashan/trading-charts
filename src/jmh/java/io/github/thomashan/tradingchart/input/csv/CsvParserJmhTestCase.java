@@ -1,7 +1,6 @@
 package io.github.thomashan.tradingchart.input.csv;
 
-import io.github.thomashan.tradingchart.ohlc.Ohlc;
-import io.github.thomashan.tradingchart.price.BidAsk;
+import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import org.openjdk.jmh.annotations.*;
 
 import java.io.InputStream;
@@ -14,8 +13,8 @@ public abstract class CsvParserJmhTestCase<C extends CsvParser> {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void testParse_InputStream(ThreadState threadState) {
-        Stream<Ohlc<BidAsk>> ohlcStream = getCsvParser().parse(threadState.inputStream);
+    public Stream<BidAskOhlc> testParse_InputStream(ThreadState threadState) {
+        return getCsvParser().parse(threadState.inputStream);
     }
 
     @State(Scope.Thread)

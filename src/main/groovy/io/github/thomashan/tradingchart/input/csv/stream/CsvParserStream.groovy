@@ -1,26 +1,25 @@
 package io.github.thomashan.tradingchart.input.csv.stream
 
+import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
 import io.github.thomashan.tradingchart.input.csv.CsvParser
 import io.github.thomashan.tradingchart.input.csv.DefaultHeader
 import io.github.thomashan.tradingchart.input.csv.OhlcCreator
-import io.github.thomashan.tradingchart.ohlc.Ohlc
-import io.github.thomashan.tradingchart.price.Price
 
 import java.nio.charset.Charset
 import java.util.function.BiFunction
 import java.util.stream.Stream
 
-trait CsvParserStream<P extends Price> implements CsvParser<P> {
+trait CsvParserStream<O extends Ohlc> implements CsvParser<O> {
     private Map<String, Integer> headerIndexes
-    private BiFunction<String[], Map<String, Integer>, Ohlc<P>> createFunction
+    private BiFunction<String[], Map<String, Integer>, O> createFunction
 
     @Override
-    Stream<Ohlc<P>> parse(InputStream inputStream) {
+    Stream<O> parse(InputStream inputStream) {
         return parse(new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset())).lines())
     }
 
     @Override
-    Stream<Ohlc<P>> parse(Stream<String> inputRows) {
+    Stream<O> parse(Stream<String> inputRows) {
         int index = 0
         return inputRows.map {
             index++

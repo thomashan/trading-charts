@@ -1,11 +1,16 @@
-package io.github.thomashan.tradingchart.ohlc
+package io.github.thomashan.tradingchart.domain.ohlc
 
-
-import io.github.thomashan.tradingchart.price.Mid
+import groovy.transform.PackageScope
+import io.github.thomashan.tradingchart.domain.price.Mid
 
 import java.time.ZonedDateTime
 
-class MidOhlc implements Ohlc<Mid> {
+final class MidOhlc extends Ohlc<Mid> {
+    @PackageScope
+    MidOhlc() {
+        // empty initaliser for byte watcher tests
+    }
+
     private MidOhlc(ZonedDateTime dateTime, Mid open, Mid high, Mid low, Mid close, double volume) {
         this.dateTime = dateTime
         this.open = open

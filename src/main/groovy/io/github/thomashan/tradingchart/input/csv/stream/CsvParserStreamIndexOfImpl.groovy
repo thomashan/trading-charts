@@ -1,8 +1,8 @@
 package io.github.thomashan.tradingchart.input.csv.stream
 
-import io.github.thomashan.tradingchart.price.Price
+import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
 
-class CsvParserStreamIndexOfImpl<P extends Price> implements CsvParserStream<P> {
+class CsvParserStreamIndexOfImpl<O extends Ohlc> implements CsvParserStream<O> {
     private static final String comma = ","
     private static final List<String> cache = []
 

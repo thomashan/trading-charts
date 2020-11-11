@@ -1,4 +1,4 @@
-package io.github.thomashan.tradingchart.price
+package io.github.thomashan.tradingchart.domain.price
 
 
 class BidAsk implements Price {
