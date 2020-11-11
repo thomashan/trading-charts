@@ -24,15 +24,6 @@ targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
-    ivy {
-        url "https://dl.bintray.com/trading-chart/trading-chart"
-        patternLayout {
-            artifact "[organization]/[module]/[revision]/[module](.[classifier]).[ext]"
-        }
-        metadataSources {
-            artifact()
-        }
-    }
 }
 
 dependencies {
@@ -43,9 +34,11 @@ dependencies {
     implementation "com.univocity:univocity-parsers:2.9.0"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
+    testImplementation "com.google.apis:google-api-services-drive:v3-rev20201101-1.30.10"
+    testImplementation "com.google.oauth-client:google-oauth-client-jetty:1.31.2"
+    testImplementation "com.google.api-client:google-api-client:1.30.11"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-//    testRuntimeOnly "io.github.thomashan:EURUSD-S5-csv:0.0.1@gz"
 
     jmh "org.openjdk.jmh:jmh-core:1.25.2"
     jmh "org.openjdk.jmh:jmh-generator-annprocess:1.25.2"
@@ -104,6 +97,10 @@ tasks.withType(Test) {
         events "failed"
         exceptionFormat "full"
     }
+}
+
+jmh {
+    include = ["CsvParserStreamStringTokeniserImplJmhTest"]
 }
 
 gradleEnterprise {
