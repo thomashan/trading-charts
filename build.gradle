@@ -34,9 +34,7 @@ dependencies {
     implementation "com.univocity:univocity-parsers:2.9.0"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
-    testImplementation "com.google.apis:google-api-services-drive:v3-rev20201101-1.30.10"
-    testImplementation "com.google.oauth-client:google-oauth-client-jetty:1.31.2"
-    testImplementation "com.google.api-client:google-api-client:1.30.11"
+    testImplementation "com.dropbox.core:dropbox-core-sdk:3.1.5"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
 
@@ -100,7 +98,9 @@ tasks.withType(Test) {
 }
 
 jmh {
-    include = ["CsvParserStreamStringTokeniserImplJmhTest"]
+    version = "1.26"
+//    include = []
+//    exclude = []
 }
 
 gradleEnterprise {
