@@ -10,4 +10,9 @@ class Mid implements Price {
     static Mid of(double value) {
         return new Mid(value)
     }
+
+    @Override
+    String toString() {
+        return "${value}"
+    }
 }
