@@ -6,4 +6,6 @@ interface ExternalDrive {
     void download(String path, OutputStream outputStream)
 
     InputStream download(String path)
+
+    InputStream getTestDataInputStream()
 }
