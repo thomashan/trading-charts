@@ -1,4 +1,4 @@
-package io.github.thomashan.tradingchart.price
+package io.github.thomashan.tradingchart.domain.price
 
 class Mid implements Price {
     double value
@@ -9,5 +9,10 @@ class Mid implements Price {
 
     static Mid of(double value) {
         return new Mid(value)
+    }
+
+    @Override
+    String toString() {
+        return "${value}"
     }
 }

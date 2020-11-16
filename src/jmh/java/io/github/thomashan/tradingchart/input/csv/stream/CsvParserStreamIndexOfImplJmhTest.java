@@ -1,11 +1,11 @@
 package io.github.thomashan.tradingchart.input.csv.stream;
 
+import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.input.csv.CsvParserJmhTestCase;
-import io.github.thomashan.tradingchart.price.BidAsk;
 
-public class CsvParserStreamIndexOfImplJmhTest extends CsvParserJmhTestCase<CsvParserStreamIndexOfImpl<BidAsk>> {
+public class CsvParserStreamIndexOfImplJmhTest extends CsvParserJmhTestCase<CsvParserStreamIndexOfImpl<BidAskOhlc>> {
     @Override
-    public CsvParserStreamIndexOfImpl<BidAsk> getCsvParser() {
+    public CsvParserStreamIndexOfImpl<BidAskOhlc> getCsvParser() {
         return new CsvParserStreamIndexOfImpl<>();
     }
 }

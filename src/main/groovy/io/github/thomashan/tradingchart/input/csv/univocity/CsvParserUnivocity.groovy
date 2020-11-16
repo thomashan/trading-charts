@@ -1,20 +1,19 @@
 package io.github.thomashan.tradingchart.input.csv.univocity
 
 import com.univocity.parsers.csv.CsvParserSettings
+import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
 import io.github.thomashan.tradingchart.input.csv.CsvParser
 import io.github.thomashan.tradingchart.input.csv.DefaultHeader
 import io.github.thomashan.tradingchart.input.csv.OhlcCreator
-import io.github.thomashan.tradingchart.ohlc.Ohlc
-import io.github.thomashan.tradingchart.price.Price
 
 import java.util.function.BiFunction
 import java.util.stream.Stream
 
-class CsvParserUnivocity<P extends Price> implements CsvParser<P> {
+class CsvParserUnivocity<O extends Ohlc> implements CsvParser<O> {
     private final CsvParserSettings csvParserSettings
     private final com.univocity.parsers.csv.CsvParser csvParser
     private Map<String, Integer> headerIndexes
-    private BiFunction<String[], Map<String, Integer>, Ohlc<P>> createFunction
+    private BiFunction<String[], Map<String, Integer>, O> createFunction
 
     CsvParserUnivocity() {
         this.csvParserSettings = new CsvParserSettings()
@@ -23,12 +22,12 @@ class CsvParserUnivocity<P extends Price> implements CsvParser<P> {
     }
 
     @Override
-    Stream<Ohlc<P>> parse(Stream<String> inputRows) {
+    Stream<O> parse(Stream<String> inputRows) {
         throw new UnsupportedOperationException("not implemented")
     }
 
     @Override
-    Stream<Ohlc<P>> parse(InputStream inputStream) {
+    Stream<O> parse(InputStream inputStream) {
         return csvParser.parseAll(inputStream).stream()
                 .map {
                     setHeaderIndexes(it)

@@ -2,7 +2,7 @@ package io.github.thomashan.tradingchart.input.csv
 
 class DefaultHeader {
     private DefaultHeader() {
-        throw new AssertionError()
+        throw new AssertionError("not instantiable")
     }
 
     static final Map<String, Integer> VALUE_BID_ASK = ["dateTime": 0,
