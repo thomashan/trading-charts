@@ -3,7 +3,7 @@ package io.github.thomashan.tradingchart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ObjectSizeJavaTest {
+public class JavaObjectSizeTest {
     private final long warmUpIterations = 1000;
     private final long iterations = 1000;
     private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper;
