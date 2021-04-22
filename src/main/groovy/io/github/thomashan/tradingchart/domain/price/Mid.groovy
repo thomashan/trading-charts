@@ -1,5 +1,8 @@
 package io.github.thomashan.tradingchart.domain.price
 
+import groovy.transform.EqualsAndHashCode
+
+@EqualsAndHashCode
 class Mid implements Price {
     double value
 

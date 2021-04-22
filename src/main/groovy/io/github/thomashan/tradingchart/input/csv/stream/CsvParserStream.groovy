@@ -5,7 +5,7 @@ import io.github.thomashan.tradingchart.input.csv.CsvParser
 import io.github.thomashan.tradingchart.input.csv.DefaultHeader
 import io.github.thomashan.tradingchart.input.csv.OhlcCreator
 
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.function.BiFunction
 import java.util.stream.Stream
 
@@ -15,7 +15,7 @@ trait CsvParserStream<O extends Ohlc> implements CsvParser<O> {
 
     @Override
     Stream<O> parse(InputStream inputStream) {
-        return parse(new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset())).lines())
+        return parse(new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines())
     }
 
     @Override

@@ -1,21 +1,16 @@
 package io.github.thomashan.tradingchart.domain.ohlc
 
-import io.github.thomashan.tradingchart.ByteWatcherRegressionTestHelper
+
+import io.github.thomashan.tradingchart.ByteWatcherTestCase
 import io.github.thomashan.tradingchart.domain.price.BidAsk
 import io.github.thomashan.tradingchart.domain.price.Mid
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import java.time.Instant
 
-class OhlcGroovyBwTest {
-    private final long warmUpIterations = 80000
-    private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper
-
-    @BeforeEach
-    void setUp() {
-        byteWatcherRegressionTestHelper = new ByteWatcherRegressionTestHelper()
-    }
+class OhlcGroovyBwTest extends ByteWatcherTestCase {
+    final long warmUpIterations = 80000
+    final long iterations = 1
 
     @Test
     void testNew_BidAskOhlc() {

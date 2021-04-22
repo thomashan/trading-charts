@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeEach
 
 trait ObjectReaderWriterChronicleTestCase<E> extends ObjectReaderWriterTestCase<E, BytesOutChronicle, ObjectWriterChronicle<E>, BytesInChronicle, ObjectReaderChronicle<E>> {
     private File chronicleDir
-    private ObjectWriterChronicle<E> objectWriter
-    private ObjectReaderChronicle<E> objectReader
 
     abstract ObjectWriterChronicle<E> createObjectWriter(String chronicleDir)
 
@@ -16,14 +14,13 @@ trait ObjectReaderWriterChronicleTestCase<E> extends ObjectReaderWriterTestCase<
     @BeforeEach
     void setUp() {
         this.chronicleDir = File.createTempDir(this.class.simpleName)
-        this.objectWriter = createObjectWriter(chronicleDir.absolutePath)
-        this.objectReader = createObjectReader(chronicleDir.absolutePath)
+        this.io_github_thomashan_tradingchart_persistence_ObjectReaderWriterTestCase__objectWriter = createObjectWriter(chronicleDir.absolutePath)
+        this.io_github_thomashan_tradingchart_persistence_ObjectReaderWriterTestCase__objectReader = createObjectReader(chronicleDir.absolutePath)
     }
 
     @AfterEach
     void tearDown() {
-        objectWriter.close()
-        objectReader.close()
+        super.tearDown()
         chronicleDir.deleteDir()
     }
 }

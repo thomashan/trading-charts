@@ -1,5 +1,8 @@
 package io.github.thomashan.tradingchart.domain.price
 
+import groovy.transform.EqualsAndHashCode
+
+@EqualsAndHashCode
 class BidAsk implements Price {
     double bid
     double ask

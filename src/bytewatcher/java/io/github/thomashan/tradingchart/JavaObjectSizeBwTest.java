@@ -1,32 +1,32 @@
 package io.github.thomashan.tradingchart;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class JavaObjectSizeTest {
-    private final long warmUpIterations = 1000;
-    private final long iterations = 1000;
-    private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper;
+public class JavaObjectSizeBwTest extends ByteWatcherTestCase {
+    @Override
+    protected long getWarmUpIterations() {
+        return 1000;
+    }
 
-    @BeforeEach
-    void setUp() {
-        byteWatcherRegressionTestHelper = new ByteWatcherRegressionTestHelper();
+    @Override
+    protected long getIterations() {
+        return 1000;
     }
 
     @Test
     void testRunNothing_Lambda_ManyTimes() {
         Runnable runnable = () -> { /* */ };
 
-        byteWatcherRegressionTestHelper
-                .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 0, iterations);
+        getByteWatcherRegressionTestHelper()
+                .warmUp(runnable, getWarmUpIterations())
+                .testAllocationNotExceeded(runnable, 0, getIterations());
     }
 
     @Test
     void testRunNothing_Lambda_Once() {
         Runnable runnable = () -> { /* */ };
 
-        byteWatcherRegressionTestHelper
+        getByteWatcherRegressionTestHelper()
                 .testAllocationNotExceeded(runnable, 0, 1);
     }
 
@@ -39,9 +39,9 @@ public class JavaObjectSizeTest {
             }
         };
 
-        byteWatcherRegressionTestHelper
-                .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 0, iterations);
+        getByteWatcherRegressionTestHelper()
+                .warmUp(runnable, getWarmUpIterations())
+                .testAllocationNotExceeded(runnable, 0, getIterations());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class JavaObjectSizeTest {
             }
         };
 
-        byteWatcherRegressionTestHelper
+        getByteWatcherRegressionTestHelper()
                 .testAllocationNotExceeded(runnable, 0, 1);
     }
 
@@ -61,16 +61,16 @@ public class JavaObjectSizeTest {
     void testCreateObject_Lambda_ManyTimes() {
         Runnable runnable = () -> new Object();
 
-        byteWatcherRegressionTestHelper
-                .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 16 * iterations, iterations);
+        getByteWatcherRegressionTestHelper()
+                .warmUp(runnable, getWarmUpIterations())
+                .testAllocationNotExceeded(runnable, 16 * getIterations(), getIterations());
     }
 
     @Test
     void testCreateObject_Lambda_Once() {
         Runnable runnable = () -> new Object();
 
-        byteWatcherRegressionTestHelper
+        getByteWatcherRegressionTestHelper()
                 .testAllocationNotExceeded(runnable, 16, 1);
     }
 
@@ -78,16 +78,16 @@ public class JavaObjectSizeTest {
     void testCreateObject_AnonClass_ManyTimes() {
         Runnable runnable = () -> new Object();
 
-        byteWatcherRegressionTestHelper
-                .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 16 * iterations, iterations);
+        getByteWatcherRegressionTestHelper()
+                .warmUp(runnable, getWarmUpIterations())
+                .testAllocationNotExceeded(runnable, 16 * getIterations(), getIterations());
     }
 
     @Test
     void testCreateObject_AnonClass_Once() {
         Runnable runnable = () -> new Object();
 
-        byteWatcherRegressionTestHelper
+        getByteWatcherRegressionTestHelper()
                 .testAllocationNotExceeded(runnable, 16, 1);
     }
 
@@ -95,16 +95,16 @@ public class JavaObjectSizeTest {
     void testCreateObject_MethodReference_ManyTimes() {
         Runnable runnable = Object::new;
 
-        byteWatcherRegressionTestHelper
-                .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 16 * iterations, iterations);
+        getByteWatcherRegressionTestHelper()
+                .warmUp(runnable, getWarmUpIterations())
+                .testAllocationNotExceeded(runnable, 16 * getIterations(), getIterations());
     }
 
     @Test
     void testCreateObject_MethodReference_Once() {
         Runnable runnable = Object::new;
 
-        byteWatcherRegressionTestHelper
+        getByteWatcherRegressionTestHelper()
                 .testAllocationNotExceeded(runnable, 16, 1);
     }
 }

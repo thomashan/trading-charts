@@ -1,7 +1,5 @@
 package io.github.thomashan.tradingchart
 
-import groovy.transform.Immutable
-
 class CandleStickExtraValues {
     private static final String FORMAT = "CandleStickExtraValues{open=%f, high=%f, low=%f, close=%f, average=%f, volume=%f}"
     private double open

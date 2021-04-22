@@ -1,6 +1,6 @@
 package io.github.thomashan.tradingchart
 
-import org.junit.jupiter.api.BeforeEach
+
 import org.junit.jupiter.api.Test
 
 /**
@@ -10,16 +10,9 @@ import org.junit.jupiter.api.Test
  * * jvm used (as JIT is controlled by the jvm)
  * the results may be vastly different especially if there's not warm up.
  */
-class GroovyObjectSizeTest {
-    private final long warmUpIterations = 100000
-    private final long iterations = 100000
-    private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper
-
-
-    @BeforeEach
-    void setUp() {
-        byteWatcherRegressionTestHelper = new ByteWatcherRegressionTestHelper()
-    }
+class GroovyObjectSizeBwTest extends ByteWatcherTestCase {
+    final long warmUpIterations = 100000
+    final long iterations = 100000
 
     @Test
     void testRunNothing_Lambda_ManyTimes() {
