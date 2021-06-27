@@ -6,7 +6,7 @@ import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
 import io.github.thomashan.tradingchart.domain.price.BidAsk
 import io.github.thomashan.tradingchart.domain.price.Mid
 
-import java.time.ZonedDateTime
+import java.time.Instant
 import java.util.function.BiFunction
 
 class OhlcCreator {
@@ -26,7 +26,7 @@ class OhlcCreator {
     }
 
     static final BiFunction<String[], Map<String, Integer>, BidAskOhlc> CREATE_BID_ASK = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            BidAskOhlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
+            BidAskOhlc.of(Instant.parse(strings[stringIntegerMap["dateTime"]]),
                     BidAsk.of(strings[stringIntegerMap["openBid"]].toDouble(), strings[stringIntegerMap["openAsk"]].toDouble()),
                     BidAsk.of(strings[stringIntegerMap["highBid"]].toDouble(), strings[stringIntegerMap["highAsk"]].toDouble()),
                     BidAsk.of(strings[stringIntegerMap["lowBid"]].toDouble(), strings[stringIntegerMap["lowAsk"]].toDouble()),
@@ -35,7 +35,7 @@ class OhlcCreator {
 
 
     static final BiFunction<String[], Map<String, Integer>, MidOhlc> CREATE_MID = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            MidOhlc.of(ZonedDateTime.parse(strings[stringIntegerMap["dateTime"]]),
+            MidOhlc.of(Instant.parse(strings[stringIntegerMap["dateTime"]]),
                     Mid.of(strings[stringIntegerMap["open"]].toDouble()),
                     Mid.of(strings[stringIntegerMap["high"]].toDouble()),
                     Mid.of(strings[stringIntegerMap["low"]].toDouble()),

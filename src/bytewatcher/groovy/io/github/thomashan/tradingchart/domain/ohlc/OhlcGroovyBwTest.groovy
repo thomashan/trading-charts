@@ -6,10 +6,10 @@ import io.github.thomashan.tradingchart.domain.price.Mid
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-import java.time.ZonedDateTime
+import java.time.Instant
 
 class OhlcGroovyBwTest {
-    private final long warmUpIterations = 1000
+    private final long warmUpIterations = 80000
     private ByteWatcherRegressionTestHelper byteWatcherRegressionTestHelper
 
     @BeforeEach
@@ -20,7 +20,7 @@ class OhlcGroovyBwTest {
     @Test
     void testNew_BidAskOhlc() {
         Runnable runnable = () -> {
-            new BidAskOhlc()    // 64 bytes
+            BidAskOhlc.emptyMinimal()    // 64 bytes
         }
 
         byteWatcherRegressionTestHelper
@@ -31,23 +31,23 @@ class OhlcGroovyBwTest {
     @Test
     void testNew_BidAskOhlc_Date() {
         Runnable runnable = () -> {
-            BidAskOhlc ohlc = new BidAskOhlc()    // 64 bytes
-            ohlc.setDateTime(ZonedDateTime.now()) // 264 bytes
+            BidAskOhlc ohlc = BidAskOhlc.emptyMinimal()     // 64 bytes
+            ohlc.setDateTime(Instant.now())          // 24 bytes
         }
 
         byteWatcherRegressionTestHelper
                 .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 328, 1)
+                .testAllocationNotExceeded(runnable, 88, 1)
     }
 
     @Test
     void testNew_BidAskOhlc_Ohlc() {
         Runnable runnable = () -> {
-            BidAskOhlc ohlc = new BidAskOhlc()    // 64 bytes
-            ohlc.setOpen(BidAsk.of(1, 1.1))       // 176 bytes
-            ohlc.setHigh(BidAsk.of(1, 1.1))       // 176 bytes
-            ohlc.setLow(BidAsk.of(1, 1.1))        // 176 bytes
-            ohlc.setClose(BidAsk.of(1, 1.1))      // 176 bytes
+            BidAskOhlc ohlc = BidAskOhlc.emptyMinimal()        // 64 bytes
+            ohlc.setOpen(BidAsk.of(1, 1.1))             // 176 bytes
+            ohlc.setHigh(BidAsk.of(1, 1.1))             // 176 bytes
+            ohlc.setLow(BidAsk.of(1, 1.1))              // 176 bytes
+            ohlc.setClose(BidAsk.of(1, 1.1))            // 176 bytes
         }
 
         byteWatcherRegressionTestHelper
@@ -56,26 +56,42 @@ class OhlcGroovyBwTest {
     }
 
     @Test
-    void testNew_BidAskOhlc_Full() {
+    void testNew_BidAskOhlc_Full1() {
         Runnable runnable = () -> {
-            BidAskOhlc ohlc = new BidAskOhlc()    // 64 bytes
-            ohlc.setDateTime(ZonedDateTime.now()) // 264 bytes
-            ohlc.setOpen(BidAsk.of(1, 1.1))       // 176 bytes
-            ohlc.setHigh(BidAsk.of(1, 1.1))       // 176 bytes
-            ohlc.setLow(BidAsk.of(1, 1.1))        // 176 bytes
-            ohlc.setClose(BidAsk.of(1, 1.1))      // 176 bytes
-            ohlc.setVolume(1)                     // 48 bytes
+            BidAskOhlc ohlc = BidAskOhlc.emptyMinimal()      // 64 bytes
+            ohlc.setDateTime(Instant.now())           // 24 bytes
+            ohlc.setOpen(BidAsk.of(1, 1.1))           // 176 bytes
+            ohlc.setHigh(BidAsk.of(1, 1.1))           // 176 bytes
+            ohlc.setLow(BidAsk.of(1, 1.1))            // 176 bytes
+            ohlc.setClose(BidAsk.of(1, 1.1))          // 176 bytes
         }
 
         byteWatcherRegressionTestHelper
                 .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 1080, 1)
+                .testAllocationNotExceeded(runnable, 792, 1)
+    }
+
+    @Test
+    void testNew_BidAskOhlc_Full2() {
+        Runnable runnable = () -> {
+            BidAskOhlc ohlc = BidAskOhlc.emptyMinimal()      // 64 bytes
+            ohlc.setDateTime(Instant.now())           // 24 bytes
+            ohlc.setOpen(BidAsk.of(1, 1.1))           // 176 bytes
+            ohlc.setHigh(BidAsk.of(1, 1.1))           // 176 bytes
+            ohlc.setLow(BidAsk.of(1, 1.1))            // 176 bytes
+            ohlc.setClose(BidAsk.of(1, 1.1))          // 176 bytes
+            ohlc.setVolume(1)                         // 48 bytes
+        }
+
+        byteWatcherRegressionTestHelper
+                .warmUp(runnable, warmUpIterations)
+                .testAllocationNotExceeded(runnable, 840, 1)
     }
 
     @Test
     void testNew_MidOhlc() {
         Runnable runnable = () -> {
-            new MidOhlc()                         // 64 bytes
+            MidOhlc.emptyMinimal()                         // 64 bytes
         }
 
         byteWatcherRegressionTestHelper
@@ -86,23 +102,23 @@ class OhlcGroovyBwTest {
     @Test
     void testNew_MidOhlc_Date() {
         Runnable runnable = () -> {
-            MidOhlc ohlc = new MidOhlc()          // 64 bytes
-            ohlc.setDateTime(ZonedDateTime.now()) // 264 bytes
+            MidOhlc ohlc = MidOhlc.emptyMinimal()          // 64 bytes
+            ohlc.setDateTime(Instant.now())         // 24 bytes
         }
 
         byteWatcherRegressionTestHelper
                 .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 328, 1)
+                .testAllocationNotExceeded(runnable, 88, 1)
     }
 
     @Test
     void testNew_MidOhlc_Ohlc() {
         Runnable runnable = () -> {
-            MidOhlc ohlc = new MidOhlc()          // 64 bytes
-            ohlc.setOpen(Mid.of(1))               // 120 bytes
-            ohlc.setHigh(Mid.of(1.1))             // 120 bytes
-            ohlc.setLow(Mid.of(1.1))              // 120 bytes
-            ohlc.setClose(Mid.of(1))              // 120 bytes
+            MidOhlc ohlc = MidOhlc.emptyMinimal()     // 64 bytes
+            ohlc.setOpen(Mid.of(1))      // 120 bytes
+            ohlc.setHigh(Mid.of(1.1))    // 120 bytes
+            ohlc.setLow(Mid.of(1.1))     // 120 bytes
+            ohlc.setClose(Mid.of(1))     // 120 bytes
         }
 
         byteWatcherRegressionTestHelper
@@ -111,19 +127,35 @@ class OhlcGroovyBwTest {
     }
 
     @Test
-    void testNew_MidOhlc_Full() {
+    void testNew_MidOhlc_Full1() {
         Runnable runnable = () -> {
-            MidOhlc ohlc = new MidOhlc()          // 64 bytes
-            ohlc.setDateTime(ZonedDateTime.now()) // 264 bytes
-            ohlc.setOpen(Mid.of(1))               // 120 bytes
-            ohlc.setHigh(Mid.of(1))               // 120 bytes
-            ohlc.setLow(Mid.of(1))                // 120 bytes
-            ohlc.setClose(Mid.of(1))              // 120 bytes
-            ohlc.setVolume(1)                     // 48 bytes
+            MidOhlc ohlc = MidOhlc.emptyMinimal()           // 64 bytes
+            ohlc.setDateTime(Instant.now())          // 24 bytes
+            ohlc.setOpen(Mid.of(1))            // 120 bytes
+            ohlc.setHigh(Mid.of(1))            // 120 bytes
+            ohlc.setLow(Mid.of(1))             // 120 bytes
+            ohlc.setClose(Mid.of(1))           // 120 bytes
         }
 
         byteWatcherRegressionTestHelper
                 .warmUp(runnable, warmUpIterations)
-                .testAllocationNotExceeded(runnable, 856, 1)
+                .testAllocationNotExceeded(runnable, 568, 1)
+    }
+
+    @Test
+    void testNew_MidOhlc_Full2() {
+        Runnable runnable = () -> {
+            MidOhlc ohlc = MidOhlc.emptyMinimal()           // 64 bytes
+            ohlc.setDateTime(Instant.now())          // 24 bytes
+            ohlc.setOpen(Mid.of(1))            // 120 bytes
+            ohlc.setHigh(Mid.of(1))            // 120 bytes
+            ohlc.setLow(Mid.of(1))             // 120 bytes
+            ohlc.setClose(Mid.of(1))           // 120 bytes
+            ohlc.setVolume(1)                        // 48 bytes
+        }
+
+        byteWatcherRegressionTestHelper
+                .warmUp(runnable, warmUpIterations)
+                .testAllocationNotExceeded(runnable, 616, 1)
     }
 }

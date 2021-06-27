@@ -5,3 +5,7 @@ out
 .gradle
 
 local.properties
+
+# vscode
+.settings
+.project

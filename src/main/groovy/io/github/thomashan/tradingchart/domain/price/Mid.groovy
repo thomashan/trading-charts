@@ -7,6 +7,10 @@ class Mid implements Price {
         this.value = value
     }
 
+    static empty() {
+        return of(0)
+    }
+
     static Mid of(double value) {
         return new Mid(value)
     }

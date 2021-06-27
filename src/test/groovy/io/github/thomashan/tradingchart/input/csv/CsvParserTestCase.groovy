@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
-import java.time.ZonedDateTime
+import java.time.Instant
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -31,7 +31,7 @@ trait CsvParserTestCase<C extends CsvParser> {
         List<BidAskOhlc> ohlcs = ohlcStream.collect(Collectors.toList())
 
         assert 1 == ohlcs.size()
-        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert Instant.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
         assert 1.11904 == ohlcs[0].open.ask
         assert 1.11892 == ohlcs[0].open.bid
         assert 1.11907 == ohlcs[0].high.ask
@@ -49,7 +49,7 @@ trait CsvParserTestCase<C extends CsvParser> {
         List<MidOhlc> ohlcs = ohlcStream.collect(Collectors.toList())
 
         assert 1 == ohlcs.size()
-        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert Instant.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
         assert 1.11898 == ohlcs[0].open.value
         assert 1.11901 == ohlcs[0].high.value
         assert 1.11898 == ohlcs[0].low.value
@@ -64,7 +64,7 @@ trait CsvParserTestCase<C extends CsvParser> {
         List<BidAskOhlc> ohlcs = ohlcStream.collect(Collectors.toList())
 
         assert 3 == ohlcs.size()
-        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert Instant.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
         assert 1.11904 == ohlcs[0].open.ask
         assert 1.11892 == ohlcs[0].open.bid
         assert 1.11907 == ohlcs[0].high.ask
@@ -83,7 +83,7 @@ trait CsvParserTestCase<C extends CsvParser> {
         List<MidOhlc> ohlcs = ohlcStream.collect(Collectors.toList())
 
         assert 3 == ohlcs.size()
-        assert ZonedDateTime.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
+        assert Instant.parse("2019-08-13T06:18:15Z") == ohlcs[0].dateTime
         assert 1.11898 == ohlcs[0].open.value
         assert 1.11901 == ohlcs[0].high.value
         assert 1.11898 == ohlcs[0].low.value
