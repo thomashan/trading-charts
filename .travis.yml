@@ -2,7 +2,7 @@ language: java
 install: skip
 
 jdk:
-  - openjdk11
+  - openjdk17
 
 jobs:
   include:
