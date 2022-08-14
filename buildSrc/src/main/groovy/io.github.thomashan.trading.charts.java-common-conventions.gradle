@@ -102,3 +102,10 @@ test {
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-Xlint:all"]
 }
+
+if (System.getenv("CI")) {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
