@@ -8,6 +8,7 @@ plugins {
     // Apply the java Plugin to add support for Java.
     id "java"
     id "groovy"
+    id "org.sonarqube"
 //    id "checkstyle"
 //    id "pmd"
 //    id "com.github.spotbugs"
@@ -107,5 +108,13 @@ if (System.getenv("CI")) {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "thomashan_trading-charts"
+        property "sonar.organization", "thomashan-github"
+        property "sonar.host.url", "https://sonarcloud.io"
     }
 }
