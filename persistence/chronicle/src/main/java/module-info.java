@@ -4,6 +4,4 @@ module trading.charts.persistence.chronicle {
     requires chronicle.bytes;
     requires chronicle.queue;
     requires chronicle.wire;
-
-//    opens java.lang.reflect;
 }

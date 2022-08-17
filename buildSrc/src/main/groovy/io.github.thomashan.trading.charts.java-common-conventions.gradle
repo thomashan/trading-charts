@@ -9,6 +9,8 @@ plugins {
     id "java"
     id "groovy"
     id "org.sonarqube"
+    id "jacoco"
+    id "com.github.kt3k.coveralls"
 //    id "checkstyle"
 //    id "pmd"
 //    id "com.github.spotbugs"
@@ -105,9 +107,11 @@ tasks.withType(JavaCompile) {
 }
 
 if (System.getenv("CI")) {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+    if (project.hasProperty("buildScan")) {
+        buildScan {
+            termsOfServiceUrl = "https://gradle.com/terms-of-service"
+            termsOfServiceAgree = "yes"
+        }
     }
 }
 
@@ -116,5 +120,13 @@ sonarqube {
         property "sonar.projectKey", "thomashan_trading-charts"
         property "sonar.organization", "thomashan-github"
         property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
     }
 }
