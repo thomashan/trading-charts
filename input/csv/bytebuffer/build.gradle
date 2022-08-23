@@ -1,0 +1,12 @@
+plugins {
+    id "io.github.thomashan.trading.charts.java-library-conventions"
+}
+
+dependencies {
+    api project(":domain")
+    api project(":input:csv:api")
+
+    testImplementation project(":input:csv:api").sourceSets.test.output
+
+    bytewatcherImplementation project(":input:csv:api").sourceSets.bytewatcher.output
+}
