@@ -3,22 +3,32 @@ package io.github.thomashan.tradingchart.input.csv;
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
-import io.github.thomashan.tradingchart.domain.price.BidAsk;
-import io.github.thomashan.tradingchart.domain.price.Mid;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 import java.util.function.BiFunction;
 
 import static java.lang.Double.parseDouble;
 
 public class OhlcCreator {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE)
+            .appendLiteral('T')
+            .append(DateTimeFormatter.ISO_LOCAL_TIME)
+            .appendZoneOrOffsetId()
+            .toFormatter();
+    private static final ThreadLocal<BidAskOhlc> THREAD_LOCAL_BID_ASK_OHLC = ThreadLocal.withInitial(() -> BidAskOhlc.emptyFull());
+    private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
+
     private OhlcCreator() {
         throw new AssertionError("not instantiable");
     }
 
     @SuppressWarnings("unchecked")
-    public static <O extends Ohlc<?>> BiFunction<String[], Map<String, Integer>, O> getCreator(String[] row) {
+    public static <O extends Ohlc<O, ?>> BiFunction<String[], Map<String, Integer>, O> getCreator(String[] row) {
         switch (row.length) {
             case 10:
                 return (BiFunction<String[], Map<String, Integer>, O>) CREATE_BID_ASK;
@@ -29,21 +39,34 @@ public class OhlcCreator {
         }
     }
 
-    public static final BiFunction<String[], Map<String, Integer>, BidAskOhlc> CREATE_BID_ASK = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
-            BidAskOhlc.of(Instant.parse(strings[stringIntegerMap.get("dateTime")]),
-                    BidAsk.of(parseDouble(strings[stringIntegerMap.get("openBid")]), parseDouble(strings[stringIntegerMap.get("openAsk")])),
-                    BidAsk.of(parseDouble(strings[stringIntegerMap.get("highBid")]), parseDouble(strings[stringIntegerMap.get("highAsk")])),
-                    BidAsk.of(parseDouble(strings[stringIntegerMap.get("lowBid")]), parseDouble(strings[stringIntegerMap.get("lowAsk")])),
-                    BidAsk.of(parseDouble(strings[stringIntegerMap.get("closeBid")]), parseDouble(strings[stringIntegerMap.get("closeAsk")])),
-                    parseDouble(strings[stringIntegerMap.get("volume")]));
+    public static final BiFunction<String[], Map<String, Integer>, BidAskOhlc> CREATE_BID_ASK = (String[] strings, Map<String, Integer> stringIntegerMap) -> {
+        BidAskOhlc bidAskOhlc = THREAD_LOCAL_BID_ASK_OHLC.get();
+        // FIXME: we should use MutableInstant instead of returning a new instance of Instant
+        bidAskOhlc.dateTime = DATE_TIME_FORMATTER.parse(strings[stringIntegerMap.get("dateTime")], Instant::from);
+        // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
+        bidAskOhlc.open.bid = parseDouble(strings[stringIntegerMap.get("openBid")]);
+        bidAskOhlc.open.ask = parseDouble(strings[stringIntegerMap.get("openAsk")]);
+        bidAskOhlc.high.bid = parseDouble(strings[stringIntegerMap.get("highBid")]);
+        bidAskOhlc.high.ask = parseDouble(strings[stringIntegerMap.get("highAsk")]);
+        bidAskOhlc.low.bid = parseDouble(strings[stringIntegerMap.get("lowBid")]);
+        bidAskOhlc.low.ask = parseDouble(strings[stringIntegerMap.get("lowAsk")]);
+        bidAskOhlc.close.bid = parseDouble(strings[stringIntegerMap.get("closeBid")]);
+        bidAskOhlc.close.ask = parseDouble(strings[stringIntegerMap.get("closeAsk")]);
+        bidAskOhlc.volume = parseDouble(strings[stringIntegerMap.get("volume")]);
+        return bidAskOhlc;
+    };
 
-    public static final BiFunction<String[], Map<String, Integer>, Ohlc<?>> CREATE_MID = (String[] strings, Map<String, Integer> stringIntegerMap) ->
-            // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
-            MidOhlc.of(Instant.parse(strings[stringIntegerMap.get("dateTime")]),
-                    Mid.of(parseDouble(strings[stringIntegerMap.get("open")])),
-                    Mid.of(parseDouble(strings[stringIntegerMap.get("high")])),
-                    Mid.of(parseDouble(strings[stringIntegerMap.get("low")])),
-                    Mid.of(parseDouble(strings[stringIntegerMap.get("close")])),
-                    parseDouble(strings[stringIntegerMap.get("volume")]));
+
+    public static final BiFunction<String[], Map<String, Integer>, Ohlc<MidOhlc, ?>> CREATE_MID = (String[] strings, Map<String, Integer> stringIntegerMap) -> {
+        MidOhlc midOhlc = THREAD_LOCAL_MID_OHLC.get();
+        // FIXME: we should use MutableInstant instead of returning a new instance of Instant
+        midOhlc.dateTime = DATE_TIME_FORMATTER.parse(strings[stringIntegerMap.get("dateTime")], Instant::from);
+        // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
+        midOhlc.open.value = parseDouble(strings[stringIntegerMap.get("open")]);
+        midOhlc.high.value = parseDouble(strings[stringIntegerMap.get("high")]);
+        midOhlc.low.value = parseDouble(strings[stringIntegerMap.get("low")]);
+        midOhlc.close.value = parseDouble(strings[stringIntegerMap.get("close")]);
+        midOhlc.volume = parseDouble(strings[stringIntegerMap.get("volume")]);
+        return midOhlc;
+    };
 }

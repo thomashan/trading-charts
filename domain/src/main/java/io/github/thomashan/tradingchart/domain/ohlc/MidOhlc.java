@@ -4,7 +4,7 @@ import io.github.thomashan.tradingchart.domain.price.Mid;
 
 import java.time.Instant;
 
-public class MidOhlc extends Ohlc<Mid> {
+public class MidOhlc extends Ohlc<MidOhlc, Mid> {
     public MidOhlc() {
         // empty initaliser for byte watcher tests
     }
@@ -28,5 +28,10 @@ public class MidOhlc extends Ohlc<Mid> {
 
     public static MidOhlc of(Instant dateTime, Mid open, Mid high, Mid low, Mid close, double volume) {
         return new MidOhlc(dateTime, open, high, low, close, volume);
+    }
+
+    @Override
+    public MidOhlc copy() {
+        return of(dateTime, open.copy(), high.copy(), low.copy(), close.copy(), volume);
     }
 }

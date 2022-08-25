@@ -2,7 +2,7 @@ package io.github.thomashan.tradingchart.domain.price;
 
 import java.util.Objects;
 
-public class BidAsk implements Price {
+public class BidAsk implements Price<BidAsk> {
     public double bid;
     public double ask;
 
@@ -43,5 +43,10 @@ public class BidAsk implements Price {
         return stringBuilder
                 .append(bid + "/" + ask)
                 .toString();
+    }
+
+    @Override
+    public BidAsk copy() {
+        return of(bid, ask);
     }
 }

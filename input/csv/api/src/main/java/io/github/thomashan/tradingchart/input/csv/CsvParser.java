@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * Uniform API to integrate various CSV parser implementations
  */
-public interface CsvParser<O extends Ohlc<?>> {
+public interface CsvParser<O extends Ohlc<O, ?>> {
     /**
      * Interim api to do performance testing
      *

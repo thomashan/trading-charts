@@ -1,6 +1,6 @@
 package io.github.thomashan.tradingchart.domain.price;
 
-public class Mid implements Price {
+public class Mid implements Price<Mid> {
     public double value;
 
     private Mid(double value) {
@@ -36,5 +36,10 @@ public class Mid implements Price {
     @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public Mid copy() {
+        return of(value);
     }
 }
