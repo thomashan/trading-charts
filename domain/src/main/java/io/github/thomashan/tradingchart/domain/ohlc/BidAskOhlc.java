@@ -4,7 +4,7 @@ import io.github.thomashan.tradingchart.domain.price.BidAsk;
 
 import java.time.Instant;
 
-public class BidAskOhlc extends Ohlc<BidAsk> {
+public class BidAskOhlc extends Ohlc<BidAskOhlc, BidAsk> {
     public BidAskOhlc() {
         // empty initaliser for byte watcher tests
     }
@@ -28,5 +28,10 @@ public class BidAskOhlc extends Ohlc<BidAsk> {
 
     public static BidAskOhlc of(Instant dateTime, BidAsk open, BidAsk high, BidAsk low, BidAsk close, double volume) {
         return new BidAskOhlc(dateTime, open, high, low, close, volume);
+    }
+
+    @Override
+    public BidAskOhlc copy() {
+        return of(dateTime, open.copy(), high.copy(), low.copy(), close.copy(), volume);
     }
 }

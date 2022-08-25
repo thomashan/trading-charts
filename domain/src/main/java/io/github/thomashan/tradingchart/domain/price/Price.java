@@ -1,4 +1,6 @@
 package io.github.thomashan.tradingchart.domain.price;
 
-public interface Price {
+import io.github.thomashan.tradingchart.domain.Copyable;
+
+public interface Price<P extends Price<P>> extends Copyable<P> {
 }

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public class CsvParserUnivocity<O extends Ohlc<?>> implements CsvParser<O> {
+public class CsvParserUnivocity<O extends Ohlc<O, ?>> implements CsvParser<O> {
     private final CsvParserSettings csvParserSettings;
     private final com.univocity.parsers.csv.CsvParser csvParser;
     private Map<String, Integer> headerIndexes;
@@ -35,7 +35,7 @@ public class CsvParserUnivocity<O extends Ohlc<?>> implements CsvParser<O> {
                 .map(it -> {
                     setHeaderIndexes(it);
                     setCreateFunction(it);
-                    return createFunction.apply(it, headerIndexes);
+                    return createFunction.apply(it, headerIndexes).copy();
                 });
     }
 

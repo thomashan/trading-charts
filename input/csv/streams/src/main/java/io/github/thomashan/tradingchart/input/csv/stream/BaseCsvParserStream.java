@@ -5,7 +5,7 @@ import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public abstract class BaseCsvParserStream<O extends Ohlc<?>> implements CsvParserStream<O> {
+public abstract class BaseCsvParserStream<O extends Ohlc<O, ?>> implements CsvParserStream<O> {
     private Map<String, Integer> headerIndexes;
     private BiFunction<String[], Map<String, Integer>, O> createFunction;
 

@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public interface CsvParserStream<O extends Ohlc<?>> extends CsvParser<O> {
+public interface CsvParserStream<O extends Ohlc<O, ?>> extends CsvParser<O> {
     String[] split(String string);
 
     Map<String, Integer> getHeaderIndexes();
@@ -51,7 +51,7 @@ public interface CsvParserStream<O extends Ohlc<?>> extends CsvParser<O> {
                 .map(row -> {
                     setDefaultHeaderIndexes(row);
                     setCreateFunction(row);
-                    return getCreateFunction().apply(row, getHeaderIndexes());
+                    return getCreateFunction().apply(row, getHeaderIndexes()).copy();
                 });
     }
 
