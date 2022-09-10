@@ -3,10 +3,11 @@ package io.github.thomashan.tradingchart.input.csv.stream;
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.input.csv.CsvParser;
 import io.github.thomashan.tradingchart.input.csv.CsvParserBwTestCase;
+import io.github.thomashan.tradingchart.input.csv.OhlcCreatorNoGc;
 
 public class CsvParserStreamIndexBwTest extends CsvParserBwTestCase<BidAskOhlc> {
     @Override
     protected CsvParser<BidAskOhlc> createCsvParser() {
-        return new CsvParserStreamIndexOf<>();
+        return new CsvParserStreamIndexOf<>(OhlcCreatorNoGc.CREATE_BID_ASK);
     }
 }

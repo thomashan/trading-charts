@@ -54,10 +54,10 @@ class OhlcCreatorTest {
     }
 
     private BidAskOhlc createBidAskOhlc(List<String> row) {
-        return OhlcCreator.CREATE_BID_ASK.apply(row as String[], DefaultHeader.VALUE_BID_ASK)
+        return OhlcCreator.CREATE_BID_ASK.apply(row as String[], DefaultCsvHeader.VALUE_BID_ASK)
     }
 
     private MidOhlc createMidOhlc(List<String> row) {
-        return OhlcCreator.CREATE_MID.apply(row as String[], DefaultHeader.VALUE_MID)
+        return OhlcCreator.CREATE_MID.apply(row as String[], DefaultCsvHeader.VALUE_MID)
     }
 }

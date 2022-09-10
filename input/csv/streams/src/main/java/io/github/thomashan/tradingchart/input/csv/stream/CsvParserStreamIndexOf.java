@@ -1,13 +1,23 @@
 package io.github.thomashan.tradingchart.input.csv.stream;
 
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.input.csv.CsvHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class CsvParserStreamIndexOf<O extends Ohlc<O, ?>> extends BaseCsvParserStream<O> {
     private static final String comma = ",";
     private static final List<String> cache = new ArrayList<>();
+
+    public CsvParserStreamIndexOf() {
+        this(null);
+    }
+
+    CsvParserStreamIndexOf(BiFunction<String[], CsvHeader, O> createFunction) {
+        super(createFunction);
+    }
 
     @Override
     public String[] split(String string) {

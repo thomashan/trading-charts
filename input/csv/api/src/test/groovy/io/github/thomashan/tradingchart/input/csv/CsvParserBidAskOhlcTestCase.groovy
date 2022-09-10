@@ -1,13 +1,15 @@
 package io.github.thomashan.tradingchart.input.csv
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc
+import io.github.thomashan.tradingchart.util.function.Consumers
 import org.junit.jupiter.api.Test
 
 import java.time.Instant
+import java.util.zip.ZipInputStream
 
 trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvParserTestCase<BidAskOhlc, C> {
     @Test
-    void testParseBidAskWithHeader_InputStream() {
+    void testParseInputStream_BidAskWithHeader() {
         String bidAskCsv = """dateTime,openAsk,openBid,highAsk,highBid,lowAsk,lowBid,closeAsk,closeBid,volume
 2019-08-13T06:18:15Z,1.11904,1.11892,1.11907,1.11895,1.11904,1.11892,1.11907,1.11895,2
 2019-08-13T06:18:30Z,1.11905,1.11892,1.11905,1.11892,1.11902,1.11889,1.11902,1.11889,2
@@ -18,7 +20,7 @@ trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvPa
     }
 
     @Test
-    void testParseBidAskWithoutHeader_InputStream() {
+    void testParseInputStream_BidAskWithoutHeader() {
         this.csvParser = createCsvParser(false)
         String bidAskCsv = """2019-08-13T06:18:15Z,1.11904,1.11892,1.11907,1.11895,1.11904,1.11892,1.11907,1.11895,2
 2019-08-13T06:18:30Z,1.11905,1.11892,1.11905,1.11892,1.11902,1.11889,1.11902,1.11889,2
@@ -26,6 +28,22 @@ trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvPa
 """
         List<BidAskOhlc> ohlcs = parseBidAsk(bidAskCsv)
         verifyBidAskOhlc(ohlcs)
+    }
+
+    @Test
+    void testReadTestResources() {
+        ZipInputStream zipInputStream = new ZipInputStream(this.getClass().getResourceAsStream(File.separator + "EURUSD-S5.csv.zip"))
+        zipInputStream.nextEntry
+
+        assert null != zipInputStream
+    }
+
+    @Test
+    void testParseInputStream_TestResource() {
+        ZipInputStream zipInputStream = new ZipInputStream(this.getClass().getResourceAsStream(File.separator + "EURUSD-S5.csv.zip"))
+        zipInputStream.nextEntry
+
+        csvParser.parse(zipInputStream, Consumers.nullConsumer())
     }
 
     private List<BidAskOhlc> parseBidAsk(String input) {

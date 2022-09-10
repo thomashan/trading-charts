@@ -1,31 +1,39 @@
 package io.github.thomashan.tradingchart.input.csv.stream;
 
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.input.csv.CsvHeader;
 
-import java.util.Map;
 import java.util.function.BiFunction;
 
 public abstract class BaseCsvParserStream<O extends Ohlc<O, ?>> implements CsvParserStream<O> {
-    private Map<String, Integer> headerIndexes;
-    private BiFunction<String[], Map<String, Integer>, O> createFunction;
+    private CsvHeader csvHeader;
+    private BiFunction<String[], CsvHeader, O> createFunction;
 
-    @Override
-    public Map<String, Integer> getHeaderIndexes() {
-        return headerIndexes;
+    BaseCsvParserStream() {
+        this.createFunction = null;
+    }
+
+    BaseCsvParserStream(BiFunction<String[], CsvHeader, O> createFunction) {
+        this.createFunction = createFunction;
     }
 
     @Override
-    public void setHeaderIndexes(Map<String, Integer> headerIndexes) {
-        this.headerIndexes = headerIndexes;
+    public CsvHeader getCsvHeader() {
+        return csvHeader;
     }
 
     @Override
-    public BiFunction<String[], Map<String, Integer>, O> getCreateFunction() {
+    public void setCsvHeader(CsvHeader csvHeader) {
+        this.csvHeader = csvHeader;
+    }
+
+    @Override
+    public BiFunction<String[], CsvHeader, O> getCreateFunction() {
         return createFunction;
     }
 
     @Override
-    public void setCreateFunction(BiFunction<String[], Map<String, Integer>, O> createFunction) {
+    public void setCreateFunction(BiFunction<String[], CsvHeader, O> createFunction) {
         this.createFunction = createFunction;
     }
 }

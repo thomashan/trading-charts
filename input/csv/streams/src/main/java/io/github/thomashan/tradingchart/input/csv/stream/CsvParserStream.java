@@ -1,8 +1,9 @@
 package io.github.thomashan.tradingchart.input.csv.stream;
 
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.input.csv.CsvHeader;
 import io.github.thomashan.tradingchart.input.csv.CsvParser;
-import io.github.thomashan.tradingchart.input.csv.DefaultHeader;
+import io.github.thomashan.tradingchart.input.csv.DefaultCsvHeader;
 import io.github.thomashan.tradingchart.input.csv.OhlcCreator;
 
 import java.io.BufferedReader;
@@ -21,17 +22,17 @@ import java.util.function.Consumer;
 public interface CsvParserStream<O extends Ohlc<O, ?>> extends CsvParser<O> {
     String[] split(String string);
 
-    Map<String, Integer> getHeaderIndexes();
+    CsvHeader getCsvHeader();
 
-    void setHeaderIndexes(Map<String, Integer> headerIndexes);
+    void setCsvHeader(CsvHeader csvHeader);
 
-    BiFunction<String[], Map<String, Integer>, O> getCreateFunction();
+    BiFunction<String[], CsvHeader, O> getCreateFunction();
 
-    void setCreateFunction(BiFunction<String[], Map<String, Integer>, O> createFunction);
+    void setCreateFunction(BiFunction<String[], CsvHeader, O> createFunction);
 
     private void setDefaultHeaderIndexes(String[] row) {
-        if (Objects.isNull(getHeaderIndexes())) {
-            setHeaderIndexes(DefaultHeader.getDefaultHeaders(row));
+        if (Objects.isNull(getCsvHeader())) {
+            setCsvHeader(DefaultCsvHeader.getDefaultHeaders(row));
         }
     }
 
@@ -47,7 +48,7 @@ public interface CsvParserStream<O extends Ohlc<O, ?>> extends CsvParser<O> {
         for (int i = 0; i < header.length; i++) {
             headerMap.put(header[i], i);
         }
-        setHeaderIndexes(headerMap);
+        setCsvHeader(CsvHeader.getCsvHeader(headerMap));
     }
 
     private boolean isHeader(boolean isFirstRow, String inputRow) {
@@ -73,7 +74,7 @@ public interface CsvParserStream<O extends Ohlc<O, ?>> extends CsvParser<O> {
                     .map(row -> {
                         setDefaultHeaderIndexes(row);
                         setCreateFunction(row);
-                        return getCreateFunction().apply(row, getHeaderIndexes());
+                        return getCreateFunction().apply(row, getCsvHeader());
                     })
                     .forEach(consumer);
         } catch (IOException ex) {

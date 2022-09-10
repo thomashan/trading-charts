@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="jmh-id" vm-parameters="--add-exports java.base/sun.nio.ch=ALL-UNNAMED" program-parameters="" working-dir="" isAlternativeJrePathEnabled="false">
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
