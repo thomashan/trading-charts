@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
+import java.util.function.Consumer;
 
 public class CsvParserUnivocity<O extends Ohlc<O, ?>> implements CsvParser<O> {
     private final CsvParserSettings csvParserSettings;
@@ -18,25 +18,10 @@ public class CsvParserUnivocity<O extends Ohlc<O, ?>> implements CsvParser<O> {
     private Map<String, Integer> headerIndexes;
     private BiFunction<String[], Map<String, Integer>, O> createFunction;
 
-    CsvParserUnivocity() {
+    CsvParserUnivocity(boolean extractHeader) {
         this.csvParserSettings = new CsvParserSettings();
-        csvParserSettings.setHeaderExtractionEnabled(true);
+        csvParserSettings.setHeaderExtractionEnabled(extractHeader);
         this.csvParser = new com.univocity.parsers.csv.CsvParser(csvParserSettings);
-    }
-
-    @Override
-    public Stream<O> parse(Stream<String> inputRows) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public Stream<O> parse(InputStream inputStream) {
-        return csvParser.parseAll(inputStream).stream()
-                .map(it -> {
-                    setHeaderIndexes(it);
-                    setCreateFunction(it);
-                    return createFunction.apply(it, headerIndexes).copy();
-                });
     }
 
     private void setHeaderIndexes(String[] row) {
@@ -49,5 +34,16 @@ public class CsvParserUnivocity<O extends Ohlc<O, ?>> implements CsvParser<O> {
         if (Objects.isNull(createFunction)) {
             this.createFunction = OhlcCreator.getCreator(row);
         }
+    }
+
+    @Override
+    public void parse(InputStream inputStream, Consumer<O> consumer) {
+        csvParser.parseAll(inputStream).stream()
+                .map(it -> {
+                    setHeaderIndexes(it);
+                    setCreateFunction(it);
+                    return createFunction.apply(it, headerIndexes);
+                })
+                .forEach(consumer);
     }
 }

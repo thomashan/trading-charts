@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.jjohannes.gradle:extra-java-module-info:0.15")
+    implementation("org.gradlex:extra-java-module-info:1.0")
     implementation("com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.9")
     implementation("me.champeau.jmh:jmh-gradle-plugin:0.6.6")
     implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513")

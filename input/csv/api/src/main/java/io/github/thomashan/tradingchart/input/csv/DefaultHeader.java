@@ -35,4 +35,19 @@ public class DefaultHeader {
                 throw new IllegalArgumentException("there must be 10 fields for bid, ask and 6 fields for mid");
         }
     }
+
+    public static Map<String, Integer> getDefaultHeaders(Type type) {
+        switch (type) {
+            case BID_ASK_OHLC:
+                return VALUE_BID_ASK;
+            case MID_OHLC:
+                return VALUE_MID;
+            default:
+                throw new IllegalArgumentException("there must be 10 fields for bid, ask and 6 fields for mid");
+        }
+    }
+
+    public enum Type {
+        BID_ASK_OHLC, MID_OHLC
+    }
 }

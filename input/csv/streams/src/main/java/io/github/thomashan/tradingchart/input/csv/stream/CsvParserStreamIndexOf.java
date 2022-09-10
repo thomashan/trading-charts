@@ -5,7 +5,7 @@ import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvParserStreamIndexOfImpl<O extends Ohlc<O, ?>> extends BaseCsvParserStream<O> {
+public class CsvParserStreamIndexOf<O extends Ohlc<O, ?>> extends BaseCsvParserStream<O> {
     private static final String comma = ",";
     private static final List<String> cache = new ArrayList<>();
 

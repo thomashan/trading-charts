@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 import static java.lang.Double.parseDouble;
 
 public class OhlcCreator {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ISO_LOCAL_DATE)
             .appendLiteral('T')
@@ -22,6 +22,7 @@ public class OhlcCreator {
             .toFormatter();
     private static final ThreadLocal<BidAskOhlc> THREAD_LOCAL_BID_ASK_OHLC = ThreadLocal.withInitial(() -> BidAskOhlc.emptyFull());
     private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
+    private static final Instant NOW = Instant.now();
 
     private OhlcCreator() {
         throw new AssertionError("not instantiable");

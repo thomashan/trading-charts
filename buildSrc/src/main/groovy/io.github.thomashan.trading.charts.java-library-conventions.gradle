@@ -10,6 +10,6 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     id "java-library"
-    id "de.jjohannes.extra-java-module-info"
+    id "org.gradlex.extra-java-module-info"
     id "me.champeau.jmh"
 }

@@ -4,7 +4,7 @@ import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
 
 import java.util.StringTokenizer;
 
-public class CsvParserStreamStringTokeniserImpl<O extends Ohlc<O, ?>> extends BaseCsvParserStream<O> {
+public class CsvParserStreamStringTokeniser<O extends Ohlc<O, ?>> extends BaseCsvParserStream<O> {
     @Override
     public String[] split(String string) {
         StringTokenizer stringTokenizer = new StringTokenizer(string, ",");
