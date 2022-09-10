@@ -7,4 +7,7 @@ dependencies {
     api project(":input:csv:api")
 
     testImplementation project(":input:csv:api").sourceSets.test.output
+
+    bytewatcherImplementation project(":input:csv:api").sourceSets.bytewatcher.output
+    jmhImplementation project(":input:csv:api").sourceSets.jmh.output
 }

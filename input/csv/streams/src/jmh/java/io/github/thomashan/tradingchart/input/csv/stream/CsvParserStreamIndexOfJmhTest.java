@@ -1,4 +1,4 @@
-package io.github.thomashan.tradingchart.input.csv.univocity;
+package io.github.thomashan.tradingchart.input.csv.stream;
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.input.csv.CsvParserJmhTestCase;
@@ -9,10 +9,10 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 
 import java.util.concurrent.TimeUnit;
 
-public class CsvParserUnivocityJmhTest extends CsvParserJmhTestCase<BidAskOhlc, CsvParserUnivocity<BidAskOhlc>> {
+public class CsvParserStreamIndexOfJmhTest extends CsvParserJmhTestCase<BidAskOhlc, CsvParserStreamIndexOf<BidAskOhlc>> {
     @Override
-    public CsvParserUnivocity<BidAskOhlc> getCsvParser() {
-        return new CsvParserUnivocity<>(true);
+    public CsvParserStreamIndexOf<BidAskOhlc> getCsvParser() {
+        return new CsvParserStreamIndexOf<>();
     }
 
     @Benchmark

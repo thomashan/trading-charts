@@ -8,6 +8,8 @@ dependencies {
     implementation "com.univocity:univocity-parsers:${univocityVersion}"
 
     testImplementation project(":input:csv:api").sourceSets.test.output
+
+    jmhImplementation project(":input:csv:api").sourceSets.jmh.output
 }
 
 extraJavaModuleInfo {
