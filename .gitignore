@@ -9,3 +9,6 @@ local.properties
 # vscode
 .settings
 .project
+
+# jmh
+jmh_generated
