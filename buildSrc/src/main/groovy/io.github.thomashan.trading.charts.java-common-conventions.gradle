@@ -35,12 +35,6 @@ ext {
 }
 
 // start: configure bytewatcher
-configurations {
-    bytewatcherApi.extendsFrom testApi
-    bytewatcherImplementation.extendsFrom testImplementation
-    bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
-}
-
 sourceSets {
     bytewatcher {
         compileClasspath += main.output + test.output
@@ -51,6 +45,7 @@ sourceSets {
 }
 
 configurations {
+    bytewatcherApi.extendsFrom testApi
     bytewatcherImplementation.extendsFrom testImplementation
     bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
     bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
