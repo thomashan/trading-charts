@@ -1,20 +1,21 @@
 package io.github.thomashan.tradingchart.input.csv;
 
-import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
-import org.openjdk.jmh.annotations.*;
+import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.util.function.Consumers;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 
+import java.io.File;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-public abstract class CsvParserJmhTestCase<C extends CsvParser> {
+public abstract class CsvParserJmhTestCase<O extends Ohlc<O, ?>, C extends CsvParser<O>> {
     public abstract C getCsvParser();
 
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public Stream<BidAskOhlc> testParse_InputStream(BenchmarkState benchmarkState) {
-        return getCsvParser().parse(benchmarkState.inputStream);
+    public void testParse_InputStream(BenchmarkState benchmarkState) {
+        getCsvParser().parse(benchmarkState.inputStream, Consumers.nullConsumer());
     }
 
     @State(Scope.Thread)
@@ -22,8 +23,11 @@ public abstract class CsvParserJmhTestCase<C extends CsvParser> {
         public InputStream inputStream;
 
         @Setup
-        public void setUp() {
-//            this.inputStream = ExternalDrive.instance.getTestDataInputStream();
+        public void setUp() throws Exception {
+            String fileName = "EURUSD-S5.csv";
+            ZipFile zipFile = new ZipFile(this.getClass().getResource(File.separator + fileName + ".zip").getFile());
+            ZipEntry zipEntry = zipFile.getEntry(fileName);
+            this.inputStream = zipFile.getInputStream(zipEntry);
         }
     }
 }

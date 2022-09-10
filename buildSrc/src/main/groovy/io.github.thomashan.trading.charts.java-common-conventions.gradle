@@ -65,11 +65,6 @@ task bytewatcher(type: Test) {
 // end: configure bytewatcher
 
 dependencies {
-    constraints {
-        // Define dependency versions as constraints
-        implementation "org.apache.commons:commons-text:1.9"
-    }
-
     testImplementation("org.apache.groovy:groovy:${groovyVersion}") {
         exclude group: "junit", module: "junit"
     }
