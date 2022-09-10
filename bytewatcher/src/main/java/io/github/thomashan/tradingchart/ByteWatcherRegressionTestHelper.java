@@ -16,8 +16,6 @@ package io.github.thomashan.tradingchart;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ByteWatcherRegressionTestHelper {
