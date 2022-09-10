@@ -17,5 +17,6 @@ include(
     "input:csv:univocity",
     "persistence:api",
     "persistence:chronicle",
-    'app',
+    "util",
+    "app",
 )
