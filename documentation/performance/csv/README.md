@@ -13,7 +13,7 @@ number of months = 173.61 / 20 = 8.6805
 ## Performance results
 
 ```
-./gradlew clean jmh --no-daemon
+./gradlew -Dorg.gradle.parallel=false clean jmh
 ```
 
 Using disk

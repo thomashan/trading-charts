@@ -12,3 +12,6 @@ local.properties
 
 # jmh
 jmh_generated
+
+# heap dumps
+heap_dump

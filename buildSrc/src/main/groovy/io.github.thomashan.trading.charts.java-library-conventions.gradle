@@ -12,6 +12,8 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id "java-library"
     id "org.gradlex.extra-java-module-info"
+    id "java-test-fixtures"
+    id "idea"
 }
 
 // start: configure jmh
@@ -44,7 +46,7 @@ boolean benchmarksExist = sourceSets.jmh.output.classesDirs.files.stream()
 
 if (benchmarksExist) {
     // only run add the jmh task and run the tests if META-INF/BenchmarkList is present
-    // run jmh with ` ./gradlew -Dorg.gradle.parallel=false jmh` or else all the benchmarks will run in parallel
+    // run jmh with `./gradlew -Dorg.gradle.parallel=false jmh --args="-f 1"` or else all the benchmarks will run in parallel
     task jmh(type: JavaExec, dependsOn: jmhClasses) {
         main = "org.openjdk.jmh.Main"
         classpath = sourceSets.jmh.runtimeClasspath
@@ -65,3 +67,21 @@ extraJavaModuleInfo {
     automaticModule("net.sf.jopt-simple:jopt-simple", "jopt.simple")
     automaticModule("org.apache.commons:commons-math3", "org.apache.commons.maths3")
 }
+
+// start: set up idea to include testFixture dependencies
+configurations {
+    ideaTestFixturesApi.extendsFrom testFixturesApi
+    ideaTestFixturesImplementation.extendsFrom testFixturesImplementation
+    ideaTestFixturesRuntimeOnly.extendsFrom testFixturesRuntimeOnly
+}
+
+idea {
+    module {
+        scopes.COMPILE.plus += [
+            configurations.ideaTestFixturesApi,
+            configurations.ideaTestFixturesImplementation,
+            configurations.ideaTestFixturesRuntimeOnly,
+        ]
+    }
+}
+// end: set up idea to include testFixture dependencies
