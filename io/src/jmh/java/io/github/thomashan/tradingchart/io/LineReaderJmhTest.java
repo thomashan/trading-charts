@@ -6,7 +6,6 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 
 import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -51,14 +50,14 @@ public class LineReaderJmhTest extends ReaderJmhTestCase<LineReader> {
     public static class BenchmarkState extends ReaderJmhTestCase.BenchmarkState<LineReader> {
         @Override
         protected LineReader createReader(Path path) throws Exception {
-            return new LineReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+            return new LineReader(Files.newInputStream(path));
         }
     }
 
     public static class BenchmarkStateWithParam extends ReaderJmhTestCase.BenchmarkStateWithParam<LineReader> {
         @Override
         protected LineReader createReader(Path path) throws Exception {
-            return new LineReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+            return new LineReader(Files.newInputStream(path));
         }
     }
 }
