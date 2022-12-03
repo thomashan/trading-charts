@@ -9,23 +9,24 @@ import io.github.thomashan.tradingchart.io.LineReader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class CsvParserCharBuffer<O extends Ohlc<O, ?>> implements CsvParser<O> {
     private static final int DEFAULT_LINE_LENGTH = 128;
     private static final int DEFAULT_COLUMN_LENGTH = 128;
+    private static final Function<InputStream, LineReader> CREATE_NEW_LINE_READER = inputStream -> new LineReader(inputStream);
     private final CharBuffer lineBuffer;
     private final CharBuffer columnBuffer;
     private int numberOfColumns;
     private CsvHeader csvHeader;
     private BiFunction<Integer, CharSequence, O> ohlcCreator;
+    private Map<InputStream, LineReader> lineReaderCache = new HashMap<>();
 
     public CsvParserCharBuffer() {
         this.lineBuffer = CharBuffer.allocate(DEFAULT_LINE_LENGTH);
@@ -39,8 +40,10 @@ public class CsvParserCharBuffer<O extends Ohlc<O, ?>> implements CsvParser<O> {
 
     @Override
     public void parse(InputStream inputStream, Consumer<O> consumer) {
-        try (LineReader lineReader = new LineReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-            int lineNumber = 0;
+        LineReader lineReader = lineReaderCache.computeIfAbsent(inputStream, CREATE_NEW_LINE_READER);
+
+        int lineNumber = 0;
+        try {
             while (lineReader.readLine(lineBuffer) > 0) {
                 lineBuffer.flip();
                 if (numberOfColumns == 0) {
@@ -80,6 +83,7 @@ public class CsvParserCharBuffer<O extends Ohlc<O, ?>> implements CsvParser<O> {
                 }
                 lineNumber++;
             }
+            lineReader.close();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

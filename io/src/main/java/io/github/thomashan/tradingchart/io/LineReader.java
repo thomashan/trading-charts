@@ -1,6 +1,8 @@
 package io.github.thomashan.tradingchart.io;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.nio.CharBuffer;
 import java.util.Objects;
@@ -9,7 +11,7 @@ public class LineReader extends Reader {
     private static int defaultCharBufferSize = 8192;
 
     // FIXME: thomas - is there a way to reus the Reader pointing to different files??
-    private Reader reader;
+    private ReusableReader reusableReader;
     private CharBuffer charBuffer;
     private int nChars, nextChar;
     private boolean skipLineFeed = false;
@@ -18,40 +20,36 @@ public class LineReader extends Reader {
     private int markedChar = UNMARKED;
     private int readAheadLimit = 0; /* Valid only when markedChar > 0 */
 
-    public LineReader(Reader reader, int bufferSize) {
-        super(reader);
+    public LineReader(InputStream inputStream, int bufferSize) {
+        super(inputStream);
         if (bufferSize <= 0)
             throw new IllegalArgumentException("Buffer size <= 0");
-        this.reader = reader;
+        this.reusableReader = new ReusableReader(inputStream);
         this.charBuffer = CharBuffer.allocate(bufferSize);
         nextChar = nChars = 0;
     }
 
-    public LineReader(Reader reader) {
-        this(reader, defaultCharBufferSize);
+    public LineReader(InputStream inputStream) {
+        this(inputStream, defaultCharBufferSize);
     }
 
     @Override
     public int read(char[] charBuffer, int off, int len) throws IOException {
-        return reader.read(charBuffer, off, len);
+        return reusableReader.read(charBuffer, off, len);
     }
 
     @Override
     public void close() throws IOException {
         synchronized (lock) {
-            if (reader == null)
+            if (reusableReader == null) {
                 return;
-            try {
-                reader.close();
-            } finally {
-                reader = null;
-                charBuffer = null;
             }
+            reusableReader.close();
         }
     }
 
     private void ensureOpen() throws IOException {
-        if (reader == null) {
+        if (reusableReader == null) {
             throw new IOException("Stream closed");
         }
     }
@@ -144,7 +142,7 @@ public class LineReader extends Reader {
 
         int n;
         do {
-            n = reader.read(charBuffer.array(), dst, charBuffer.length() - dst);
+            n = reusableReader.read(charBuffer.array(), dst, charBuffer.length() - dst);
         } while (n == 0);
         if (n > 0) {
             nChars = dst + n;

@@ -23,7 +23,6 @@ import javax.management.MBeanServer;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -32,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ByteWatcherRegressionTestHelper {
     private static String heapDump = "heap_dump";
+    private static String suffix = ".hprof";
     private static Path heapDumpPath = Path.of(heapDump);
-    private static CharBuffer charBuffer = CharBuffer.allocate(50);
     private final ByteWatcherSingleThread bw;
     private final HotSpotDiagnosticMXBean mxBean;
 
@@ -90,8 +89,9 @@ public class ByteWatcherRegressionTestHelper {
             if (!Files.exists(heapDumpPath)) {
                 Files.createDirectories(heapDumpPath);
             }
-            charBuffer.clear();
-            mxBean.dumpHeap(charBuffer.put(heapDump + File.separator + Instant.now() + ".hprof").flip().toString(), true);
+            // FIXME: generating the file name generates garbage
+            String heapDumpFile = heapDump + File.separator + Instant.now() + suffix;
+            mxBean.dumpHeap(heapDumpFile, true);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

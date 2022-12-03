@@ -24,7 +24,7 @@ class LineReaderTest {
         zipInputStream.nextEntry
         this.path = Files.createTempFile(this.class.name, ".csv")
         Files.copy(zipInputStream, path, StandardCopyOption.REPLACE_EXISTING)
-        this.lineReader = new LineReader(new InputStreamReader(Files.newInputStream(path)))
+        this.lineReader = new LineReader(Files.newInputStream(path))
     }
 
     @AfterEach

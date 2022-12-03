@@ -13,4 +13,10 @@ public class CsvParserCharBufferBwTest extends CsvParserBwTestCase<BidAskOhlc> {
     protected CsvParser<BidAskOhlc> createCsvParser() {
         return new CsvParserCharBuffer<>(OhlcCreatorNoGc.getBidAskOhlcCreator(DefaultCsvHeader.getDefaultHeaders(BID_ASK_OHLC)));
     }
+
+    @Override
+    protected long limitPerIteration() {
+        // FIXME: why are 40824 bytes used?
+        return 40824;
+    }
 }

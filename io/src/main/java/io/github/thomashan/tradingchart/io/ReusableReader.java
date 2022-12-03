@@ -1,22 +1,32 @@
 package io.github.thomashan.tradingchart.io;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 
 public class ReusableReader extends Reader {
-    private final Reader reader;
+    private InputStream inputStream;
+    private final InputStreamReader inputStreamReader;
 
-    public ReusableReader(Reader reader) {
-        this.reader = reader;
+    public ReusableReader(InputStream inputStream) {
+        super(inputStream);
+        this.inputStream = inputStream;
+        this.inputStreamReader = new InputStreamReader(inputStream);
     }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
-        return reader.read(cbuf, off, len);
+        return inputStreamReader.read(cbuf, off, len);
     }
 
     @Override
     public void close() throws IOException {
-        reader.reset();
+        if (inputStream instanceof FileInputStream fileInputStream) {
+            fileInputStream.getChannel().position(0);
+            return;
+        }
+        if (inputStream instanceof ReusableInputStream reusableInputStream) {
+            reusableInputStream.close();
+            return;
+        }
+        inputStreamReader.close();
     }
 }
