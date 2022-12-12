@@ -1,10 +1,10 @@
 package io.github.thomashan.tradingchart.persistence;
 
-import java.time.Instant;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
 @SuppressWarnings("try")
 public interface BytesIn extends AutoCloseable {
-    Instant readInstant();
+    MutableInstant readInstant();
 
     int readInt();
 

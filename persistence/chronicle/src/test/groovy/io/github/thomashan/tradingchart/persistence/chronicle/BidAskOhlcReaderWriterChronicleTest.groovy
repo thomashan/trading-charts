@@ -2,10 +2,9 @@ package io.github.thomashan.tradingchart.persistence.chronicle
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc
 import io.github.thomashan.tradingchart.domain.price.BidAsk
+import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
-import java.time.Instant
 
 class BidAskOhlcReaderWriterChronicleTest implements ObjectReaderWriterChronicleTestCase<BidAskOhlc> {
     @BeforeEach
@@ -27,10 +26,10 @@ class BidAskOhlcReaderWriterChronicleTest implements ObjectReaderWriterChronicle
     @Test
     void testWriteAndRead() {
         List<BidAskOhlc> bidAskOhlcs = [
-            BidAskOhlc.of(Instant.now(), BidAsk.of(1, 1), BidAsk.of(1, 1), BidAsk.of(1, 1), BidAsk.of(1, 1), 1),
-            BidAskOhlc.of(Instant.now(), BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), 1.1),
-            BidAskOhlc.of(Instant.now(), BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), 1.2),
-            BidAskOhlc.of(Instant.now(), BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), 1.3),
+            BidAskOhlc.of(MutableInstant.EPOCH, BidAsk.of(1, 1), BidAsk.of(1, 1), BidAsk.of(1, 1), BidAsk.of(1, 1), 1),
+            BidAskOhlc.of(MutableInstant.EPOCH, BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), BidAsk.of(1.1, 1.1), 1.1),
+            BidAskOhlc.of(MutableInstant.EPOCH, BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), BidAsk.of(1.2, 1.2), 1.2),
+            BidAskOhlc.of(MutableInstant.EPOCH, BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), BidAsk.of(1.3, 1.3), 1.3),
         ]
 
         objectWriter.write(bidAskOhlcs[0])

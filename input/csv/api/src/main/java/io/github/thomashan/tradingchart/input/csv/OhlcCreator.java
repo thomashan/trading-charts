@@ -4,8 +4,8 @@ import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
 import io.github.thomashan.tradingchart.lang.DoubleParser;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.function.BiFunction;
@@ -48,8 +48,7 @@ public class OhlcCreator {
             BidAskOhlc bidAskOhlc = THREAD_LOCAL_BID_ASK_OHLC.get();
             String columnName = csvHeader.getIndexToColumnName().get(columnNumber);
             switch (columnName) {
-                case "dateTime" -> bidAskOhlc.dateTime = DATE_TIME_FORMATTER.parse(value, Instant::from);
-                // FIXME: we need to be able to parse Double.parse(CharSequence) instead of Double.parse(String)
+                case "dateTime" -> bidAskOhlc.dateTime = DATE_TIME_FORMATTER.parse(value, MutableInstant::from);
                 case "openBid" -> bidAskOhlc.open.bid = DoubleParser.parseApprox(value);
                 case "openAsk" -> bidAskOhlc.open.ask = DoubleParser.parseApprox(value);
                 case "highBid" -> bidAskOhlc.high.bid = DoubleParser.parseApprox(value);
@@ -69,8 +68,7 @@ public class OhlcCreator {
             MidOhlc midOhlc = THREAD_LOCAL_MID_OHLC.get();
             String columnName = csvHeader.getIndexToColumnName().get(columnNumber);
             switch (columnName) {
-                case "dateTime" -> midOhlc.dateTime = DATE_TIME_FORMATTER.parse(value, Instant::from);
-                // FIXME: we need to be able to parse Double.parse(CharSequence) instead of Double.parse(String)
+                case "dateTime" -> midOhlc.dateTime = DATE_TIME_FORMATTER.parse(value, MutableInstant::from);
                 case "open" -> midOhlc.open.value = DoubleParser.parseApprox(value);
                 case "high" -> midOhlc.high.value = DoubleParser.parseApprox(value);
                 case "low" -> midOhlc.low.value = DoubleParser.parseApprox(value);
@@ -83,9 +81,7 @@ public class OhlcCreator {
 
     public static final BiFunction<String[], CsvHeader, BidAskOhlc> CREATE_BID_ASK = (row, csvHeader) -> {
         BidAskOhlc bidAskOhlc = THREAD_LOCAL_BID_ASK_OHLC.get();
-        // FIXME: we should use MutableInstant instead of returning a new instance of Instant
-        bidAskOhlc.dateTime = DATE_TIME_FORMATTER.parse(row[csvHeader.getColumnNameToIndex().get("dateTime")], Instant::from);
-        // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
+        bidAskOhlc.dateTime = DATE_TIME_FORMATTER.parse(row[csvHeader.getColumnNameToIndex().get("dateTime")], MutableInstant::from);
         bidAskOhlc.open.bid = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("openBid")]);
         bidAskOhlc.open.ask = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("openAsk")]);
         bidAskOhlc.high.bid = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("highBid")]);
@@ -101,9 +97,7 @@ public class OhlcCreator {
 
     public static final BiFunction<String[], CsvHeader, MidOhlc> CREATE_MID = (row, csvHeader) -> {
         MidOhlc midOhlc = THREAD_LOCAL_MID_OHLC.get();
-        // FIXME: we should use MutableInstant instead of returning a new instance of Instant
-        midOhlc.dateTime = DATE_TIME_FORMATTER.parse(row[csvHeader.getColumnNameToIndex().get("dateTime")], Instant::from);
-        // FIXME: parseDouble should not produce any garbage but the Double.parseDouble does produce garbage
+        midOhlc.dateTime = DATE_TIME_FORMATTER.parse(row[csvHeader.getColumnNameToIndex().get("dateTime")], MutableInstant::from);
         midOhlc.open.value = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("open")]);
         midOhlc.high.value = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("high")]);
         midOhlc.low.value = DoubleParser.parseApprox(row[csvHeader.getColumnNameToIndex().get("low")]);

@@ -1,6 +1,7 @@
 package io.github.thomashan.tradingchart.input.csv
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc
+import io.github.thomashan.tradingchart.time.MutableInstant
 import io.github.thomashan.tradingchart.util.function.Consumers
 import org.junit.jupiter.api.Test
 
@@ -57,7 +58,7 @@ trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvPa
 
     private void verifyBidAskOhlc(List<BidAskOhlc> bidAskOhlcs) {
         assert 3 == bidAskOhlcs.size()
-        assert Instant.parse("2019-08-13T06:18:15Z") == bidAskOhlcs[0].dateTime
+        assert MutableInstant.parse("2019-08-13T06:18:15Z") == bidAskOhlcs[0].dateTime
         assert 1.11904 == bidAskOhlcs[0].open.ask
         assert 1.11892 == bidAskOhlcs[0].open.bid
         assert 1.11907 == bidAskOhlcs[0].high.ask

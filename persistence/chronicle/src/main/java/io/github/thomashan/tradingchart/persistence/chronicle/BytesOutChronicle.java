@@ -1,6 +1,7 @@
 package io.github.thomashan.tradingchart.persistence.chronicle;
 
 import io.github.thomashan.tradingchart.persistence.BytesOut;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.queue.ExcerptAppender;
 
@@ -16,7 +17,7 @@ public class BytesOutChronicle implements BytesOut<BytesOutChronicle> {
     }
 
     @Override
-    public BytesOutChronicle writeInstant(Instant value) {
+    public BytesOutChronicle writeInstant(MutableInstant value) {
         bytesOut.clear();
         bytesOut.writeLong(value.getEpochSecond());
         bytesOut.writeInt(value.getNano());

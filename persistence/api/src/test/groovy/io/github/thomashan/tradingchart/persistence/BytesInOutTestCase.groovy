@@ -1,10 +1,8 @@
 package io.github.thomashan.tradingchart.persistence
 
-
+import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
-import java.time.Instant
 
 trait BytesInOutTestCase<BO extends BytesOut, BI extends BytesIn> {
     private BI bytesIn
@@ -22,9 +20,9 @@ trait BytesInOutTestCase<BO extends BytesOut, BI extends BytesIn> {
 
     @Test
     void testWriteReadInstant() {
-        Instant value = Instant.now()
+        MutableInstant value = MutableInstant.EPOCH
         bytesOut.writeInstant(value)
-        Instant read = bytesIn.readInstant()
+        MutableInstant read = bytesIn.readInstant()
         assert read == value
     }
 

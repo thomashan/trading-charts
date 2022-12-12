@@ -1,9 +1,9 @@
 package io.github.thomashan.tradingchart.persistence;
 
-import java.time.Instant;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
 public interface BytesOut<BO extends BytesOut<?>> extends AutoCloseable {
-    BO writeInstant(Instant value);
+    BO writeInstant(MutableInstant value);
 
     BO writeInt(int value);
 

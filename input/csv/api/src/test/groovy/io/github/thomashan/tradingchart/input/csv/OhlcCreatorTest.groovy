@@ -2,9 +2,8 @@ package io.github.thomashan.tradingchart.input.csv
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc
+import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.Test
-
-import java.time.Instant
 
 class OhlcCreatorTest {
     @Test
@@ -19,7 +18,7 @@ class OhlcCreatorTest {
 
         for (List<String> row : inputs) {
             BidAskOhlc bidAskOhlc = createBidAskOhlc(row)
-            assert Instant.parse("2019-08-13T06:20:00.00Z") == bidAskOhlc.dateTime
+            assert MutableInstant.parse("2019-08-13T06:20:00.00Z") == bidAskOhlc.dateTime
             assert 1 == bidAskOhlc.open.bid
             assert 1 == bidAskOhlc.open.ask
             assert 1 == bidAskOhlc.high.bid
@@ -44,7 +43,7 @@ class OhlcCreatorTest {
 
         for (List<String> row : inputs) {
             MidOhlc midOhlc = createMidOhlc(row)
-            assert Instant.parse("2019-08-13T06:20:00.00Z") == midOhlc.dateTime
+            assert MutableInstant.parse("2019-08-13T06:20:00.00Z") == midOhlc.dateTime
             assert 1 == midOhlc.open.value
             assert 1 == midOhlc.high.value
             assert 1 == midOhlc.low.value
