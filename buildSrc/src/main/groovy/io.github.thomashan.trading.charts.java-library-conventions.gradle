@@ -12,7 +12,6 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id "java-library"
     id "org.gradlex.extra-java-module-info"
-    id "java-test-fixtures"
     id "idea"
 }
 
@@ -48,7 +47,7 @@ if (benchmarksExist) {
     // only run add the jmh task and run the tests if META-INF/BenchmarkList is present
     // run jmh with `./gradlew -Dorg.gradle.parallel=false jmh --args="-f 1"` or else all the benchmarks will run in parallel
     task jmh(type: JavaExec, dependsOn: jmhClasses) {
-        main = "org.openjdk.jmh.Main"
+        mainClass = "org.openjdk.jmh.Main"
         classpath = sourceSets.jmh.runtimeClasspath
     }
 }

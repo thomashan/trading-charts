@@ -1,7 +1,7 @@
 package io.github.thomashan.tradingchart.domain.ohlc;
 
+import io.github.thomashan.tradingchart.Copyable;
 import io.github.thomashan.tradingchart.domain.AggregateRoot;
-import io.github.thomashan.tradingchart.domain.Copyable;
 import io.github.thomashan.tradingchart.domain.price.Price;
 import io.github.thomashan.tradingchart.time.MutableInstant;
 
@@ -51,5 +51,15 @@ public abstract class Ohlc<O extends Ohlc<?, P>, P extends Price<P>> implements 
                 .append(close.toString() + ", ")
                 .append(volume)
                 .toString();
+    }
+
+//    @Override
+    protected void copy(O input) {
+        dateTime.copyFrom(input.dateTime);
+        open.copyFrom(input.open);
+        high.copyFrom(input.high);
+        low.copyFrom(input.low);
+        close.copyFrom(input.close);
+        volume = input.volume;
     }
 }

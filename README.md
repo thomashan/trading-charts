@@ -9,7 +9,7 @@
 JavaFX implementation of trading charts
 
 ## Prerequisites
-* java 17+
+* java 17+ (use the latest version with `sdk env install; sdk env`)
 
 ## Design consideration
 * Keep to the basics and keep it simple!

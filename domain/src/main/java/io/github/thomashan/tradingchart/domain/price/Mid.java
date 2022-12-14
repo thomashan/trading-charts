@@ -25,12 +25,10 @@ public class Mid implements Price<Mid> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Mid)) {
-            return false;
+        if (obj instanceof Mid mid) {
+            return value == mid.value;
         }
-        Mid mid = (Mid) obj;
-
-        return value == mid.value;
+        return false;
     }
 
     @Override
@@ -39,7 +37,13 @@ public class Mid implements Price<Mid> {
     }
 
     @Override
-    public Mid copy() {
+    public Mid newInstance() {
         return of(value);
+    }
+
+    @Override
+    public Mid copyFrom(Mid input) {
+        value = input.value;
+        return this;
     }
 }

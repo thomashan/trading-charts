@@ -11,7 +11,7 @@ import java.time.Instant;
 public class BytesInChronicle implements BytesIn {
     private final ExcerptTailer excerptTailer;
     private final Bytes<ByteBuffer> bytesIn = Bytes.elasticByteBuffer();
-    private final MutableInstant instant = MutableInstant.EPOCH;
+    private final MutableInstant instant = MutableInstant.EPOCH.newInstance();
 
     public BytesInChronicle(ExcerptTailer excerptTailer) {
         this.excerptTailer = excerptTailer;

@@ -1,0 +1,11 @@
+plugins {
+    id "io.github.thomashan.trading.charts.java-library-conventions"
+    id "io.github.thomashan.trading.charts.javafx-conventions"
+}
+
+dependencies {
+    implementation project(":domain")
+    implementation project(":util")
+    bytewatcherImplementation project(path: ":bytewatcher")
+}
+

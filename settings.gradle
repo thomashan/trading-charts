@@ -19,6 +19,7 @@ include(
     "io",
     "persistence:api",
     "persistence:chronicle",
+    "ui:javafx:controls",
     "util",
     "app",
 )

@@ -6,18 +6,11 @@ import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
 import io.github.thomashan.tradingchart.lang.DoubleParser;
 import io.github.thomashan.tradingchart.time.MutableInstant;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.function.BiFunction;
 
+import static io.github.thomashan.tradingchart.time.format.DateTimeFormatters.DATE_TIME_FORMATTER;
+
 public class OhlcCreator {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .appendLiteral('T')
-            .append(DateTimeFormatter.ISO_LOCAL_TIME)
-            .appendZoneOrOffsetId()
-            .toFormatter();
     private static final ThreadLocal<BidAskOhlc> THREAD_LOCAL_BID_ASK_OHLC = ThreadLocal.withInitial(() -> BidAskOhlc.emptyFull());
     private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
 

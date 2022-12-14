@@ -10,7 +10,7 @@ import java.util.Objects;
 public class LineReader extends Reader {
     private static int defaultCharBufferSize = 8192;
 
-    // FIXME: thomas - is there a way to reus the Reader pointing to different files??
+    // FIXME: thomas - is there a way to reuse the Reader pointing to different files??
     private ReusableReader reusableReader;
     private CharBuffer charBuffer;
     private int nChars, nextChar;

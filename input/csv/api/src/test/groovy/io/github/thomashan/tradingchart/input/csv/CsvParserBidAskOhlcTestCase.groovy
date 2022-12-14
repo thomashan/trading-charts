@@ -5,7 +5,6 @@ import io.github.thomashan.tradingchart.time.MutableInstant
 import io.github.thomashan.tradingchart.util.function.Consumers
 import org.junit.jupiter.api.Test
 
-import java.time.Instant
 import java.util.zip.ZipInputStream
 
 trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvParserTestCase<BidAskOhlc, C> {
@@ -51,7 +50,7 @@ trait CsvParserBidAskOhlcTestCase<C extends CsvParser<BidAskOhlc>> extends CsvPa
         InputStream inputStream = createInputStream(input)
         List<BidAskOhlc> ohlcs = []
         csvParser.parse(inputStream, (BidAskOhlc ohlc) -> {
-            ohlcs.add(ohlc.copy())
+            ohlcs.add(ohlc.newInstance())
         })
         return ohlcs
     }

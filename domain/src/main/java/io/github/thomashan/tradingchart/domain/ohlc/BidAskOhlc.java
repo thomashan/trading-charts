@@ -30,7 +30,13 @@ public class BidAskOhlc extends Ohlc<BidAskOhlc, BidAsk> {
     }
 
     @Override
-    public BidAskOhlc copy() {
-        return of(dateTime, open.copy(), high.copy(), low.copy(), close.copy(), volume);
+    public BidAskOhlc newInstance() {
+        return of(dateTime, open.newInstance(), high.newInstance(), low.newInstance(), close.newInstance(), volume);
+    }
+
+    @Override
+    public BidAskOhlc copyFrom(BidAskOhlc input) {
+        copy(input);
+        return this;
     }
 }

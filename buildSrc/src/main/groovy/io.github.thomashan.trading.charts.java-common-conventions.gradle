@@ -32,6 +32,7 @@ ext {
     jmhVersion = "1.35"
     chronicleQueueVersion = "5.22.18"
     univocityVersion = "2.9.1"
+    javafxVersion = "19.0.2.1"
 }
 
 // start: configure bytewatcher
