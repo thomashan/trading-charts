@@ -3,10 +3,9 @@ package io.github.thomashan.tradingchart.domain.ohlc;
 import io.github.thomashan.tradingchart.ByteWatcherRegressionTestHelper;
 import io.github.thomashan.tradingchart.domain.price.BidAsk;
 import io.github.thomashan.tradingchart.domain.price.Mid;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.Instant;
 
 public class OhlcJavaBwTest {
     private final long warmUpIterations = 1000;
@@ -32,7 +31,7 @@ public class OhlcJavaBwTest {
     void testNew_BidAskOhlc_Date() {
         Runnable runnable = () -> {
             BidAskOhlc ohlc = BidAskOhlc.emptyMinimal(); // 48 bytes
-            ohlc.dateTime = Instant.now();               // 24 bytes
+            ohlc.dateTime = MutableInstant.EPOCH;        // 24 bytes
         };
 
         byteWatcherRegressionTestHelper
@@ -59,7 +58,8 @@ public class OhlcJavaBwTest {
     void testNew_BidAskOhlc_Full() {
         Runnable runnable = () -> {
             BidAskOhlc ohlc = BidAskOhlc.emptyMinimal(); // 48 bytes
-            ohlc.dateTime = Instant.now();               // 24 bytes
+            ohlc.dateTime = MutableInstant.EPOCH;
+            ;       // 24 bytes
             ohlc.open = BidAsk.of(1, 1.1);               // 104 bytes
             ohlc.high = BidAsk.of(1, 1.1);               // 104 bytes
             ohlc.low = BidAsk.of(1, 1.1);                // 104 bytes
@@ -87,7 +87,7 @@ public class OhlcJavaBwTest {
     void testNew_MidOhlc_Date() {
         Runnable runnable = () -> {
             MidOhlc ohlc = MidOhlc.emptyMinimal(); // 48 bytes
-            ohlc.dateTime = Instant.now();         // 24 bytes
+            ohlc.dateTime = MutableInstant.EPOCH;  // 24 bytes
         };
 
         byteWatcherRegressionTestHelper
@@ -114,7 +114,7 @@ public class OhlcJavaBwTest {
     void testNew_MidOhlc_Full() {
         Runnable runnable = () -> {
             MidOhlc ohlc = MidOhlc.emptyMinimal(); // 48 bytes
-            ohlc.dateTime = Instant.now();         // 24 bytes
+            ohlc.dateTime = MutableInstant.EPOCH;  // 24 bytes
             ohlc.open = Mid.of(1);                 // 72 bytes
             ohlc.high = Mid.of(1);                 // 72 bytes
             ohlc.low = Mid.of(1);                  // 72 bytes

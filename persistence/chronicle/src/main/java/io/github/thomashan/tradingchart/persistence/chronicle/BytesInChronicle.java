@@ -1,6 +1,7 @@
 package io.github.thomashan.tradingchart.persistence.chronicle;
 
 import io.github.thomashan.tradingchart.persistence.BytesIn;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.queue.ExcerptTailer;
 
@@ -10,6 +11,7 @@ import java.time.Instant;
 public class BytesInChronicle implements BytesIn {
     private final ExcerptTailer excerptTailer;
     private final Bytes<ByteBuffer> bytesIn = Bytes.elasticByteBuffer();
+    private final MutableInstant instant = MutableInstant.EPOCH;
 
     public BytesInChronicle(ExcerptTailer excerptTailer) {
         this.excerptTailer = excerptTailer;
@@ -20,14 +22,12 @@ public class BytesInChronicle implements BytesIn {
         excerptTailer.readBytes(bytesIn);
     }
 
-    // FIXME: this is going to potentially leave a lot of created objects therefore garbage lying around,
-    // FIXME: should we just convert everything to epoch?
     @Override
-    public Instant readInstant() {
+    public MutableInstant readInstant() {
         initialiseBytesIn();
         long epochSeconds = bytesIn.readLong();
         int nano = bytesIn.readInt();
-        return Instant.ofEpochSecond(epochSeconds, nano);
+        return instant.ofEpochSecondMutable(epochSeconds, nano);
     }
 
     @Override

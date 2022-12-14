@@ -1,15 +1,14 @@
 package io.github.thomashan.tradingchart.domain.ohlc;
 
 import io.github.thomashan.tradingchart.domain.price.BidAsk;
-
-import java.time.Instant;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
 public class BidAskOhlc extends Ohlc<BidAskOhlc, BidAsk> {
     public BidAskOhlc() {
         // empty initaliser for byte watcher tests
     }
 
-    private BidAskOhlc(Instant dateTime, BidAsk open, BidAsk high, BidAsk low, BidAsk close, double volume) {
+    private BidAskOhlc(MutableInstant dateTime, BidAsk open, BidAsk high, BidAsk low, BidAsk close, double volume) {
         this.dateTime = dateTime;
         this.open = open;
         this.high = high;
@@ -23,10 +22,10 @@ public class BidAskOhlc extends Ohlc<BidAskOhlc, BidAsk> {
     }
 
     public static BidAskOhlc emptyFull() {
-        return of(Instant.EPOCH, BidAsk.empty(), BidAsk.empty(), BidAsk.empty(), BidAsk.empty(), 0);
+        return of(MutableInstant.EPOCH, BidAsk.empty(), BidAsk.empty(), BidAsk.empty(), BidAsk.empty(), 0);
     }
 
-    public static BidAskOhlc of(Instant dateTime, BidAsk open, BidAsk high, BidAsk low, BidAsk close, double volume) {
+    public static BidAskOhlc of(MutableInstant dateTime, BidAsk open, BidAsk high, BidAsk low, BidAsk close, double volume) {
         return new BidAskOhlc(dateTime, open, high, low, close, volume);
     }
 

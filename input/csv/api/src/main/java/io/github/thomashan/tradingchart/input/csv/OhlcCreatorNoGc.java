@@ -3,14 +3,14 @@ package io.github.thomashan.tradingchart.input.csv;
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc;
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
-import java.time.Instant;
 import java.util.function.BiFunction;
 
 public class OhlcCreatorNoGc {
     private static final ThreadLocal<BidAskOhlc> THREAD_LOCAL_BID_ASK_OHLC = ThreadLocal.withInitial(() -> BidAskOhlc.emptyFull());
     private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
-    private static final Instant EPOCH = Instant.EPOCH;
+    private static final MutableInstant EPOCH = MutableInstant.EPOCH;
 
     private OhlcCreatorNoGc() {
         throw new AssertionError("not instantiable");

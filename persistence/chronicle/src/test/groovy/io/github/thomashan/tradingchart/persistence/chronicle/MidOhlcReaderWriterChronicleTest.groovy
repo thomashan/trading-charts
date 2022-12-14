@@ -1,12 +1,10 @@
 package io.github.thomashan.tradingchart.persistence.chronicle
 
-
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc
 import io.github.thomashan.tradingchart.domain.price.Mid
+import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
-import java.time.Instant
 
 class MidOhlcReaderWriterChronicleTest implements ObjectReaderWriterChronicleTestCase<MidOhlc> {
     @BeforeEach
@@ -28,10 +26,10 @@ class MidOhlcReaderWriterChronicleTest implements ObjectReaderWriterChronicleTes
     @Test
     void testWriteAndRead() {
         List<MidOhlc> midOhlcs = [
-            MidOhlc.of(Instant.now(), Mid.of(1), Mid.of(1), Mid.of(1), Mid.of(1), 1),
-            MidOhlc.of(Instant.now(), Mid.of(1.1), Mid.of(1.1), Mid.of(1.1), Mid.of(1.1), 1.1),
-            MidOhlc.of(Instant.now(), Mid.of(1.2), Mid.of(1.2), Mid.of(1.2), Mid.of(1.2), 1.2),
-            MidOhlc.of(Instant.now(), Mid.of(1.3), Mid.of(1.3), Mid.of(1.3), Mid.of(1.3), 1.3),
+            MidOhlc.of(MutableInstant.EPOCH, Mid.of(1), Mid.of(1), Mid.of(1), Mid.of(1), 1),
+            MidOhlc.of(MutableInstant.EPOCH, Mid.of(1.1), Mid.of(1.1), Mid.of(1.1), Mid.of(1.1), 1.1),
+            MidOhlc.of(MutableInstant.EPOCH, Mid.of(1.2), Mid.of(1.2), Mid.of(1.2), Mid.of(1.2), 1.2),
+            MidOhlc.of(MutableInstant.EPOCH, Mid.of(1.3), Mid.of(1.3), Mid.of(1.3), Mid.of(1.3), 1.3),
         ]
 
         objectWriter.write(midOhlcs[0])

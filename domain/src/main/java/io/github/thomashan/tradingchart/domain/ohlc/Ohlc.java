@@ -3,14 +3,13 @@ package io.github.thomashan.tradingchart.domain.ohlc;
 import io.github.thomashan.tradingchart.domain.AggregateRoot;
 import io.github.thomashan.tradingchart.domain.Copyable;
 import io.github.thomashan.tradingchart.domain.price.Price;
+import io.github.thomashan.tradingchart.time.MutableInstant;
 
-import java.time.Instant;
 import java.util.Objects;
 
 @SuppressWarnings({"missing-explicit-ctor", "exports"})
 public abstract class Ohlc<O extends Ohlc<?, P>, P extends Price<P>> implements AggregateRoot, Copyable<O> {
-    // FIXME: using Instant is not garbage free. Possible make MutableInstant which is garbage free
-    public Instant dateTime;
+    public MutableInstant dateTime;
     public P open;
     public P high;
     public P low;
@@ -33,11 +32,11 @@ public abstract class Ohlc<O extends Ohlc<?, P>, P extends Price<P>> implements 
         }
         Ohlc<O, P> ohlc = (Ohlc<O, P>) obj;
 
-        return Objects.deepEquals(dateTime, ohlc.dateTime) &&
-                Objects.deepEquals(open, ohlc.open) &&
-                Objects.deepEquals(high, ohlc.high) &&
-                Objects.deepEquals(low, ohlc.low) &&
-                Objects.deepEquals(close, ohlc.close) &&
+        return Objects.equals(dateTime, ohlc.dateTime) &&
+                Objects.equals(open, ohlc.open) &&
+                Objects.equals(high, ohlc.high) &&
+                Objects.equals(low, ohlc.low) &&
+                Objects.equals(close, ohlc.close) &&
                 volume == ohlc.volume;
     }
 
