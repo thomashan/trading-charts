@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.time;
 
+import io.github.thomashan.tradingchart.Copyable;
+
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
@@ -19,7 +22,7 @@ import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
 import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<MutableInstant>, Serializable {
+public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<MutableInstant>, Serializable, Copyable<MutableInstant> {
     @java.io.Serial
     private static final long serialVersionUID = 1;
     /**
@@ -51,7 +54,7 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch mutable instant.
      */
-    public static final MutableInstant EPOCH = new MutableInstant(0, 0);
+    public static final MutableInstant EPOCH = MutableInstant.ofEpochSecond(0, 0, false);
     /**
      * The minimum supported {@code MutableInstant}, '-1000000000-01-01T00:00Z'.
      * This could be used by an application as a "far past" mutable instant.
@@ -62,7 +65,7 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
      * The value is also chosen such that the value of the year fits in
      * an {@code int}.
      */
-    public static final MutableInstant MIN = MutableInstant.ofEpochSecond(MIN_SECOND, 0);
+    public static final MutableInstant MIN = MutableInstant.ofEpochSecond(MIN_SECOND, 0, false);
     /**
      * The maximum supported {@code MutableInstant}, '1000000000-12-31T23:59:59.999999999Z'.
      * This could be used by an application as a "far future" mutable instant.
@@ -73,13 +76,21 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
      * The value is also chosen such that the value of the year fits in
      * an {@code int}.
      */
-    public static final MutableInstant MAX = MutableInstant.ofEpochSecond(MAX_SECOND, 999_999_999);
+    public static final MutableInstant MAX = MutableInstant.ofEpochSecond(MAX_SECOND, 999_999_999, false);
+    private final boolean mutable;
     private long seconds;
     private int nanos;
 
-    private MutableInstant(long epochSecond, int nanos) {
+
+    // there are some MutableInstant which should not be mutable such as EPOCH
+    private MutableInstant(long epochSecond, int nanos, boolean mutable) {
         this.seconds = epochSecond;
         this.nanos = nanos;
+        this.mutable = mutable;
+    }
+
+    private MutableInstant(long epochSecond, int nanos) {
+        this(epochSecond, nanos, true);
     }
 
     @Override
@@ -119,10 +130,12 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
+        throwIfImmutable();
         return field.adjustInto(this, newValue);
     }
 
     private MutableInstant adjust(long seconds, int nanoOfSecond) {
+        throwIfImmutable();
         if ((seconds | nanoOfSecond) == 0) {
             return EPOCH;
         }
@@ -132,6 +145,12 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
         this.seconds = seconds;
         this.nanos = nanoOfSecond;
         return this;
+    }
+
+    private void throwIfImmutable() {
+        if (!mutable) {
+            throw new DateTimeException("This instance is not mutable");
+        }
     }
 
     @Override
@@ -157,6 +176,7 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
+        throwIfImmutable();
         return unit.addTo(this, amountToAdd);
     }
 
@@ -236,6 +256,27 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
     @Override
     public String toString() {
         return DateTimeFormatter.ISO_INSTANT.format(this);
+    }
+
+    @Override
+    public MutableInstant newInstance() {
+        return ofEpochSecond(seconds, nanos, true);
+    }
+
+    @Override
+    public MutableInstant copyFrom(MutableInstant input) {
+        seconds = input.seconds;
+        nanos = input.nanos;
+        return this;
+    }
+
+    @Override
+    public MutableInstant plus(TemporalAmount amountToAdd) {
+        return (MutableInstant) amountToAdd.addTo(this);
+    }
+
+    public MutableInstant toImmutable() {
+        return ofEpochSecond(seconds, nanos, false);
     }
 
     public long getEpochSecond() {
@@ -327,10 +368,10 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
      * @throws DateTimeException   if the mutable instant exceeds the maximum or minimum mutable instant
      * @throws ArithmeticException if numeric overflow occurs
      */
-    private static MutableInstant ofEpochSecond(long epochSecond, long nanoAdjustment) {
+    private static MutableInstant ofEpochSecond(long epochSecond, long nanoAdjustment, boolean mutable) {
         long secs = Math.addExact(epochSecond, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
         int nos = (int) Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
-        return new MutableInstant(secs, nos);
+        return new MutableInstant(secs, nos, mutable);
     }
 
     /**
@@ -354,6 +395,7 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
      * @throws ArithmeticException if numeric overflow occurs
      */
     public MutableInstant ofEpochSecondMutable(long epochSecond, long nanoAdjustment) {
+        throwIfImmutable();
         long secs = Math.addExact(epochSecond, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
         int nos = (int) Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         this.seconds = secs;
@@ -362,8 +404,8 @@ public class MutableInstant implements Temporal, TemporalAdjuster, Comparable<Mu
     }
 
     public static MutableInstant from(TemporalAccessor temporal) {
-        if (temporal instanceof MutableInstant) {
-            return (MutableInstant) temporal;
+        if (temporal instanceof MutableInstant mutableInstant) {
+            return mutableInstant;
         }
         Objects.requireNonNull(temporal, "temporal");
         try {

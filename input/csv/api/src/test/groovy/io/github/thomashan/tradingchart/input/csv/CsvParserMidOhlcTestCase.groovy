@@ -5,8 +5,6 @@ import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc
 import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.Test
 
-import java.time.Instant
-
 trait CsvParserMidOhlcTestCase<C extends CsvParser<MidOhlc>> extends CsvParserTestCase<MidOhlc, C> {
     @Test
     void testParseMidWithHeader_InputStream() {
@@ -34,7 +32,7 @@ trait CsvParserMidOhlcTestCase<C extends CsvParser<MidOhlc>> extends CsvParserTe
         InputStream inputStream = createInputStream(input)
         List<MidOhlc> ohlcs = []
         csvParser.parse(inputStream, (MidOhlc ohlc) -> {
-            ohlcs.add(ohlc.copy())
+            ohlcs.add(ohlc.newInstance())
         })
         return ohlcs
     }

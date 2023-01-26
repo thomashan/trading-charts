@@ -30,7 +30,13 @@ public class MidOhlc extends Ohlc<MidOhlc, Mid> {
     }
 
     @Override
-    public MidOhlc copy() {
-        return of(dateTime, open.copy(), high.copy(), low.copy(), close.copy(), volume);
+    public MidOhlc newInstance() {
+        return of(dateTime, open.newInstance(), high.newInstance(), low.newInstance(), close.newInstance(), volume);
+    }
+
+    @Override
+    public MidOhlc copyFrom(MidOhlc input) {
+        copy(input);
+        return this;
     }
 }

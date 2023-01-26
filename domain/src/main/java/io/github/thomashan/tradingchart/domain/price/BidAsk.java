@@ -29,12 +29,10 @@ public class BidAsk implements Price<BidAsk> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BidAsk)) {
-            return false;
+        if (obj instanceof BidAsk bidAsk) {
+            return bid == bidAsk.bid && ask == bidAsk.ask;
         }
-        BidAsk bidAsk = (BidAsk) obj;
-
-        return bid == bidAsk.bid && ask == bidAsk.ask;
+        return false;
     }
 
     @Override
@@ -46,7 +44,14 @@ public class BidAsk implements Price<BidAsk> {
     }
 
     @Override
-    public BidAsk copy() {
+    public BidAsk newInstance() {
         return of(bid, ask);
+    }
+
+    @Override
+    public BidAsk copyFrom(BidAsk input) {
+        this.bid = input.bid;
+        this.ask = input.ask;
+        return this;
     }
 }
