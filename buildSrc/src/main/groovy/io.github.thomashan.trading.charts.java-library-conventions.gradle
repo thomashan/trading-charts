@@ -11,60 +11,7 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     id "java-library"
-    id "org.gradlex.extra-java-module-info"
     id "idea"
-}
-
-// start: configure jmh
-sourceSets {
-    jmh {
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-        java { srcDirs = ["src/jmh/java"] }
-        groovy { srcDirs = ["src/jmh/groovy"] }
-    }
-}
-
-configurations {
-    jmhApi.extendsFrom testApi
-    jmhImplementation.extendsFrom testImplementation
-    jmhRuntimeOnly.extendsFrom testRuntimeOnly
-    jmhRuntimeClasspath.extendsFrom testRuntimeClasspath
-    jmhCompileClasspath.extendsFrom testCompileClasspath
-    jmhCompileOnly.extendsFrom testCompileOnly
-    jmhAnnotationProcessor.extendsFrom testAnnotationProcessor
-}
-
-boolean benchmarksExist = sourceSets.jmh.output.classesDirs.files.stream()
-    .map(File::toPath)
-    .map(path -> path.resolve("META-INF/BenchmarkList"))
-    .filter(Files::exists)
-    .filter(path -> !path.readLines("UTF-8").isEmpty())
-    .findAny()
-    .isPresent()
-
-if (benchmarksExist) {
-    // only run add the jmh task and run the tests if META-INF/BenchmarkList is present
-    // run jmh with `./gradlew -Dorg.gradle.parallel=false jmh --args="-f 1"` or else all the benchmarks will run in parallel
-    task jmh(type: JavaExec, dependsOn: jmhClasses) {
-        mainClass = "org.openjdk.jmh.Main"
-        classpath = sourceSets.jmh.runtimeClasspath
-    }
-}
-
-classes.finalizedBy(jmhClasses)
-// end: configure jmh
-
-dependencies {
-    jmhImplementation "org.openjdk.jmh:jmh-core:${jmhVersion}"
-    jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
-}
-
-extraJavaModuleInfo {
-    automaticModule("org.openjdk.jmh:jmh-core", "jmh.core")
-    automaticModule("org.openjdk.jmh:jmh-generator-annprocess", "jmh.generator.annprocess")
-    automaticModule("net.sf.jopt-simple:jopt-simple", "jopt.simple")
-    automaticModule("org.apache.commons:commons-math3", "org.apache.commons.maths3")
 }
 
 // start: set up idea to include testFixture dependencies

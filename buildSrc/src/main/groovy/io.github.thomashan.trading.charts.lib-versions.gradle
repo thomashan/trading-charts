@@ -1,0 +1,8 @@
+ext {
+    groovyVersion = "4.0.4"
+    junitVersion = "5.8.2"
+    jmhVersion = "1.35"
+    chronicleQueueVersion = "5.22.18"
+    univocityVersion = "2.9.1"
+    javafxVersion = "19.0.2.1"
+}

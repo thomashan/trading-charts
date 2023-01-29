@@ -1,11 +1,20 @@
 plugins {
-    id "io.github.thomashan.trading.charts.java-library-conventions"
+//    id "io.github.thomashan.trading.charts.java-library-conventions"
+    id "io.github.thomashan.trading.charts.java-module-conventions"
     id "io.github.thomashan.trading.charts.javafx-conventions"
 }
 
-dependencies {
-    implementation project(":domain")
-    implementation project(":util")
-    bytewatcherImplementation project(path: ":bytewatcher")
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
 }
 
+dependencies {
+    testImplementation("org.apache.groovy:groovy:4.0.4") {
+        exclude group: "junit", module: "junit"
+    }
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+    implementation project(":domain")
+    implementation project(":util")
+//    bytewatcherImplementation project(path: ":bytewatcher")
+}
