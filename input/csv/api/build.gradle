@@ -1,5 +1,7 @@
 plugins {
     id "io.github.thomashan.trading.charts.java-library-conventions"
+    id "io.github.thomashan.trading.charts.bytewatcher"
+    id "io.github.thomashan.trading.charts.jmh"
 }
 
 dependencies {

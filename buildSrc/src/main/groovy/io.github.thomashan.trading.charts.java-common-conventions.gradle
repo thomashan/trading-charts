@@ -5,6 +5,8 @@
  */
 
 plugins {
+    id "io.github.thomashan.trading.charts.lib-versions"
+
     // Apply the java Plugin to add support for Java.
     id "java"
     id "groovy"
@@ -26,15 +28,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    groovyVersion = "4.0.4"
-    junitVersion = "5.8.2"
-    jmhVersion = "1.35"
-    chronicleQueueVersion = "5.22.18"
-    univocityVersion = "2.9.1"
-    javafxVersion = "19.0.2.1"
-}
-
 // start: configure bytewatcher
 sourceSets {
     bytewatcher {
@@ -44,27 +37,23 @@ sourceSets {
         groovy { srcDirs = ["src/bytewatcher/groovy"] }
     }
 }
-
-configurations {
-    bytewatcherApi.extendsFrom testApi
-    bytewatcherImplementation.extendsFrom testImplementation
-    bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
-    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
-    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
-    bytewatcherCompileOnly.extendsFrom testCompileOnly
-}
-
-task bytewatcher(type: Test) {
-    testClassesDirs = sourceSets.bytewatcher.output.classesDirs
-    classpath = sourceSets.bytewatcher.runtimeClasspath
-}
 // end: configure bytewatcher
+
+// start: configure jmh
+sourceSets {
+    jmh {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        java { srcDirs = ["src/jmh/java"] }
+        groovy { srcDirs = ["src/jmh/groovy"] }
+    }
+}
+// end: configure jmh
 
 dependencies {
     testImplementation("org.apache.groovy:groovy:${groovyVersion}") {
         exclude group: "junit", module: "junit"
     }
-    bytewatcherImplementation project(path: ":bytewatcher")
 }
 
 testing {

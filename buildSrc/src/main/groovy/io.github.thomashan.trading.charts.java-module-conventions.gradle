@@ -1,0 +1,10 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
+extraJavaModuleInfo {
+    automaticModule("org.openjdk.jmh:jmh-core", "jmh.core")
+    automaticModule("org.openjdk.jmh:jmh-generator-annprocess", "jmh.generator.annprocess")
+    automaticModule("net.sf.jopt-simple:jopt-simple", "jopt.simple")
+    automaticModule("org.apache.commons:commons-math3", "org.apache.commons.maths3")
+}

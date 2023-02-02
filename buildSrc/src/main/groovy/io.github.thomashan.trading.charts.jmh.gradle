@@ -1,0 +1,39 @@
+import java.nio.file.Files
+
+plugins {
+    id "io.github.thomashan.trading.charts.java-common-conventions"
+}
+
+configurations {
+    jmhApi.extendsFrom testApi
+    jmhImplementation.extendsFrom testImplementation
+    jmhRuntimeOnly.extendsFrom testRuntimeOnly
+    jmhRuntimeClasspath.extendsFrom testRuntimeClasspath
+    jmhCompileClasspath.extendsFrom testCompileClasspath
+    jmhCompileOnly.extendsFrom testCompileOnly
+    jmhAnnotationProcessor.extendsFrom testAnnotationProcessor
+}
+
+boolean benchmarksExist = sourceSets.jmh.output.classesDirs.files.stream()
+    .map(File::toPath)
+    .map(path -> path.resolve("META-INF/BenchmarkList"))
+    .filter(Files::exists)
+    .filter(path -> !path.readLines("UTF-8").isEmpty())
+    .findAny()
+    .isPresent()
+
+if (benchmarksExist) {
+    // only run add the jmh task and run the tests if META-INF/BenchmarkList is present
+    // run jmh with `./gradlew -Dorg.gradle.parallel=false jmh --args="-f 1"` or else all the benchmarks will run in parallel
+    task jmh(type: JavaExec, dependsOn: jmhClasses) {
+        mainClass = "org.openjdk.jmh.Main"
+        classpath = sourceSets.jmh.runtimeClasspath
+    }
+}
+
+classes.finalizedBy(jmhClasses)
+
+dependencies {
+    jmhImplementation "org.openjdk.jmh:jmh-core:${jmhVersion}"
+    jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+}
