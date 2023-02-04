@@ -25,6 +25,10 @@ public class AxisConstants {
     public static final String TICK_LENGTH = "tickLength";
     public static final String TICK_UNIT = "tickUnit";
     public static final String UPPER_BOUND = "upperBound";
+    public static final String NUMBER_FORMAT_HIGH_EXPONENT = "#,##0";
+    public static final String NUMBER_FORMAT_LOW_EXPONENT = "0";
+    public static final String NUMBER_FORMAT_DEFAULT = "0.00000000";
+
 
     private AxisConstants() {
         throw new AssertionError("not instantiable");

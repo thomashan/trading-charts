@@ -45,6 +45,7 @@ import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_COUNT;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_LENGTH;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.NUMBER_FORMAT_DEFAULT;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.SCALE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.TICK_LABEL_FORMATTER;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.TICK_UNIT;
@@ -61,7 +62,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
 
     private Object currentAnimationID;
     private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private final StringProperty currentFormatterProperty = new SimpleStringProperty(this, CURRENT_FORMATTER, "");
+    private final StringProperty currentFormatterProperty = new SimpleStringProperty(this, CURRENT_FORMATTER, AxisConstants.EMPTY_STRING);
 
     private final StringConverter<D> defaultFormatter = createDefaultFormatter();
     private D currentValue = createCurrentValue();
@@ -780,7 +781,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         double maxRounded = 0;
         int count = 0;
         double reqLength = Double.MAX_VALUE;
-        String formatter = "0.00000000";
+        String formatter = NUMBER_FORMAT_DEFAULT;
         // loop till we find a set of ticks that fit length and result in a total of less than 20 tick marks
         while (reqLength > length || count > 20) {
             int exp = (int) Math.floor(Math.log10(tickUnit));

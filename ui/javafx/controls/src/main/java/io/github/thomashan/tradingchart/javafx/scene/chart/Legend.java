@@ -20,6 +20,14 @@ import javafx.scene.layout.TilePane;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.thomashan.tradingchart.javafx.scene.chart.LegendConstants.ITEMS;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.LegendConstants.SYMBOL;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.LegendConstants.TEXT;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.LegendConstants.VERTICAL;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_LEGEND;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_LEGEND_ITEM;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_LEGEND_ITEM_SYMBOL;
+
 public class Legend extends TilePane {
     private static final int GAP = 5;
 
@@ -39,8 +47,6 @@ public class Legend extends TilePane {
      * horizontally in rows
      */
     private BooleanProperty vertical = new BooleanPropertyBase(false) {
-        private static final String NAME = "vertical";
-
         @Override
         protected void invalidated() {
             setOrientation(get() ? Orientation.VERTICAL : Orientation.HORIZONTAL);
@@ -53,7 +59,7 @@ public class Legend extends TilePane {
 
         @Override
         public String getName() {
-            return NAME;
+            return VERTICAL;
         }
     };
 
@@ -98,7 +104,7 @@ public class Legend extends TilePane {
 
         @Override
         public String getName() {
-            return "items";
+            return ITEMS;
         }
     };
 
@@ -122,7 +128,7 @@ public class Legend extends TilePane {
         super(GAP, GAP);
         setTileAlignment(Pos.CENTER_LEFT);
         setItems(FXCollections.observableArrayList());
-        getStyleClass().setAll("chart-legend");
+        getStyleClass().setAll(CHART_LEGEND);
     }
 
     // -------------- METHODS ---------------------------------------------------
@@ -165,7 +171,7 @@ public class Legend extends TilePane {
 
             @Override
             public String getName() {
-                return "text";
+                return TEXT;
             }
         };
 
@@ -185,11 +191,11 @@ public class Legend extends TilePane {
          * The symbol to use next to the item text, set to null for no symbol. The default is a simple square of symbolFill
          */
         //new Rectangle(8,8,null)
-        private ObjectProperty<Node> symbol = new ObjectPropertyBase<Node>(new Region()) {
+        private ObjectProperty<Node> symbol = new ObjectPropertyBase<>(new Region()) {
             @Override
             protected void invalidated() {
                 Node symbol = get();
-                if (symbol != null) symbol.getStyleClass().setAll("chart-legend-item-symbol");
+                if (symbol != null) symbol.getStyleClass().setAll(CHART_LEGEND_ITEM_SYMBOL);
                 label.setGraphic(symbol);
             }
 
@@ -200,7 +206,7 @@ public class Legend extends TilePane {
 
             @Override
             public String getName() {
-                return "symbol";
+                return SYMBOL;
             }
         };
 
@@ -218,11 +224,11 @@ public class Legend extends TilePane {
 
         public LegendItem(String text) {
             setText(text);
-            label.getStyleClass().add("chart-legend-item");
+            label.getStyleClass().add(CHART_LEGEND_ITEM);
             label.setAlignment(Pos.CENTER_LEFT);
             label.setContentDisplay(ContentDisplay.LEFT);
             label.setGraphic(getSymbol());
-            getSymbol().getStyleClass().setAll("chart-legend-item-symbol");
+            getSymbol().getStyleClass().setAll(CHART_LEGEND_ITEM_SYMBOL);
         }
 
         public LegendItem(String text, Node symbol) {
