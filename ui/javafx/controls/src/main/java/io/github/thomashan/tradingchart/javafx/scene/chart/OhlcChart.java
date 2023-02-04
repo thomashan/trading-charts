@@ -465,7 +465,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         });
         setLegend(legend);
-        final String candleStickChartCss = getClass().getResource(CANDLESTICK_CHART_CSS).toExternalForm();
+        final String candleStickChartCss = getClass().getClassLoader().getResource(CANDLESTICK_CHART_CSS).toExternalForm();
         getStylesheets().add(candleStickChartCss);
         setAnimated(false);
         xAxis.setAnimated(false);

@@ -3,8 +3,6 @@
  *
  * This project uses @Incubating APIs which are subject to change.
  */
-import java.nio.file.Files
-
 plugins {
     // Apply the common convention plugin for shared build configuration between library and application projects.
     id "io.github.thomashan.trading.charts.java-common-conventions"
