@@ -2,6 +2,7 @@ package io.github.thomashan.tradingchart.javafx.scene.chart;
 
 import io.github.thomashan.tradingchart.ui.data.Granularity;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +33,10 @@ import static io.github.thomashan.tradingchart.ui.data.Granularity.m45;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.m5;
 
 public class MutableInstantFormatter {
+    public static final ZoneId ZONE_ID_UTC = ZoneId.of("Z");
+    public static final String YEAR_MONTH_DAY = "yyyy-MM-dd";
     private static final String YEAR = "yyyy";
     private static final String YEAR_MONTH = "yyyy-MM";
-    private static final String YEAR_MONTH_DAY = "yyyy-MM-dd";
     private static final String YEAR_MONTH_DAY_HOUR = "yyyy-MM-dd'T'HH:mm";
     private static final String YEAR_MONTH_DAY_HOUR_SECOND = "yyyy-MM-dd'T'HH:mm:ss";
     public static final Map<Granularity, String> TICK_FORMATTER_STRINGS = new HashMap<>();

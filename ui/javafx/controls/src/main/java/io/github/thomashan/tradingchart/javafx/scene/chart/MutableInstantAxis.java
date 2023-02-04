@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static io.github.thomashan.tradingchart.javafx.scene.chart.MutableInstantFormatter.YEAR_MONTH_DAY;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.MutableInstantFormatter.ZONE_ID_UTC;
 import static io.github.thomashan.tradingchart.time.format.DateTimeFormatters.DATE_TIME_FORMATTER;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.D1;
 
@@ -110,9 +112,7 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
 
         @Override
         public String toString(MutableInstantData object) {
-            // FIXME: put a breakpoint in here
-            // FIXME: decide what format string and zoneId to use
-            return toString(object, "yyyy-MM-dd", ZoneId.of("Z"));
+            return toString(object, YEAR_MONTH_DAY, ZONE_ID_UTC);
         }
 
         @Override

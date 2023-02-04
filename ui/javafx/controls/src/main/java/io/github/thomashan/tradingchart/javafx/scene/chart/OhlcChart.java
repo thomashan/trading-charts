@@ -55,6 +55,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_ROW_FILL_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.CHART;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DATA;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_GRID_LINES_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_ZERO_LINE_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.NODE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_GRID_LINES_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_ZERO_LINE_VISIBLE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.SeriesConstants.NAME;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CANDLESTICK_CHART_CSS;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_ALTERNATIVE_COLUMN_FILL;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_ALTERNATIVE_ROW_FILL;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_HORIZONTAL_GRID_LINES;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_HORIZONTAL_ZERO_LINE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_VERTICAL_GRID_LINES;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_VERTICAL_ZERO_LINE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.PLOT_CONTENT;
+
 // FIXME: replace all List<Double> with DoubleList
 public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     private static final String CURRENT_X = "currentX";
@@ -102,7 +121,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "verticalZeroLineVisible";
+            return VERTICAL_ZERO_LINE_VISIBLE;
         }
 
         @Override
@@ -124,7 +143,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "alternativeColumnFillVisible";
+            return ALTERNATIVE_COLUMN_FILL_VISIBLE;
         }
 
         @Override
@@ -153,7 +172,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "horizontalZeroLineVisible";
+            return HORIZONTAL_ZERO_LINE_VISIBLE;
         }
 
         @Override
@@ -179,7 +198,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "horizontalGridLinesVisible";
+            return HORIZONTAL_GRID_LINES_VISIBLE;
         }
 
         @Override
@@ -340,7 +359,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         }
 
         public String getName() {
-            return "data";
+            return DATA;
         }
     };
 
@@ -361,7 +380,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "verticalGridLinesVisible";
+            return VERTICAL_GRID_LINES_VISIBLE;
         }
 
         @Override
@@ -383,7 +402,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         @Override
         public String getName() {
-            return "alternativeRowFillVisible";
+            return ALTERNATIVE_ROW_FILL_VISIBLE;
         }
 
         @Override
@@ -425,15 +444,14 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         // add children to plot area
         plotArea.getChildren().addAll(verticalRowFill, horizontalRowFill, verticalGridLines, horizontalGridLines, verticalZeroLine, horizontalZeroLine, plotContent);
         // setup css style classes
-        // FIXME: pull out string constants into a static final field
-        plotContent.getStyleClass().setAll("plot-content");
-        plotBackground.getStyleClass().setAll("chart-plot-background");
-        verticalRowFill.getStyleClass().setAll("chart-alternative-column-fill");
-        horizontalRowFill.getStyleClass().setAll("chart-alternative-row-fill");
-        verticalGridLines.getStyleClass().setAll("chart-vertical-grid-lines");
-        horizontalGridLines.getStyleClass().setAll("chart-horizontal-grid-lines");
-        verticalZeroLine.getStyleClass().setAll("chart-vertical-zero-line");
-        horizontalZeroLine.getStyleClass().setAll("chart-horizontal-zero-line");
+        plotContent.getStyleClass().setAll(PLOT_CONTENT);
+        plotBackground.getStyleClass().setAll(StyleClassConstants.CHART_PLOT_BACKGROUND);
+        verticalRowFill.getStyleClass().setAll(CHART_ALTERNATIVE_COLUMN_FILL);
+        horizontalRowFill.getStyleClass().setAll(CHART_ALTERNATIVE_ROW_FILL);
+        verticalGridLines.getStyleClass().setAll(CHART_VERTICAL_GRID_LINES);
+        horizontalGridLines.getStyleClass().setAll(CHART_HORIZONTAL_GRID_LINES);
+        verticalZeroLine.getStyleClass().setAll(CHART_VERTICAL_ZERO_LINE);
+        horizontalZeroLine.getStyleClass().setAll(CHART_HORIZONTAL_ZERO_LINE);
         // mark plotContent as unmanaged as its preferred size changes do not effect our layout
         plotContent.setManaged(false);
         plotArea.setManaged(false);
@@ -447,7 +465,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         });
         setLegend(legend);
-        final String candleStickChartCss = getClass().getResource("CandleStickChart.css").toExternalForm();
+        final String candleStickChartCss = getClass().getResource(CANDLESTICK_CHART_CSS).toExternalForm();
         getStylesheets().add(candleStickChartCss);
         setAnimated(false);
         xAxis.setAnimated(false);
@@ -993,7 +1011,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         }
         // create series path
         Path seriesPath = new Path();
-        seriesPath.getStyleClass().setAll("candlestick-average-line", "series" + seriesIndex);
         series.setNode(seriesPath);
         getPlotChildren().add(seriesPath);
     }
@@ -1149,7 +1166,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
          * appropriately, for example on a Line or Scatter chart this node will be positioned centered on the data
          * values position. For a bar chart this is positioned and resized as the bar for this data item.
          */
-        private ObjectProperty<Node> node = new SimpleObjectProperty<>(this, "node") {
+        private ObjectProperty<Node> node = new SimpleObjectProperty<>(this, NODE) {
             protected void invalidated() {
                 Node node = get();
                 if (node != null) {
@@ -1407,7 +1424,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         /**
          * Reference to the chart this series belongs to
          */
-        private final ReadOnlyObjectWrapper<OhlcChart<O>> chart = new ReadOnlyObjectWrapper<>(this, "chart") {
+        private final ReadOnlyObjectWrapper<OhlcChart<O>> chart = new ReadOnlyObjectWrapper<>(this, CHART) {
             @Override
             protected void invalidated() {
                 if (get() == null) {
@@ -1447,7 +1464,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
             @Override
             public String getName() {
-                return "name";
+                return NAME;
             }
         };
 
@@ -1468,7 +1485,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
          * series. For example line chart uses this for the line but scatter chart does not use it. This node will be
          * set as soon as the series is added to the chart. You can then get it to add mouse listeners etc.
          */
-        private ObjectProperty<Node> node = new SimpleObjectProperty<Node>(this, "node");
+        private ObjectProperty<Node> node = new SimpleObjectProperty<>(this, NODE);
 
         public final Node getNode() {
             return node.get();
@@ -1536,7 +1553,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
             @Override
             public String getName() {
-                return "data";
+                return DATA;
             }
         };
 
@@ -1619,7 +1636,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     }
 
     private static class StyleableProperties {
-        private static final CssMetaData<OhlcChart<?>, Boolean> HORIZONTAL_GRID_LINE_VISIBLE = new CssMetaData<>("-fx-horizontal-grid-lines-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> HORIZONTAL_GRID_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.HORIZONTAL_GRID_LINES_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
                 return node.horizontalGridLinesVisible == null || !node.horizontalGridLinesVisible.isBound();
@@ -1631,7 +1648,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> HORIZONTAL_ZERO_LINE_VISIBLE = new CssMetaData<>("-fx-horizontal-zero-line-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> HORIZONTAL_ZERO_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.HORIZONTAL_ZERO_LINE_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
 
             @Override
             public boolean isSettable(OhlcChart<?> node) {
@@ -1644,7 +1661,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_ROW_FILL_VISIBLE = new CssMetaData<>("-fx-alternative-row-fill-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_ROW_FILL_VISIBLE = new CssMetaData<>(CssMetaDataConstants.ALTERNATIVE_ROW_FILL_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
                 return node.alternativeRowFillVisible == null || !node.alternativeRowFillVisible.isBound();
@@ -1656,7 +1673,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_GRID_LINE_VISIBLE = new CssMetaData<>("-fx-vertical-grid-lines-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_GRID_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.VERTICAL_GRID_LINE_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
 
             @Override
             public boolean isSettable(OhlcChart<?> node) {
@@ -1669,7 +1686,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_ZERO_LINE_VISIBLE = new CssMetaData<>("-fx-vertical-zero-line-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_ZERO_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.VERTICAL_ZERO_LINE_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
                 return node.verticalZeroLineVisible == null || !node.verticalZeroLineVisible.isBound();
@@ -1681,7 +1698,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_COLUMN_FILL_VISIBLE = new CssMetaData<>("-fx-alternative-column-fill-visible", BooleanConverter.getInstance(), Boolean.TRUE) {
+        private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_COLUMN_FILL_VISIBLE = new CssMetaData<>(CssMetaDataConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
                 return node.alternativeColumnFillVisible == null || !node.alternativeColumnFillVisible.isBound();
