@@ -1,4 +1,5 @@
 module trading.charts.app {
+    requires transitive javafx.base;
     requires transitive javafx.graphics;
     requires javafx.controls;
     requires trading.charts.domain;

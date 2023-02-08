@@ -38,6 +38,7 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
     private double granularityWidth = calculateGranularityWidth(granularity);
 
     public MutableInstantAxis() {
+        super();
         text.setWrappingWidth(0);
         text.setLineSpacing(0);
     }
@@ -103,6 +104,10 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
         private static final Map<String, DateTimeFormatter> FORMATTERS = new HashMap<>();
         private static final Function<String, DateTimeFormatter> FORMATTER_CREATOR = pattern -> DateTimeFormatter.ofPattern(pattern);
         private final MutableInstantData mutableInstant = MutableInstantData.of(MutableInstant.EPOCH.newInstance());
+
+        protected DefaultFormatter() {
+            super();
+        }
 
         public String toString(MutableInstantData object, String formatter, ZoneId zoneId) {
             return FORMATTERS.computeIfAbsent(formatter, FORMATTER_CREATOR)
