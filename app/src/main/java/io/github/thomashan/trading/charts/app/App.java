@@ -29,6 +29,10 @@ public class App extends Application {
     private MutableInstantAxis xAxis;
     private OhlcDataAxis<MidOhlcData> yAxis;
 
+    private App() {
+        // leave blank for now
+    }
+
     public static void main(String[] args) {
         midOhlcData.put(MutableInstantData.of(EPOCH), MidOhlcData.of(MidData.of(1.58885), MidData.of(1.58971), MidData.of(1.58749), MidData.of(1.58971), 0, D1));
         midOhlcData.put(MutableInstantData.of(EPOCH.newInstance().plus(Duration.ofDays(1))), MidOhlcData.of(MidData.of(1.58940), MidData.of(1.58940), MidData.of(1.58729), MidData.of(1.58940), 0, D1));
