@@ -7,6 +7,10 @@ public class MidOhlcAxis extends OhlcDataAxis<MidOhlcData> {
     private static final MidOhlcData ZERO_POSITION = MidOhlcData.emptyFull();
     private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
 
+    public MidOhlcAxis() {
+        super();
+    }
+
     @Override
     protected MidOhlcData createMajor() {
         return MidOhlcData.emptyFull();

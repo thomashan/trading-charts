@@ -68,4 +68,8 @@ public class MutableInstantFormatter {
         TICK_FORMATTER_STRINGS.put(S5, YEAR_MONTH_DAY_HOUR_SECOND);
         TICK_FORMATTER_STRINGS.put(S1, YEAR_MONTH_DAY_HOUR_SECOND);
     }
+
+    private MutableInstantFormatter() {
+        throw new AssertionError("not instantiable");
+    }
 }

@@ -15,6 +15,10 @@ public abstract class OhlcData<O extends OhlcData<O, P>, P extends PriceData<P>>
     // FIXME: do we really need the granularity in the ohlcData? It can be embedded in the axis
     public Granularity granularity;
 
+    protected OhlcData() {
+        // do nothing for now
+    }
+
     @Override
     public String toString() {
         if (open.equals(high) && open.equals(low) && open.equals(close)) {

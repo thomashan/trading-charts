@@ -6,6 +6,10 @@ import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.NUMBER_FORMAT_LOW_EXPONENT;
 
 public abstract class OhlcDataAxis<O extends OhlcData<O, ?>> extends DataAxis<O> {
+    protected OhlcDataAxis() {
+        super();
+    }
+
     @Override
     protected String getFormatterString(double tickUnit, double ratio) {
         int exp = (int) Math.floor(Math.log10(tickUnit));

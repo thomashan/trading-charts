@@ -7,6 +7,10 @@ public class BidAskOhlcAxis extends OhlcDataAxis<BidAskOhlcData> {
     private static final BidAskOhlcData ZERO_POSITION = BidAskOhlcData.emptyFull();
     private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
 
+    public BidAskOhlcAxis() {
+        super();
+    }
+
     @Override
     protected BidAskOhlcData createMajor() {
         return BidAskOhlcData.emptyFull();

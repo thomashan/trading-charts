@@ -447,6 +447,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * Creates an auto-ranging ObjectAxis.
      */
     public DataAxis() {
+        super();
     }
 
     /**
