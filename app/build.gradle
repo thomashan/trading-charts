@@ -12,4 +12,3 @@ application {
     // Define the main class for the application.
     mainClass = "io.github.thomashan.trading.charts.app.App"
 }
-
