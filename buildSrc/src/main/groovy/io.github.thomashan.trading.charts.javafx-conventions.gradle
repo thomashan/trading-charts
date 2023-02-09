@@ -1,8 +1,45 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import org.gradle.nativeplatform.platform.internal.DefaultOperatingSystem
+
+import java.util.stream.Collectors
+import java.util.stream.Stream
+
 plugins {
-    id "org.openjfx.javafxplugin"
+    id "io.github.thomashan.trading.charts.lib-versions"
 }
 
-javafx {
-    version = "19.0.2.1"
-    modules = ["javafx.controls", "javafx.graphics"]
+String getOperatingSystem() {
+    DefaultOperatingSystem operatingSystem = DefaultNativePlatform.currentOperatingSystem
+    switch (operatingSystem) {
+        case { operatingSystem.linux }: return "linux"
+        case { operatingSystem.macOsX }: return "mac"
+        case { operatingSystem.windows }: return "win"
+        default: throw new UnsupportedOperationException("Unsupported operating system: ${operatingSystem}")
+    }
+}
+
+String getArchitecture(String os) {
+    Architecture architecture = DefaultNativePlatform.currentArchitecture
+    switch (architecture) {
+        case { architecture.name == "aarch64" && (os == "linux" || os == "mac") }: return "aarch64"
+        case { architecture.name == "arm32" && os == "linux" }: return "arm32"
+        case { architecture.name == "x86" && os == "win" }: return "x86"
+        default: return null
+    }
+}
+
+String getClassifier() {
+    String operatingSystem = getOperatingSystem()
+    return Stream.of(operatingSystem, getArchitecture(operatingSystem))
+        .flatMap(Stream::ofNullable)
+        .collect(Collectors.joining("-"))
+}
+
+// check https://repo1.maven.org/maven2/org/openjfx/javafx-base/ for valid os and architecture combinations
+dependencies {
+    implementation(group: "org.openjfx", name: "javafx-base", version: javafxVersion)
+    implementation(group: "org.openjfx", name: "javafx-base", version: javafxVersion, classifier: getClassifier())
+    implementation(group: "org.openjfx", name: "javafx-controls", version: javafxVersion, classifier: getClassifier())
+    implementation(group: "org.openjfx", name: "javafx-graphics", version: javafxVersion)
+    implementation(group: "org.openjfx", name: "javafx-graphics", version: javafxVersion, classifier: getClassifier())
 }

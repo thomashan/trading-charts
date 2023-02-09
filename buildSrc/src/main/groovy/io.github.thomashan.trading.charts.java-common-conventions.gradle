@@ -54,6 +54,7 @@ dependencies {
     testImplementation("org.apache.groovy:groovy:${groovyVersion}") {
         exclude group: "junit", module: "junit"
     }
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }
 
 testing {
