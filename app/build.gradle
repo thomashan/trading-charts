@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation project(":domain")
-    implementation project(":ui:javafx:controls")
+    implementation project(":ui:javafx")
 }
 
 application {
