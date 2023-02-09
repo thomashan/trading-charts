@@ -29,7 +29,7 @@ public class App extends Application {
     private MutableInstantAxis xAxis;
     private OhlcDataAxis<MidOhlcData> yAxis;
 
-    private App() {
+    public App() {
         // leave blank for now
     }
 
