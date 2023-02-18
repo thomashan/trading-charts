@@ -2,6 +2,7 @@ plugins {
     id "io.github.thomashan.trading.charts.java-library-conventions"
     id "io.github.thomashan.trading.charts.bytewatcher"
     id "io.github.thomashan.trading.charts.jmh"
+    id "io.github.thomashan.trading.charts.test-fixtures"
 }
 
 dependencies {
@@ -9,5 +10,10 @@ dependencies {
     implementation project(":util")
     implementation project(":io")
 
-    testImplementation(testFixtures(project(":io")))
+    testImplementation testFixtures(project(":io"))
+
+    testFixturesImplementation project(":bytewatcher")
+    testFixturesImplementation project(":domain")
+    testFixturesImplementation project(":io")
+    testFixturesImplementation project(":util")
 }

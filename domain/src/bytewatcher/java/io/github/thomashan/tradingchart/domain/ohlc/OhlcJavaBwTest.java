@@ -1,6 +1,6 @@
 package io.github.thomashan.tradingchart.domain.ohlc;
 
-import io.github.thomashan.tradingchart.ByteWatcherRegressionTestHelper;
+import io.github.thomashan.tradingchart.bytewatcher.ByteWatcherRegressionTestHelper;
 import io.github.thomashan.tradingchart.domain.price.BidAsk;
 import io.github.thomashan.tradingchart.domain.price.Mid;
 import io.github.thomashan.tradingchart.time.MutableInstant;

@@ -1,7 +1,7 @@
 plugins {
     id "io.github.thomashan.trading.charts.java-library-conventions"
     id "io.github.thomashan.trading.charts.jmh"
-    id "java-test-fixtures"
+    id "io.github.thomashan.trading.charts.test-fixtures"
 }
 
 dependencies {

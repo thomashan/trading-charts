@@ -1,7 +1,8 @@
-package io.github.thomashan.tradingchart.input.csv
+package io.github.thomashan.tradingchart.input.csv.testcase
 
 import io.github.thomashan.tradingchart.domain.ohlc.BidAskOhlc
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc
+import io.github.thomashan.tradingchart.input.csv.CsvParser
 import io.github.thomashan.tradingchart.time.MutableInstant
 import org.junit.jupiter.api.Test
 

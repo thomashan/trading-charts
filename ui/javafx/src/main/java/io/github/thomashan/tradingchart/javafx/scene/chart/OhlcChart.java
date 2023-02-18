@@ -14,12 +14,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.property.StringPropertyBase;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.CssMetaData;
@@ -57,14 +52,12 @@ import java.util.Set;
 
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_ROW_FILL_VISIBLE;
-import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.CHART;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DATA;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_ZERO_LINE_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.NODE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_ZERO_LINE_VISIBLE;
-import static io.github.thomashan.tradingchart.javafx.scene.chart.SeriesConstants.NAME;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CANDLESTICK_CHART_CSS;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_ALTERNATIVE_COLUMN_FILL;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_ALTERNATIVE_ROW_FILL;
@@ -738,16 +731,14 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 Node itemNode = item.getNode();
                 double candleWidth = 0.9 * xAxis.getGranularityWidth();
                 double barWidth = -1;
-                double halfBarWidth = -1;
                 if (itemNode instanceof Candle candle && ohlcData != null) {
                     if (-1 == barWidth) {
                         barWidth = candleWidth == -1 ? candle.getBar().prefWidth(-1) : candleWidth;
-                        halfBarWidth = barWidth / 2;
                     }
                     double high = yAxis.getDisplayPosition(ohlcData.high.getValue());
                     double low = yAxis.getDisplayPosition(ohlcData.low.getValue());
                     double close = yAxis.getDisplayPosition(ohlcData.close.getValue());
-                    candle.update(open - high, open - low, open - close, barWidth, halfBarWidth);
+                    candle.update(open - high, open - low, open - close, barWidth);
                     // position the candle
                     candle.setLayoutX(x);
                     candle.setLayoutY(open);
@@ -835,7 +826,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         }
     }
 
-    private void seriesNameChanged() {
+    protected void seriesNameChanged() {
         updateLegend();
         requestChartLayout();
     }
@@ -954,7 +945,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     }
 
 
-    private void dataItemsChanged(Series<O> series, List<? extends Data<O>> removed, int addedFrom, int addedTo, boolean permutation) {
+    protected void dataItemsChanged(Series<O> series, List<? extends Data<O>> removed, int addedFrom, int addedTo, boolean permutation) {
         for (Data<O> item : removed) {
             dataItemRemoved(item, series);
         }
@@ -1091,7 +1082,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     }
 
     protected final Iterator<Data<O>> getDisplayedDataIterator(final Series<O> series) {
-        return Collections.unmodifiableList(series.displayedData).iterator();
+        return Collections.unmodifiableList(series.getDisplayedData()).iterator();
     }
 
     protected final MutableInstantData getCurrentDisplayedXValue(Data<O> item) {
@@ -1112,7 +1103,16 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         private static final String Y_VALUE = "ohlc";
         // -------------- PUBLIC PROPERTIES ----------------------------------------
 
-        private boolean setToRemove = false;
+        private boolean toRemove = false;
+
+        public void setToRemove(boolean toRemove) {
+            this.toRemove = toRemove;
+        }
+
+        public boolean getToRemove() {
+            return toRemove;
+        }
+
         /**
          * The series this data belongs to
          */
@@ -1344,294 +1344,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         @Override
         public String toString() {
             return "Data[" + getXValue() + "," + getYValue() + "]";
-        }
-
-    }
-
-    public static final class Series<O extends OhlcData<O, ?>> {
-
-        // -------------- PRIVATE PROPERTIES ----------------------------------------
-
-        /**
-         * the style class for default color for this series
-         */
-        String defaultColorStyleClass;
-        boolean setToRemove = false;
-
-        private List<Data<O>> displayedData = new ArrayList<>();
-
-        private final ListChangeListener<Data<O>> dataChangeListener = changedData -> {
-            ObservableList<? extends Data<O>> data = changedData.getList();
-            final OhlcChart<O> chart = getChart();
-            while (changedData.next()) {
-                if (chart != null) {
-                    // RT-25187 Probably a sort happened, just reorder the pointers and return.
-                    if (changedData.wasPermutated()) {
-                        displayedData.sort((o1, o2) -> data.indexOf(o2) - data.indexOf(o1));
-                        return;
-                    }
-
-                    Set<Data<O>> dupCheck = new HashSet<>(displayedData);
-                    dupCheck.removeAll(changedData.getRemoved());
-                    for (Data<O> d : changedData.getAddedSubList()) {
-                        if (!dupCheck.add(d)) {
-                            throw new IllegalArgumentException("Duplicate data added");
-                        }
-                    }
-
-                    // update data items reference to series
-                    for (Data<O> item : changedData.getRemoved()) {
-                        item.setToRemove = true;
-                    }
-
-                    if (changedData.getAddedSize() > 0) {
-                        for (Data<O> itemPtr : changedData.getAddedSubList()) {
-                            if (itemPtr.setToRemove) {
-                                if (chart != null) chart.dataBeingRemovedIsAdded(itemPtr, Series.this);
-                                itemPtr.setToRemove = false;
-                            }
-                        }
-
-                        for (Data<O> d : changedData.getAddedSubList()) {
-                            d.setSeries(Series.this);
-                        }
-                        if (changedData.getFrom() == 0) {
-                            displayedData.addAll(0, changedData.getAddedSubList());
-                        } else {
-                            displayedData.addAll(displayedData.indexOf(data.get(changedData.getFrom() - 1)) + 1, changedData.getAddedSubList());
-                        }
-                    }
-                    // inform chart
-                    chart.dataItemsChanged(Series.this, changedData.getRemoved(), changedData.getFrom(), changedData.getTo(), changedData.wasPermutated());
-                } else {
-                    Set<Data<O>> dupCheck = new HashSet<>();
-                    for (Data<O> d : data) {
-                        if (!dupCheck.add(d)) {
-                            throw new IllegalArgumentException("Duplicate data added");
-                        }
-                    }
-
-                    for (Data<O> d : changedData.getAddedSubList()) {
-                        d.setSeries(Series.this);
-                    }
-
-                }
-            }
-        };
-
-        // -------------- PUBLIC PROPERTIES ----------------------------------------
-
-        /**
-         * Reference to the chart this series belongs to
-         */
-        private final ReadOnlyObjectWrapper<OhlcChart<O>> chart = new ReadOnlyObjectWrapper<>(this, CHART) {
-            @Override
-            protected void invalidated() {
-                if (get() == null) {
-                    displayedData.clear();
-                } else {
-                    displayedData.addAll(getData());
-                }
-            }
-        };
-
-        public OhlcChart<O> getChart() {
-            return chart.get();
-        }
-
-        private void setChart(OhlcChart<O> value) {
-            chart.set(value);
-        }
-
-        public ReadOnlyObjectProperty<OhlcChart<O>> chartProperty() {
-            return chart.getReadOnlyProperty();
-        }
-
-        /**
-         * The user displayable name for this series
-         */
-        private final StringProperty name = new StringPropertyBase() {
-            @Override
-            protected void invalidated() {
-                get(); // make non-lazy
-                if (getChart() != null) getChart().seriesNameChanged();
-            }
-
-            @Override
-            public Object getBean() {
-                return Series.this;
-            }
-
-            @Override
-            public String getName() {
-                return NAME;
-            }
-        };
-
-        public String getName() {
-            return name.get();
-        }
-
-        public void setName(String value) {
-            name.set(value);
-        }
-
-        public StringProperty nameProperty() {
-            return name;
-        }
-
-        /**
-         * The node to display for this series. This is created by the chart if it uses nodes to represent the whole
-         * series. For example line chart uses this for the line but scatter chart does not use it. This node will be
-         * set as soon as the series is added to the chart. You can then get it to add mouse listeners etc.
-         */
-        private ObjectProperty<Node> node = new SimpleObjectProperty<>(this, NODE);
-
-        public final Node getNode() {
-            return node.get();
-        }
-
-        public final void setNode(Node value) {
-            node.set(value);
-        }
-
-        public final ObjectProperty<Node> nodeProperty() {
-            return node;
-        }
-
-        /**
-         * ObservableList of data items that make up this series
-         */
-        private final ObjectProperty<ObservableList<Data<O>>> data = new ObjectPropertyBase<>() {
-            private ObservableList<Data<O>> old;
-
-            @Override
-            protected void invalidated() {
-                final ObservableList<Data<O>> current = getValue();
-                // add remove listeners
-                if (old != null) old.removeListener(dataChangeListener);
-                if (current != null) current.addListener(dataChangeListener);
-                // fire data change event if series are added or removed
-                if (old != null || current != null) {
-                    final List<Data<O>> removed = (old != null) ? old : Collections.emptyList();
-                    final int toIndex = (current != null) ? current.size() : 0;
-                    // let data listener know all old data have been removed and new data that has been added
-                    if (toIndex > 0 || !removed.isEmpty()) {
-                        dataChangeListener.onChanged(new NonIterableChange<>(0, toIndex, current) {
-                            @Override
-                            public List<Data<O>> getRemoved() {
-                                return removed;
-                            }
-
-                            @Override
-                            protected int[] getPermutation() {
-                                return new int[0];
-                            }
-                        });
-                    }
-                } else if (old != null && old.size() > 0) {
-                    // let series listener know all old series have been removed
-                    dataChangeListener.onChanged(new NonIterableChange<>(0, 0, current) {
-                        @Override
-                        public List<Data<O>> getRemoved() {
-                            return old;
-                        }
-
-                        @Override
-                        protected int[] getPermutation() {
-                            return new int[0];
-                        }
-                    });
-                }
-                old = current;
-            }
-
-            @Override
-            public Object getBean() {
-                return Series.this;
-            }
-
-            @Override
-            public String getName() {
-                return DATA;
-            }
-        };
-
-        public ObservableList<Data<O>> getData() {
-            return data.getValue();
-        }
-
-        public void setData(ObservableList<Data<O>> value) {
-            data.setValue(value);
-        }
-
-        public ObjectProperty<ObservableList<Data<O>>> dataProperty() {
-            return data;
-        }
-
-        // -------------- CONSTRUCTORS ----------------------------------------------
-
-        /**
-         * Construct a empty series
-         */
-        public Series() {
-            this(FXCollections.observableArrayList());
-        }
-
-        /**
-         * Constructs a Series and populates it with the given {@link ObservableList} data.
-         *
-         * @param data ObservableList of Data
-         */
-        public Series(ObservableList<Data<O>> data) {
-            setData(data);
-            for (Data<O> item : data) item.setSeries(this);
-        }
-
-        /**
-         * Constructs a named Series and populates it with the given {@link ObservableList} data.
-         *
-         * @param name a name for the series
-         * @param data ObservableList of Data
-         */
-        public Series(String name, ObservableList<Data<O>> data) {
-            this(data);
-            setName(name);
-        }
-
-        // -------------- PUBLIC METHODS ----------------------------------------------
-
-        /**
-         * Returns a string representation of this {@code Series} object.
-         *
-         * @return a string representation of this {@code Series} object.
-         */
-        @Override
-        public String toString() {
-            return "Series[" + getName() + "]";
-        }
-
-        // -------------- PRIVATE/PROTECTED METHODS -----------------------------------
-
-        /*
-         * The following methods are for manipulating the pointers in the linked list
-         * when data is deleted.
-         */
-        private void removeDataItemRef(Data<O> item) {
-            if (item != null) item.setToRemove = false;
-            displayedData.remove(item);
-        }
-
-        int getItemIndex(Data<O> item) {
-            return displayedData.indexOf(item);
-        }
-
-        Data<O> getItem(int i) {
-            return displayedData.get(i);
-        }
-
-        int getDataSize() {
-            return displayedData.size();
         }
     }
 

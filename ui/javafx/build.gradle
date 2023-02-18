@@ -11,4 +11,7 @@ repositories {
 dependencies {
     implementation project(":domain")
     implementation project(":util")
+
+    testImplementation "org.testfx:testfx-core:4.0.16-alpha"
+    testImplementation "org.testfx:testfx-junit5:4.0.16-alpha"
 }
