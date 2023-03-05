@@ -1,6 +1,6 @@
 package io.github.thomashan.tradingchart.lang;
 
-import io.github.thomashan.tradingchart.ByteWatcherRegressionTestHelper;
+import io.github.thomashan.tradingchart.bytewatcher.ByteWatcherRegressionTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

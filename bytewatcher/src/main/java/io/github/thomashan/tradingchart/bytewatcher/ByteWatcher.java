@@ -1,4 +1,4 @@
-package io.github.thomashan.tradingchart;
+package io.github.thomashan.tradingchart.bytewatcher;
 
 /*
  * Copyright (C) 2015 Daniel Shaya and Heinz Max Kabutz

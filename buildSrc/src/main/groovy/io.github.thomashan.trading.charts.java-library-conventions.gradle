@@ -11,21 +11,3 @@ plugins {
     id "java-library"
     id "idea"
 }
-
-// start: set up idea to include testFixture dependencies
-configurations {
-    ideaTestFixturesApi.extendsFrom testFixturesApi
-    ideaTestFixturesImplementation.extendsFrom testFixturesImplementation
-    ideaTestFixturesRuntimeOnly.extendsFrom testFixturesRuntimeOnly
-}
-
-idea {
-    module {
-        scopes.COMPILE.plus += [
-            configurations.ideaTestFixturesApi,
-            configurations.ideaTestFixturesImplementation,
-            configurations.ideaTestFixturesRuntimeOnly,
-        ]
-    }
-}
-// end: set up idea to include testFixture dependencies

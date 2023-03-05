@@ -9,6 +9,7 @@ plugins {
 
     // Apply the java Plugin to add support for Java.
     id "java"
+    id "jvm-test-suite"
     id "groovy"
     id "org.sonarqube"
     id "jacoco"
@@ -27,17 +28,6 @@ repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
-
-// start: configure bytewatcher
-sourceSets {
-    bytewatcher {
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-        java { srcDirs = ["src/bytewatcher/java"] }
-        groovy { srcDirs = ["src/bytewatcher/groovy"] }
-    }
-}
-// end: configure bytewatcher
 
 // start: configure jmh
 sourceSets {

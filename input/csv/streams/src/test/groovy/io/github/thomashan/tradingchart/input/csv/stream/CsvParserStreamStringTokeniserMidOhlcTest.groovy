@@ -2,7 +2,7 @@ package io.github.thomashan.tradingchart.input.csv.stream
 
 
 import io.github.thomashan.tradingchart.domain.ohlc.MidOhlc
-import io.github.thomashan.tradingchart.input.csv.CsvParserMidOhlcTestCase
+import io.github.thomashan.tradingchart.input.csv.testcase.CsvParserMidOhlcTestCase
 
 class CsvParserStreamStringTokeniserMidOhlcTest implements CsvParserMidOhlcTestCase<CsvParserStreamStringTokeniser<MidOhlc>> {
     @Override

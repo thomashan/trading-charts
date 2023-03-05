@@ -1,0 +1,11 @@
+plugins {
+    id "io.github.thomashan.trading.charts.lib-versions"
+    id "java-test-fixtures"
+}
+
+dependencies {
+    testFixturesImplementation("org.apache.groovy:groovy:${groovyVersion}") {
+        exclude group: "junit", module: "junit"
+    }
+    testFixturesImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+}

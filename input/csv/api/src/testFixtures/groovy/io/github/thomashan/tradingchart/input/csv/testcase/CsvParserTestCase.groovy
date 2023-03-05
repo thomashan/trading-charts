@@ -1,7 +1,8 @@
-package io.github.thomashan.tradingchart.input.csv
+package io.github.thomashan.tradingchart.input.csv.testcase
 
 
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc
+import io.github.thomashan.tradingchart.input.csv.CsvParser
 import org.junit.jupiter.api.BeforeEach
 
 import java.nio.charset.StandardCharsets

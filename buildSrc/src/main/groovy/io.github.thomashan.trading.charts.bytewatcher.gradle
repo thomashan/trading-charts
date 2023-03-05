@@ -1,30 +1,12 @@
-plugins {
-    id "io.github.thomashan.trading.charts.java-common-conventions"
-}
+import org.gradle.api.plugins.jvm.JvmTestSuite
 
-sourceSets {
-    bytewatcher {
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-        java { srcDirs = ["src/bytewatcher/java"] }
-        groovy { srcDirs = ["src/bytewatcher/groovy"] }
+testing {
+    suites {
+        bytewatcher(JvmTestSuite) {
+            dependencies {
+                implementation project(":bytewatcher")
+                implementation project()
+            }
+        }
     }
-}
-
-configurations {
-    bytewatcherApi.extendsFrom testApi
-    bytewatcherImplementation.extendsFrom testImplementation
-    bytewatcherRuntimeOnly.extendsFrom testRuntimeOnly
-    bytewatcherRuntimeClasspath.extendsFrom testRuntimeClasspath
-    bytewatcherCompileClasspath.extendsFrom testCompileClasspath
-    bytewatcherCompileOnly.extendsFrom testCompileOnly
-}
-
-task bytewatcher(type: Test) {
-    testClassesDirs = sourceSets.bytewatcher.output.classesDirs
-    classpath = sourceSets.bytewatcher.runtimeClasspath
-}
-
-dependencies {
-    bytewatcherImplementation project(path: ":bytewatcher")
 }

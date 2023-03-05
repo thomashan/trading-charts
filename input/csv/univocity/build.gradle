@@ -1,6 +1,6 @@
 plugins {
-    id "io.github.thomashan.trading.charts.java-library-conventions"
     id "io.github.thomashan.trading.charts.java-module-conventions"
+    id "io.github.thomashan.trading.charts.java-library-conventions"
     id "io.github.thomashan.trading.charts.bytewatcher"
     id "io.github.thomashan.trading.charts.jmh"
 }
@@ -10,13 +10,15 @@ dependencies {
     api project(":input:csv:api")
     implementation "com.univocity:univocity-parsers:${univocityVersion}"
 
-    testImplementation project(":input:csv:api").sourceSets.test.output
-    testImplementation(testFixtures(project(":io")))
+    testImplementation testFixtures(project(":input:csv:api"))
+    testImplementation testFixtures(project(":io"))
 
-    bytewatcherImplementation project(":input:csv:api").sourceSets.bytewatcher.output
+    bytewatcherImplementation testFixtures(project(":input:csv:api"))
     jmhImplementation project(":input:csv:api").sourceSets.jmh.output
 }
 
 extraJavaModuleInfo {
     automaticModule("com.univocity:univocity-parsers", "univocity.parser")
+    automaticModule(":input:csv:api", "univocity-test-fixtures")
+    automaticModule(":input:csv:univocity", "univocity-test-fixtures")
 }

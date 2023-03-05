@@ -5,7 +5,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 
 public class Candle extends Group {
-    private static final double SMALLEST_HEIGHT = 1;
+    public static final double SMALLEST_BAR_HEIGHT = 1;
     private Line highLowLine = new Line();
     private Region bar = new Region();
     private String seriesStyleClass;
@@ -20,18 +20,44 @@ public class Candle extends Group {
         updateStyleClasses();
     }
 
-    public void update(double openMinusHigh, double openMinusLow, double openMinusClose, double barWidth, double halfBarWidth) {
+    public void update(double openMinusHigh, double openMinusLow, double openMinusClose, double barWidth) {
+        checkPreconditions(openMinusHigh, openMinusLow, openMinusClose);
         this.openAboveClose = openMinusClose < 0;
         highLowLine.setStartY(openMinusHigh);
         highLowLine.setEndY(openMinusLow);
-        double barHeight = openMinusClose == 0 ? SMALLEST_HEIGHT : openMinusClose;
+        double barHeight = openMinusClose == 0 ? SMALLEST_BAR_HEIGHT : openMinusClose;
+        double halfBarWidth = barWidth / 2;
         if (openAboveClose) {
             bar.resizeRelocate(-halfBarWidth, 0, barWidth, -barHeight);
         } else {
             bar.resizeRelocate(-halfBarWidth, -openMinusClose, barWidth, barHeight);
         }
-
         updateStyleClasses();
+    }
+
+    private void checkPreconditions(double openMinusHigh, double openMinusLow, double openMinusClose) {
+        checkHighNotLowerThanLow(openMinusHigh, openMinusLow);
+        checkHighNotLowerThanClose(openMinusHigh, openMinusClose);
+        checkLowNotHigherThanClose(openMinusLow, openMinusClose);
+        // FIXME: should we check for the barWidth?
+    }
+
+    private void checkLowNotHigherThanClose(double openMinusLow, double openMinusClose) {
+        if (openMinusClose > openMinusLow) {
+            throw new IllegalArgumentException("Low is higher than close");
+        }
+    }
+
+    private void checkHighNotLowerThanClose(double openMinusHigh, double openMinusClose) {
+        if (openMinusHigh > openMinusClose) {
+            throw new IllegalArgumentException("High is lower than close");
+        }
+    }
+
+    private void checkHighNotLowerThanLow(double openMinusHigh, double openMinusLow) {
+        if (openMinusHigh > openMinusLow) {
+            throw new IllegalArgumentException("High is lower than low");
+        }
     }
 
     public void setSeriesAndDataStyleClasses(String seriesStyleClass, String dataStyleClass) {
@@ -49,5 +75,13 @@ public class Candle extends Group {
 
     public Region getBar() {
         return bar;
+    }
+
+    public Line getHighLowLine() {
+        return highLowLine;
+    }
+
+    public boolean isOpenAboveClose() {
+        return openAboveClose;
     }
 }

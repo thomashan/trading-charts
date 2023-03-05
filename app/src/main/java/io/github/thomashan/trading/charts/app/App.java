@@ -4,6 +4,7 @@ import io.github.thomashan.tradingchart.javafx.scene.chart.MidOhlcAxis;
 import io.github.thomashan.tradingchart.javafx.scene.chart.MutableInstantAxis;
 import io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChart;
 import io.github.thomashan.tradingchart.javafx.scene.chart.OhlcDataAxis;
+import io.github.thomashan.tradingchart.javafx.scene.chart.Series;
 import io.github.thomashan.tradingchart.ui.data.MidData;
 import io.github.thomashan.tradingchart.ui.data.MidOhlcData;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
@@ -85,13 +86,13 @@ public class App extends Application {
         xAxis.setLabel("Day");
         yAxis.setLabel("Price");
         // add starting data
-        OhlcChart.Series<MidOhlcData> series = new OhlcChart.Series<>();
+        Series<MidOhlcData> series = new Series<>();
         series.setName("tradingChartSeries");
         for (Map.Entry<MutableInstantData, MidOhlcData> entry : midOhlcData.entrySet()) {
             final MidOhlcData midOhlc = entry.getValue();
             series.getData().add(new OhlcChart.Data<>(entry.getKey(), midOhlc));
         }
-        ObservableList<OhlcChart.Series<MidOhlcData>> data = ohlcChart.getData();
+        ObservableList<Series<MidOhlcData>> data = ohlcChart.getData();
         if (data == null) {
             data = FXCollections.observableList(List.of(series));
             ohlcChart.setData(data);

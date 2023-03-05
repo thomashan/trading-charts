@@ -1,7 +1,8 @@
-package io.github.thomashan.tradingchart.input.csv;
+package io.github.thomashan.tradingchart.input.csv.testcase;
 
-import io.github.thomashan.tradingchart.ByteWatcherRegressionTestHelper;
+import io.github.thomashan.tradingchart.bytewatcher.ByteWatcherRegressionTestHelper;
 import io.github.thomashan.tradingchart.domain.ohlc.Ohlc;
+import io.github.thomashan.tradingchart.input.csv.CsvParser;
 import io.github.thomashan.tradingchart.io.ReusableInputStream;
 import io.github.thomashan.tradingchart.util.function.Consumers;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +29,7 @@ public abstract class CsvParserBwTestCase<O extends Ohlc<O, ?>> {
         this.byteWatcherRegressionTestHelper = new ByteWatcherRegressionTestHelper();
         this.csvParser = createCsvParser();
 
-        ZipInputStream zipInputStream = new ZipInputStream(this.getClass().getResourceAsStream(File.separator + "GBPAUD-M30.csv.zip"));
+        ZipInputStream zipInputStream = new ZipInputStream(this.getClass().getClassLoader().getResourceAsStream(File.separator + "GBPAUD-M30.csv.zip"));
         zipInputStream.getNextEntry();
         this.path = Files.createTempFile(getClass().getSimpleName(), ".csv");
         Files.copy(zipInputStream, path, StandardCopyOption.REPLACE_EXISTING);
