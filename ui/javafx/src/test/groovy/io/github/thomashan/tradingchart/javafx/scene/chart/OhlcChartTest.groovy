@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import org.testfx.framework.junit5.ApplicationTest
 
 class OhlcChartTest extends ApplicationTest {
-    private OhlcChart<MidOhlcData> ohlcChart;
+    private OhlcChart<MidOhlcData> ohlcChart
 
     @BeforeEach
     void setUp() {
