@@ -31,7 +31,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build
-        timeout-minutes: 30
         run: ./gradlew build --scan
       - name: Bytewatcher
         timeout-minutes: 30
