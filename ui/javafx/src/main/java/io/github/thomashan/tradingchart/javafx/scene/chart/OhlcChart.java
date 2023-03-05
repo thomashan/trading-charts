@@ -712,7 +712,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         for (int index = 0; index < getData().size(); index++) {
             Series<O> series = getData().get(index);
             Iterator<Data<O>> iter = getDisplayedDataIterator(series);
-            Path seriesPath = null;
+            Path seriesPath;
             if (series.getNode() instanceof Path pathNode) {
                 seriesPath = pathNode;
                 seriesPath.getElements().clear();
@@ -738,7 +738,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                     double high = yAxis.getDisplayPosition(ohlcData.high.getValue());
                     double low = yAxis.getDisplayPosition(ohlcData.low.getValue());
                     double close = yAxis.getDisplayPosition(ohlcData.close.getValue());
-                    candle.update(open - high, open - low, open - close, barWidth);
+                    candle.update(open - high, open - low, open - close, barWidth, mutableInstantData);
                     // position the candle
                     candle.setLayoutX(x);
                     candle.setLayoutY(open);

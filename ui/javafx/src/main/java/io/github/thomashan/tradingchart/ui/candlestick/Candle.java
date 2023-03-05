@@ -1,5 +1,6 @@
 package io.github.thomashan.tradingchart.ui.candlestick;
 
+import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
 import javafx.scene.Group;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
@@ -20,8 +21,9 @@ public class Candle extends Group {
         updateStyleClasses();
     }
 
-    public void update(double openMinusHigh, double openMinusLow, double openMinusClose, double barWidth) {
-        checkPreconditions(openMinusHigh, openMinusLow, openMinusClose);
+    public void update(double openMinusHigh, double openMinusLow, double openMinusClose, double barWidth,
+                       MutableInstantData mutableInstantData) {
+        checkPreconditions(openMinusHigh, openMinusLow, openMinusClose, mutableInstantData);
         this.openAboveClose = openMinusClose < 0;
         highLowLine.setStartY(openMinusHigh);
         highLowLine.setEndY(openMinusLow);
@@ -35,28 +37,28 @@ public class Candle extends Group {
         updateStyleClasses();
     }
 
-    private void checkPreconditions(double openMinusHigh, double openMinusLow, double openMinusClose) {
-        checkHighNotLowerThanLow(openMinusHigh, openMinusLow);
-        checkHighNotLowerThanClose(openMinusHigh, openMinusClose);
-        checkLowNotHigherThanClose(openMinusLow, openMinusClose);
-        // FIXME: should we check for the barWidth?
+    private void checkPreconditions(double openMinusHigh, double openMinusLow, double openMinusClose,
+                                    MutableInstantData mutableInstantData) {
+        checkHighNotLowerThanLow(openMinusHigh, openMinusLow, mutableInstantData);
+        checkHighNotLowerThanClose(openMinusHigh, openMinusClose, mutableInstantData);
+        checkLowNotHigherThanClose(openMinusLow, openMinusClose, mutableInstantData);
     }
 
-    private void checkLowNotHigherThanClose(double openMinusLow, double openMinusClose) {
+    private void checkLowNotHigherThanClose(double openMinusLow, double openMinusClose, MutableInstantData mutableInstantData) {
         if (openMinusClose > openMinusLow) {
-            throw new IllegalArgumentException("Low is higher than close");
+            throw new IllegalArgumentException("Low is higher than close @" + mutableInstantData.toString());
         }
     }
 
-    private void checkHighNotLowerThanClose(double openMinusHigh, double openMinusClose) {
+    private void checkHighNotLowerThanClose(double openMinusHigh, double openMinusClose, MutableInstantData mutableInstantData) {
         if (openMinusHigh > openMinusClose) {
-            throw new IllegalArgumentException("High is lower than close");
+            throw new IllegalArgumentException("High is lower than close @" + mutableInstantData.toString());
         }
     }
 
-    private void checkHighNotLowerThanLow(double openMinusHigh, double openMinusLow) {
+    private void checkHighNotLowerThanLow(double openMinusHigh, double openMinusLow, MutableInstantData mutableInstantData) {
         if (openMinusHigh > openMinusLow) {
-            throw new IllegalArgumentException("High is lower than low");
+            throw new IllegalArgumentException("High is lower than low @" + mutableInstantData.toString());
         }
     }
 
