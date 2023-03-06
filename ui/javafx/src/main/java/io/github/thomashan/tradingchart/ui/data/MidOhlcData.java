@@ -14,10 +14,10 @@ public class MidOhlcData extends OhlcData<MidOhlcData, MidData> {
                                  double volume,
                                  Granularity granularity) {
         MidOhlcData midOhlcData = new MidOhlcData();
-        midOhlcData.open = open.newInstance();
-        midOhlcData.high = high.newInstance();
-        midOhlcData.low = low.newInstance();
-        midOhlcData.close = close.newInstance();
+        midOhlcData.open = open;
+        midOhlcData.high = high;
+        midOhlcData.low = low;
+        midOhlcData.close = close;
         midOhlcData.volume = volume;
         midOhlcData.granularity = granularity;
         return midOhlcData;

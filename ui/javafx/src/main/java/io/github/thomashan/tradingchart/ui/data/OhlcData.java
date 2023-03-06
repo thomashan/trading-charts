@@ -5,7 +5,7 @@ import io.github.thomashan.tradingchart.lang.DoubleParser;
 import java.util.regex.Pattern;
 
 public abstract class OhlcData<O extends OhlcData<O, P>, P extends PriceData<P>> implements AxisData<O> {
-    private static final String DELIMITER = ";";
+    private static final String DELIMITER = "|";
     private static final Pattern PATTERN = Pattern.compile(DELIMITER);
     public P open;
     public P high;

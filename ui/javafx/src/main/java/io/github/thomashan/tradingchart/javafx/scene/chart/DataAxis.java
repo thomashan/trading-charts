@@ -27,7 +27,6 @@ import javafx.css.StyleableProperty;
 import javafx.css.converter.BooleanConverter;
 import javafx.css.converter.SizeConverter;
 import javafx.geometry.Dimension2D;
-import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.chart.Axis;
 import javafx.scene.shape.Path;
@@ -52,14 +51,6 @@ import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.UPPER_BOUND;
 
 public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
-    // FIXME: effectiveOrientation lives in Axis<T> and it should be available via a getter but it's not!
-    // setter setEffectiveOrientation is also package private!
-    private Orientation effectiveOrientation;
-
-    public void setEffectiveOrientation(Orientation effectiveOrientation) {
-        this.effectiveOrientation = effectiveOrientation;
-    }
-
     private Object currentAnimationID;
     private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
     private final StringProperty currentFormatterProperty = new SimpleStringProperty(this, CURRENT_FORMATTER, AxisConstants.EMPTY_STRING);
@@ -718,15 +709,6 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         return measureTickMarkLabelSize(labelText, rotation);
     }
 
-    public Side getEffectiveSide() {
-        final Side side = getSide();
-        if (side == null || (side.isVertical() && effectiveOrientation == Orientation.HORIZONTAL) || side.isHorizontal() && effectiveOrientation == Orientation.VERTICAL) {
-            // Means side == null && effectiveOrientation == null produces Side.BOTTOM
-            return effectiveOrientation == Orientation.VERTICAL ? Side.LEFT : Side.BOTTOM;
-        }
-        return side;
-    }
-
     protected abstract String getFormatterString(double tickUnit, double ratio);
 
     /**
@@ -739,7 +721,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @return The calculated range
      */
     protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
-        final Side side = getEffectiveSide();
+        final Side side = getSide();
         // check if we need to force zero into range
         if (isForceZeroInRange()) {
             if (maxValue < 0) {
@@ -841,7 +823,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @return new scale to fit the range from lower bound to upper bound in the given display length
      */
     protected final double calculateNewScale(double length, double lowerBound, double upperBound) {
-        final Side side = getEffectiveSide();
+        final Side side = getSide();
         double scale = (upperBound - lowerBound) == 0 ? length : length / (upperBound - lowerBound);
         if (side.isVertical()) {
             offset = length;
@@ -863,6 +845,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         // We need to init to the lowest negative double (which is NOT Double.MIN_VALUE)
         // in order to find the maximum (positive or negative)
         dataMaxValue = -Double.MAX_VALUE;
+        // FIXME: bytewatcher test this. use a for loop with integer
         for (D dataValue : data) {
             dataMinValue = Math.min(dataMinValue, dataValue.getLow());
             dataMaxValue = Math.max(dataMaxValue, dataValue.getHigh());

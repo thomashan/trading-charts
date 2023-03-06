@@ -9,10 +9,10 @@ public class BidAskOhlcData extends OhlcData<BidAskOhlcData, BidAskData> {
 
     public static BidAskOhlcData of(BidAskData open, BidAskData high, BidAskData low, BidAskData close, double volume, Granularity granularity) {
         BidAskOhlcData bidAskOhlcData = new BidAskOhlcData();
-        bidAskOhlcData.open = open.newInstance();
-        bidAskOhlcData.high = high.newInstance();
-        bidAskOhlcData.low = low.newInstance();
-        bidAskOhlcData.close = close.newInstance();
+        bidAskOhlcData.open = open;
+        bidAskOhlcData.high = high;
+        bidAskOhlcData.low = low;
+        bidAskOhlcData.close = close;
         bidAskOhlcData.volume = volume;
         bidAskOhlcData.granularity = granularity;
         return bidAskOhlcData;

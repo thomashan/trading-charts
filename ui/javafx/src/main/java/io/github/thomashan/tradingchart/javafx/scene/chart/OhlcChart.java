@@ -23,7 +23,6 @@ import javafx.css.StyleableBooleanProperty;
 import javafx.css.StyleableProperty;
 import javafx.css.converter.BooleanConverter;
 import javafx.event.ActionEvent;
-import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -417,12 +416,10 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         if (xAxis.getSide() == null) {
             xAxis.setSide(Side.BOTTOM);
         }
-        xAxis.setEffectiveOrientation(Orientation.HORIZONTAL);
         this.yAxis = yAxis;
         if (yAxis.getSide() == null) {
             yAxis.setSide(Side.LEFT);
         }
-        yAxis.setEffectiveOrientation(Orientation.VERTICAL);
         // RT-23123 autoranging leads to charts incorrect appearance.
         xAxis.autoRangingProperty().addListener((ov, t, t1) -> updateAxisRange());
         yAxis.autoRangingProperty().addListener((ov, t, t1) -> updateAxisRange());
@@ -517,7 +514,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         yAxisHeight = Math.ceil(yAxisHeight);
         // calc xAxis height
         double xAxisY = 0;
-        switch (xAxis.getEffectiveSide()) {
+        switch (xAxis.getSide()) {
             case TOP:
                 xAxis.setVisible(true);
                 xAxisY = top + 1;
@@ -530,7 +527,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         // calc yAxis width
         double yAxisX = 0;
-        switch (yAxis.getEffectiveSide()) {
+        switch (yAxis.getSide()) {
             case LEFT:
                 yAxis.setVisible(true);
                 yAxisX = left + 1;
