@@ -7,6 +7,22 @@ public class MidOhlcData extends OhlcData<MidOhlcData, MidData> {
     private MidOhlcData() {
     }
 
+    public static MidOhlcData of(double open,
+                                 double high,
+                                 double low,
+                                 double close,
+                                 double volume,
+                                 Granularity granularity) {
+        MidOhlcData midOhlcData = new MidOhlcData();
+        midOhlcData.open = MidData.of(open);
+        midOhlcData.high = MidData.of(high);
+        midOhlcData.low = MidData.of(low);
+        midOhlcData.close = MidData.of(close);
+        midOhlcData.volume = volume;
+        midOhlcData.granularity = granularity;
+        return midOhlcData;
+    }
+
     public static MidOhlcData of(MidData open,
                                  MidData high,
                                  MidData low,

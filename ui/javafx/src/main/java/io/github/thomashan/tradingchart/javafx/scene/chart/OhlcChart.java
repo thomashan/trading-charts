@@ -43,7 +43,6 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -708,17 +707,14 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         // update candle positions
         for (int index = 0; index < getData().size(); index++) {
             Series<O> series = getData().get(index);
-            Iterator<Data<O>> iter = getDisplayedDataIterator(series);
-            Path seriesPath;
-            if (series.getNode() instanceof Path pathNode) {
-                seriesPath = pathNode;
-                seriesPath.getElements().clear();
-            }
-            while (iter.hasNext()) {
+            clearSeriesPathNodes(series);
+            List<OhlcChart.Data<O>> displayedData = series.getDisplayedData();
+
+            for (int i = 0; i < displayedData.size(); i++) {
+                Data<O> item = displayedData.get(i);
                 MutableInstantAxis xAxis = getXAxis();
                 xAxis.setGranularityWidth();
                 OhlcDataAxis<O> yAxis = getYAxis();
-                Data<O> item = iter.next();
                 MutableInstantData mutableInstantData = getCurrentDisplayedXValue(item);
                 O ohlcData = getCurrentDisplayedYValue(item);
                 double x = xAxis.getDisplayPosition(mutableInstantData);
@@ -735,12 +731,18 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                     double high = yAxis.getDisplayPosition(ohlcData.high.getValue());
                     double low = yAxis.getDisplayPosition(ohlcData.low.getValue());
                     double close = yAxis.getDisplayPosition(ohlcData.close.getValue());
-                    candle.update(open - high, open - low, open - close, barWidth, mutableInstantData);
+                    candle.update(high - open, low - open, close - open, barWidth, mutableInstantData);
                     // position the candle
                     candle.setLayoutX(x);
                     candle.setLayoutY(open);
                 }
             }
+        }
+    }
+
+    private void clearSeriesPathNodes(Series<O> series) {
+        if (series.getNode() instanceof Path pathNode) {
+            pathNode.getElements().clear();
         }
     }
 
@@ -863,14 +865,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     protected void updateAxisRange() {
         final MutableInstantAxis xa = getXAxis();
         final OhlcDataAxis<O> ya = getYAxis();
-        List<MutableInstantData> xData = null;
-        List<O> yData = null;
-        if (xa.isAutoRanging()) {
-            xData = new ArrayList<>();
-        }
-        if (ya.isAutoRanging()) {
-            yData = new ArrayList<>();
-        }
+        List<MutableInstantData> xData = getAutoRangingAxis(xa.isAutoRanging());
+        List<O> yData = getAutoRangingAxis(ya.isAutoRanging());
         if (xData != null || yData != null) {
             for (Series<O> series : getData()) {
                 for (Data<O> data : series.getData()) {
@@ -889,6 +885,11 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 ya.invalidateRange(yData);
             }
         }
+    }
+
+    private <T> List<T> getAutoRangingAxis(boolean isAutoRanging) {
+        // FIXME: recycle List
+        return isAutoRanging ? new ArrayList<>() : null;
     }
 
     /**
@@ -1076,10 +1077,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
     public final BooleanProperty verticalGridLinesVisibleProperty() {
         return verticalGridLinesVisible;
-    }
-
-    protected final Iterator<Data<O>> getDisplayedDataIterator(final Series<O> series) {
-        return Collections.unmodifiableList(series.getDisplayedData()).iterator();
     }
 
     protected final MutableInstantData getCurrentDisplayedXValue(Data<O> item) {
