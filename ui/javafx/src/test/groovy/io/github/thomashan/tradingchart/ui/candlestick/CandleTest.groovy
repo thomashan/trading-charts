@@ -11,7 +11,7 @@ class CandleTest {
 
     @BeforeEach
     void setUp() {
-        this.candle = new Candle("", "")
+        this.candle = new Candle()
         this.mutableInstantData = MutableInstantData.emptyFull()
     }
 

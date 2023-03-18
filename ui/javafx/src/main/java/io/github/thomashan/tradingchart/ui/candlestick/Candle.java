@@ -7,11 +7,20 @@ import javafx.scene.shape.Line;
 
 public class Candle extends Group {
     public static final double SMALLEST_BAR_HEIGHT = 1;
+    private static final String CANDLESTICK_STYLE = "candlestick-candle";
+    private static final String CANDLESTICK_LINE = "candlestick-line";
+    private static final String CANDLESTICK_BAR = "candlestick-bar";
+    private static final String OPEN_ABOVE_CLOSE = "open-above-close";
+    private static final String CLOSE_ABOVE_OPEN = "close-above-open";
     private Line highLowLine = new Line();
     private Region bar = new Region();
     private String seriesStyleClass;
     private String dataStyleClass;
     private boolean openAboveClose = true;
+
+    public Candle() {
+        this(null, null);
+    }
 
     public Candle(String seriesStyleClass, String dataStyleClass) {
         setAutoSizeChildren(false);
@@ -21,18 +30,19 @@ public class Candle extends Group {
         updateStyleClasses();
     }
 
-    public void update(double openMinusHigh, double openMinusLow, double openMinusClose, double barWidth,
+    public void update(double highMinusOpen, double lowMinusOpen, double closeMinusOpen, double barWidth,
                        MutableInstantData mutableInstantData) {
-        checkPreconditions(openMinusHigh, openMinusLow, openMinusClose, mutableInstantData);
-        this.openAboveClose = openMinusClose < 0;
-        highLowLine.setStartY(openMinusHigh);
-        highLowLine.setEndY(openMinusLow);
-        double barHeight = openMinusClose == 0 ? SMALLEST_BAR_HEIGHT : openMinusClose;
+        checkPreconditions(highMinusOpen, lowMinusOpen, closeMinusOpen, mutableInstantData);
+        openAboveClose = closeMinusOpen < 0;
+        highLowLine.strokeWidthProperty().set(20);
+        highLowLine.setStartY(highMinusOpen);
+        highLowLine.setEndY(lowMinusOpen);
+        double barHeight = closeMinusOpen == 0 ? SMALLEST_BAR_HEIGHT : closeMinusOpen;
         double halfBarWidth = barWidth / 2;
         if (openAboveClose) {
             bar.resizeRelocate(-halfBarWidth, 0, barWidth, -barHeight);
         } else {
-            bar.resizeRelocate(-halfBarWidth, -openMinusClose, barWidth, barHeight);
+            bar.resizeRelocate(-halfBarWidth, -closeMinusOpen, barWidth, barHeight);
         }
         updateStyleClasses();
     }
@@ -69,10 +79,10 @@ public class Candle extends Group {
     }
 
     private void updateStyleClasses() {
-        final String aboveClose = openAboveClose ? "open-above-close" : "close-above-open";
-        getStyleClass().setAll("candlestick-candle", seriesStyleClass, dataStyleClass);
-        highLowLine.getStyleClass().setAll("candlestick-line", seriesStyleClass, dataStyleClass, aboveClose);
-        bar.getStyleClass().setAll("candlestick-bar", seriesStyleClass, dataStyleClass, aboveClose);
+        final String aboveClose = openAboveClose ? OPEN_ABOVE_CLOSE : CLOSE_ABOVE_OPEN;
+        getStyleClass().setAll(CANDLESTICK_STYLE, seriesStyleClass, dataStyleClass);
+        highLowLine.getStyleClass().setAll(CANDLESTICK_LINE, seriesStyleClass, dataStyleClass, aboveClose);
+        bar.getStyleClass().setAll(CANDLESTICK_BAR, seriesStyleClass, dataStyleClass, aboveClose);
     }
 
     public Region getBar() {

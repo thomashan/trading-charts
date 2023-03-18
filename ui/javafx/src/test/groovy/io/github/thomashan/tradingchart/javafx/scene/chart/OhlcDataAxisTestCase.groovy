@@ -36,6 +36,11 @@ abstract class OhlcDataAxisTestCase<O extends OhlcData<O, P>, P extends PriceDat
     }
 
     @Test
+    void testGetLowerBound() {
+        assert 0 == ohlcDataAxis.getLowerBound()
+    }
+
+    @Test
     void testGetDisplayPositionObject_Open() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData)
         assert calculateFromTop(100, ohlcData.value) == displayPosition

@@ -194,12 +194,16 @@ public class Series<O extends OhlcData<O, ?>> {
         protected void invalidated() {
             final ObservableList<OhlcChart.Data<O>> current = getValue();
             // add remove listeners
-            if (old != null) old.removeListener(dataChangeListener);
-            if (current != null) current.addListener(dataChangeListener);
+            if (old != null) {
+                old.removeListener(dataChangeListener);
+            }
+            if (current != null) {
+                current.addListener(dataChangeListener);
+            }
             // fire data change event if series are added or removed
             if (old != null || current != null) {
                 final List<OhlcChart.Data<O>> removed = (old != null) ? old : Collections.emptyList();
-                final int toIndex = (current != null) ? current.size() : 0;
+                final int toIndex = current != null ? current.size() : 0;
                 // let data listener know all old data have been removed and new data that has been added
                 if (toIndex > 0 || !removed.isEmpty()) {
                     dataChangeListener.onChanged(new NonIterableChange<>(0, toIndex, current) {
@@ -270,7 +274,9 @@ public class Series<O extends OhlcData<O, ?>> {
      */
     public Series(ObservableList<OhlcChart.Data<O>> data) {
         setData(data);
-        for (OhlcChart.Data<O> item : data) item.setSeries(this);
+        for (int i = 0; i < data.size(); i++) {
+            data.get(i).setSeries(this);
+        }
     }
 
     /**

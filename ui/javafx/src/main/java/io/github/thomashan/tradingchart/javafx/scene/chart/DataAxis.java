@@ -845,8 +845,8 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         // We need to init to the lowest negative double (which is NOT Double.MIN_VALUE)
         // in order to find the maximum (positive or negative)
         dataMaxValue = -Double.MAX_VALUE;
-        // FIXME: bytewatcher test this. use a for loop with integer
-        for (D dataValue : data) {
+        for (int i = 0; i < data.size(); i++) {
+            D dataValue = data.get(i);
             dataMinValue = Math.min(dataMinValue, dataValue.getLow());
             dataMaxValue = Math.max(dataMaxValue, dataValue.getHigh());
         }
