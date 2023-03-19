@@ -709,12 +709,12 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             Series<O> series = getData().get(index);
             clearSeriesPathNodes(series);
             List<OhlcChart.Data<O>> displayedData = series.getDisplayedData();
+            // FIXME: the barWidth should be settable by CSS
+            double barWidth = 0.4 * xAxis.getGranularityWidth();
 
             for (int i = 0; i < displayedData.size(); i++) {
                 Data<O> item = displayedData.get(i);
-                MutableInstantAxis xAxis = getXAxis();
                 xAxis.setGranularityWidth();
-                OhlcDataAxis<O> yAxis = getYAxis();
                 MutableInstantData mutableInstantData = getCurrentDisplayedXValue(item);
                 O ohlcData = getCurrentDisplayedYValue(item);
                 double x = xAxis.getDisplayPosition(mutableInstantData);
@@ -722,12 +722,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 // (i.e. the highest element will have x value of zero and lowest position x value of xMax)
                 double open = yAxis.getDisplayPosition(ohlcData);
                 Node itemNode = item.getNode();
-                double candleWidth = 0.9 * xAxis.getGranularityWidth();
-                double barWidth = -1;
                 if (itemNode instanceof Candle candle && ohlcData != null) {
-                    if (-1 == barWidth) {
-                        barWidth = candleWidth == -1 ? candle.getBar().prefWidth(-1) : candleWidth;
-                    }
                     double high = yAxis.getDisplayPosition(ohlcData.high.getValue());
                     double low = yAxis.getDisplayPosition(ohlcData.low.getValue());
                     double close = yAxis.getDisplayPosition(ohlcData.close.getValue());
@@ -744,10 +739,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         if (series.getNode() instanceof Path pathNode) {
             pathNode.getElements().clear();
         }
-    }
-
-    private double calculateGranularityWidth(Granularity granularity) {
-        return 0;
     }
 
     protected void seriesRemoved(Series<O> series) {
