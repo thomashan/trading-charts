@@ -6,6 +6,7 @@ import io.github.thomashan.tradingchart.time.format.DateTimeFormatters;
 
 public class MutableInstantData implements Copyable<MutableInstantData>, AxisData<MutableInstantData> {
     private static final long NANOS_PER_SECOND = 1_000_000_000;
+    private static final double NANOS_PER_SECOND_DOUBLE = (double) NANOS_PER_SECOND;
     private MutableInstant mutableInstant;
     private double value;
 
@@ -32,7 +33,7 @@ public class MutableInstantData implements Copyable<MutableInstantData>, AxisDat
 
     private void setMutableInstant(MutableInstant mutableInstant) {
         this.mutableInstant = mutableInstant;
-        this.value = mutableInstant.getEpochSecond() + (mutableInstant.getNano() / (double) NANOS_PER_SECOND);
+        this.value = mutableInstant.getEpochSecond() + (mutableInstant.getNano() / NANOS_PER_SECOND_DOUBLE);
     }
 
     @Override

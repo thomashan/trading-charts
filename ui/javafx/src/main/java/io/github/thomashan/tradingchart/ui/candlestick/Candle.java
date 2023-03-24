@@ -34,7 +34,8 @@ public class Candle extends Group {
                        MutableInstantData mutableInstantData) {
         checkPreconditions(highMinusOpen, lowMinusOpen, closeMinusOpen, mutableInstantData);
         openAboveClose = closeMinusOpen < 0;
-        highLowLine.strokeWidthProperty().set(20);
+        // FIXME: the lineWidth should be settable by CSS
+//        highLowLine.strokeWidthProperty().set(20);
         highLowLine.setStartY(highMinusOpen);
         highLowLine.setEndY(lowMinusOpen);
         double barHeight = closeMinusOpen == 0 ? SMALLEST_BAR_HEIGHT : closeMinusOpen;

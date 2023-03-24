@@ -1,5 +1,6 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
+import io.github.thomashan.tradingchart.lang.DoubleUtil;
 import io.github.thomashan.tradingchart.time.MutableInstant;
 import io.github.thomashan.tradingchart.ui.data.Granularity;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
@@ -10,6 +11,7 @@ import javafx.util.StringConverter;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +26,8 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
     private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
     private final Map<Font, Map<Granularity, Double>> tickLabelSizes = new HashMap<>();
     private final Text text = new Text();
+    private final double[] rangeObject = new double[]{0, 0, 0, 0, 0, 0};
+    private final Object[] autoRangeObject = new Object[]{rangeObject, null};
     private final Function<Font, Map<Granularity, Double>> labelSizeCreator = font -> {
         text.setFont(font);
         return MutableInstantFormatter.TICK_FORMATTER_STRINGS.entrySet().stream()
@@ -78,6 +82,69 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
         return tickLabelSizes.computeIfAbsent(getTickLabelFont(), labelSizeCreator).get(granularity);
     }
 
+    @Override
+    protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
+        double tickUnit = getGranularityValue();
+        double padding = tickUnit / 2;
+        // if min and max are not zero then add padding to them
+        double paddedMin = minValue - padding;
+        double paddedMax = maxValue + padding;
+        // calculate tick unit for the number of ticks can have in the given data range
+        // search for the best tick unit that fits
+        String formatter = getFormatterString(0, 0);
+        // calculate new scale
+        double newScale = calculateNewScale(length, paddedMin, paddedMax);
+        // return new range
+        double[] rangeObject = (double[]) autoRangeObject[0];
+        rangeObject[0] = paddedMin;
+        rangeObject[1] = paddedMax;
+        rangeObject[2] = tickUnit;
+        rangeObject[3] = newScale;
+        rangeObject[4] = minValue;
+        rangeObject[5] = maxValue;
+        autoRangeObject[1] = formatter;
+        return autoRangeObject;
+    }
+
+    @Override
+    protected List<MutableInstantData> calculateTickValues(double length, Object range) {
+        Object[] rangeProps = (Object[]) range;
+        double[] rangeObject = (double[]) rangeProps[0];
+        double lowerBound = rangeObject[4];
+        double upperBound = rangeObject[5];
+        double tickUnit = rangeObject[2];
+        getTickValues().clear();
+        if (lowerBound == upperBound) {
+            getTickValues().add(getTickValue().setValue(lowerBound).newInstance());
+        } else if (tickUnit <= 0) {
+            getTickValues().add(getTickValue().setValue(lowerBound).newInstance());
+            getTickValues().add(getTickValue().setValue(upperBound).newInstance());
+        } else if (tickUnit > 0) {
+            getTickValues().add(getTickValue().setValue(lowerBound).newInstance());
+            if (((upperBound - lowerBound) / tickUnit) > 2000) {
+                // This is a ridiculous amount of major tick marks, something has probably gone wrong
+                System.err.println("Warning we tried to create more than 2000 major tick marks on a ObjectAxis. " + "Lower Bound=" + lowerBound + ", Upper Bound=" + upperBound + ", Tick Unit=" + tickUnit);
+            } else if (lowerBound + tickUnit < upperBound) {
+                // If tickUnit is integer, start with the nearest integer
+                double majorInDoubleValue = Math.rint(tickUnit) == tickUnit ? Math.ceil(lowerBound) : lowerBound + tickUnit;
+                MutableInstantData major = getTickValue().setValue(majorInDoubleValue);
+                int count = (int) Math.ceil((upperBound - majorInDoubleValue) / tickUnit);
+                for (int i = 0; majorInDoubleValue < upperBound && i < count; majorInDoubleValue = DoubleUtil.round(majorInDoubleValue + tickUnit, 15), i++) {
+                    major.setValue(majorInDoubleValue);
+                    if (!getTickValues().contains(major)) {
+                        getTickValues().add(major.newInstance());
+                    }
+                }
+            }
+            getTickValues().add(getTickValue().setValue(upperBound).newInstance());
+        }
+        return getTickValues();
+    }
+
+    double getGranularityValue() {
+        return GranularityToMutableInstant.getMutableInstant(granularity).getValue();
+    }
+
     public Granularity getGranularity() {
         return granularity;
     }
@@ -100,7 +167,7 @@ public class MutableInstantAxis extends DataAxis<MutableInstantData> {
         return getDisplayPosition(mutableInstant);
     }
 
-    public static class DefaultFormatter extends StringConverter<MutableInstantData> {
+    static class DefaultFormatter extends StringConverter<MutableInstantData> {
         private static final Map<String, DateTimeFormatter> FORMATTERS = new HashMap<>();
         private static final Function<String, DateTimeFormatter> FORMATTER_CREATOR = pattern -> DateTimeFormatter.ofPattern(pattern);
         private final MutableInstantData mutableInstant = MutableInstantData.of(MutableInstant.EPOCH.newInstance());

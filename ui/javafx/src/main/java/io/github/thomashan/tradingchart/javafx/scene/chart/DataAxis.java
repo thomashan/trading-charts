@@ -1,6 +1,5 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
-import io.github.thomashan.tradingchart.lang.DoubleUtil;
 import io.github.thomashan.tradingchart.ui.data.AxisData;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
 import javafx.animation.KeyFrame;
@@ -44,20 +43,23 @@ import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_COUNT;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_LENGTH;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.MINOR_TICK_VISIBLE;
-import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.NUMBER_FORMAT_DEFAULT;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.SCALE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.TICK_LABEL_FORMATTER;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.TICK_UNIT;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.AxisConstants.UPPER_BOUND;
 
 public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
+    private static final ZoneId UTC = ZoneId.of("UTC");
     private Object currentAnimationID;
     private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
     private final StringProperty currentFormatterProperty = new SimpleStringProperty(this, CURRENT_FORMATTER, AxisConstants.EMPTY_STRING);
-
     private final StringConverter<D> defaultFormatter = createDefaultFormatter();
-    private D currentValue = createCurrentValue();
-    private D major = createMajor();
+    private final D currentValue = createCurrentValue();
+    private final D major = createMajor();
+
+    protected D getMajor() {
+        return major;
+    }
 
     boolean measureInvalid = false;
 
@@ -75,6 +77,12 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
     }
 
     protected abstract D createTickValue();
+
+    private final List<D> tickValues = new ArrayList<>();
+
+    protected List<D> getTickValues() {
+        return tickValues;
+    }
 
 
     // -------------- PUBLIC PROPERTIES --------------------------------------------------------------------------------
@@ -343,16 +351,16 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final StringConverter<D> getTickLabelFormatter() {
+    public StringConverter<D> getTickLabelFormatter() {
         StringConverter<D> stringConverter = tickLabelFormatter.getValue();
         return null == stringConverter ? defaultFormatter : stringConverter;
     }
 
-    public final void setTickLabelFormatter(StringConverter<D> value) {
+    public void setTickLabelFormatter(StringConverter<D> value) {
         tickLabelFormatter.setValue(value);
     }
 
-    public final ObjectProperty<StringConverter<D>> tickLabelFormatterProperty() {
+    public ObjectProperty<StringConverter<D>> tickLabelFormatterProperty() {
         return tickLabelFormatter;
     }
 
@@ -569,11 +577,12 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
     @Override
     protected void setRange(Object range, boolean animate) {
         if (range instanceof Object[] rangeProps) {
-            final double lowerBound = (Double) rangeProps[0];
-            final double upperBound = (Double) rangeProps[1];
-            final double tickUnit = (Double) rangeProps[2];
-            final double scale = (Double) rangeProps[3];
-            final String formatter = (String) rangeProps[4];
+            double[] rangeObject = (double[]) rangeProps[0];
+            final double lowerBound = rangeObject[0];
+            final double upperBound = rangeObject[1];
+            final double tickUnit = rangeObject[2];
+            final double scale = rangeObject[3];
+            final String formatter = (String) rangeProps[1];
             currentFormatterProperty.set(formatter);
             final double oldLowerBound = getLowerBound();
             setLowerBound(lowerBound);
@@ -587,47 +596,6 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
                 setScale(scale);
             }
         }
-    }
-
-    /**
-     * Calculates a list of all the data values for each tick mark in range
-     *
-     * @param length The length of the axis in display units
-     * @param range  A range object returned from autoRange()
-     * @return A list of tick marks that fit along the axis if it was the given length
-     */
-    @Override
-    protected List<D> calculateTickValues(double length, Object range) {
-        final Object[] rangeProps = (Object[]) range;
-        final double lowerBound = (Double) rangeProps[0];
-        final double upperBound = (Double) rangeProps[1];
-        final double tickUnit = (Double) rangeProps[2];
-        List<D> tickValues = new ArrayList<>();
-        if (lowerBound == upperBound) {
-            tickValues.add(tickValue.setValue(lowerBound).newInstance());
-        } else if (tickUnit <= 0) {
-            tickValues.add(tickValue.setValue(lowerBound).newInstance());
-            tickValues.add(tickValue.setValue(upperBound).newInstance());
-        } else if (tickUnit > 0) {
-            tickValues.add(tickValue.setValue(lowerBound).newInstance());
-            if (((upperBound - lowerBound) / tickUnit) > 2000) {
-                // This is a ridiculous amount of major tick marks, something has probably gone wrong
-                System.err.println("Warning we tried to create more than 2000 major tick marks on a ObjectAxis. " + "Lower Bound=" + lowerBound + ", Upper Bound=" + upperBound + ", Tick Unit=" + tickUnit);
-            } else if (lowerBound + tickUnit < upperBound) {
-                // If tickUnit is integer, start with the nearest integer
-                double majorInDoubleValue = Math.rint(tickUnit) == tickUnit ? Math.ceil(lowerBound) : lowerBound + tickUnit;
-                D major = tickValue.setValue(majorInDoubleValue);
-                int count = (int) Math.ceil((upperBound - majorInDoubleValue) / tickUnit);
-                for (int i = 0; majorInDoubleValue < upperBound && i < count; majorInDoubleValue = DoubleUtil.round(majorInDoubleValue + tickUnit, 15), i++) {
-                    major.setValue(majorInDoubleValue);
-                    if (!tickValues.contains(major)) {
-                        tickValues.add(major.newInstance());
-                    }
-                }
-            }
-            tickValues.add(tickValue.setValue(upperBound).newInstance());
-        }
-        return tickValues;
     }
 
     /**
@@ -681,7 +649,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
     @Override
     protected Dimension2D measureTickMarkSize(D value, Object range) {
         final Object[] rangeProps = (Object[]) range;
-        final String formatter = (String) rangeProps[4];
+        final String formatter = (String) rangeProps[1];
         return measureTickMarkSize(value, getTickLabelRotation(), formatter);
     }
 
@@ -693,20 +661,22 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @param numFormatter The number formatter
      * @return size of tick mark label for given value
      */
-    private Dimension2D measureTickMarkSize(D value, double rotation, String numFormatter) {
-        String labelText;
+    protected Dimension2D measureTickMarkSize(D value, double rotation, String numFormatter) {
         StringConverter<D> formatter = getTickLabelFormatter();
-        if (formatter == null) {
-            formatter = defaultFormatter;
-        }
-        if (formatter instanceof DataAxis.DefaultFormatter<D> defaultFormatter) {
-            labelText = defaultFormatter.toString(value, numFormatter);
-        } else if (formatter instanceof MutableInstantAxis.DefaultFormatter defaultFormatter) {
-            labelText = defaultFormatter.toString((MutableInstantData) value, numFormatter, ZoneId.of("UTC"));
-        } else {
-            labelText = formatter.toString(value);
-        }
+        String labelText = getLabelText(formatter, value, numFormatter);
         return measureTickMarkLabelSize(labelText, rotation);
+    }
+
+    private String getLabelText(StringConverter<D> formatter,
+                                D value,
+                                String numFormatter) {
+        if (formatter instanceof DataAxis.DefaultFormatter<D> defaultFormatter) {
+            return defaultFormatter.toString(value, numFormatter);
+        } else if (formatter instanceof MutableInstantAxis.DefaultFormatter defaultFormatter &&
+                value instanceof MutableInstantData mutableInstantData) {
+            return defaultFormatter.toString(mutableInstantData, numFormatter, UTC);
+        }
+        return formatter.toString(value);
     }
 
     protected abstract String getFormatterString(double tickUnit, double ratio);
@@ -720,99 +690,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @param labelSize The approximate average size a label takes along the axis
      * @return The calculated range
      */
-    protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
-        final Side side = getSide();
-        // check if we need to force zero into range
-        if (isForceZeroInRange()) {
-            if (maxValue < 0) {
-                maxValue = 0;
-            } else if (minValue > 0) {
-                minValue = 0;
-            }
-        }
-        // calculate the number of tick-marks we can fit in the given length
-        int numOfTickMarks = (int) Math.floor(length / labelSize);
-        // can never have less than 2 tick marks one for each end
-        numOfTickMarks = Math.max(numOfTickMarks, 2);
-        int minorTickCount = Math.max(getMinorTickCount(), 1);
-
-        double range = maxValue - minValue;
-
-        if (range != 0 && range / (numOfTickMarks * minorTickCount) <= Math.ulp(minValue)) {
-            range = 0;
-        }
-        // pad min and max by 2%, checking if the range is zero
-        final double paddedRange = (range == 0) ? minValue == 0 ? 2 : Math.abs(minValue) * 0.02 : Math.abs(range) * 1.02;
-        final double padding = (paddedRange - range) / 2;
-        // if min and max are not zero then add padding to them
-        double paddedMin = minValue - padding;
-        double paddedMax = maxValue + padding;
-        // check padding has not pushed min or max over zero line
-        if ((paddedMin < 0 && minValue >= 0) || (paddedMin > 0 && minValue <= 0)) {
-            // padding pushed min above or below zero so clamp to 0
-            paddedMin = 0;
-        }
-        if ((paddedMax < 0 && maxValue >= 0) || (paddedMax > 0 && maxValue <= 0)) {
-            // padding pushed min above or below zero so clamp to 0
-            paddedMax = 0;
-        }
-        // calculate tick unit for the number of ticks can have in the given data range
-        double tickUnit = paddedRange / (double) numOfTickMarks;
-        // search for the best tick unit that fits
-        double tickUnitRounded = 0;
-        double minRounded = 0;
-        double maxRounded = 0;
-        int count = 0;
-        double reqLength = Double.MAX_VALUE;
-        String formatter = NUMBER_FORMAT_DEFAULT;
-        // loop till we find a set of ticks that fit length and result in a total of less than 20 tick marks
-        while (reqLength > length || count > 20) {
-            int exp = (int) Math.floor(Math.log10(tickUnit));
-            final double mant = tickUnit / Math.pow(10, exp);
-            double ratio = mant;
-            if (mant > 5d) {
-                exp++;
-                ratio = 1;
-            } else if (mant > 1d) {
-                ratio = mant > 2.5 ? 5 : 2.5;
-            }
-            formatter = getFormatterString(tickUnit, ratio);
-            tickUnitRounded = ratio * Math.pow(10, exp);
-            // move min and max to nearest tick mark
-            minRounded = Math.floor(paddedMin / tickUnitRounded) * tickUnitRounded;
-            maxRounded = Math.ceil(paddedMax / tickUnitRounded) * tickUnitRounded;
-            // calculate the required length to display the chosen tick marks for real, this will handle if there are
-            // huge numbers involved etc or special formatting of the tick mark label text
-            double maxReqTickGap = 0;
-            double last = 0;
-            count = (int) Math.ceil((maxRounded - minRounded) / tickUnitRounded);
-            for (int i = 0; major.getLow() <= maxRounded && i < count; major.add(tickUnitRounded), i++) {
-                Dimension2D markSize = measureTickMarkSize(major, getTickLabelRotation(), formatter);
-                double size = side.isVertical() ? markSize.getHeight() : markSize.getWidth();
-                if (i == 0) { // first
-                    last = size / 2;
-                } else {
-                    maxReqTickGap = Math.max(maxReqTickGap, last + 6 + (size / 2));
-                }
-            }
-            reqLength = (count - 1) * maxReqTickGap;
-            tickUnit = tickUnitRounded;
-
-            // fix for RT-35600 where a massive tick unit was being selected
-            // unnecessarily. There is probably a better solution, but this works
-            // well enough for now.
-            if (numOfTickMarks == 2 && reqLength > length) {
-                break;
-            }
-            if (reqLength > length || count > 20) {
-                tickUnit *= 2; // This is just for the while loop, if there are still too many ticks
-            }
-        }
-        // calculate new scale
-        final double newScale = calculateNewScale(length, minRounded, maxRounded);
-        // return new range
-        return new Object[]{minRounded, maxRounded, tickUnitRounded, newScale, formatter};
-    }
+    protected abstract Object autoRange(double minValue, double maxValue, double length, double labelSize);
 
     /**
      * Calculates new scale for this axis. This should not affect any properties of this axis.
@@ -945,6 +823,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      *
      * @since JavaFX 2.0
      */
+    // FIXME: maybe we should get rid of DataAxis.DefaultFormatter and rely on the sub-classes default formatter e.g. MutableInstantAxis.DefaultFormatter
     public static class DefaultFormatter<D extends AxisData<D>> extends StringConverter<D> {
         private DecimalFormat formatter;
         private String prefix = null;
