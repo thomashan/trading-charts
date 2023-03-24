@@ -111,15 +111,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final boolean isForceZeroInRange() {
+    public boolean isForceZeroInRange() {
         return forceZeroInRange.getValue();
     }
 
-    public final void setForceZeroInRange(boolean value) {
+    public void setForceZeroInRange(boolean value) {
         forceZeroInRange.setValue(value);
     }
 
-    public final BooleanProperty forceZeroInRangeProperty() {
+    public BooleanProperty forceZeroInRangeProperty() {
         return forceZeroInRange;
     }
 
@@ -151,15 +151,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final double getTickUnit() {
+    public double getTickUnit() {
         return tickUnit.get();
     }
 
-    public final void setTickUnit(double value) {
+    public void setTickUnit(double value) {
         tickUnit.set(value);
     }
 
-    public final DoubleProperty tickUnitProperty() {
+    public DoubleProperty tickUnitProperty() {
         return tickUnit;
     }
 
@@ -186,15 +186,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final double getLowerBound() {
+    public double getLowerBound() {
         return lowerBound.get();
     }
 
-    public final void setLowerBound(double value) {
+    public void setLowerBound(double value) {
         lowerBound.set(value);
     }
 
-    public final DoubleProperty lowerBoundProperty() {
+    public DoubleProperty lowerBoundProperty() {
         return lowerBound;
     }
 
@@ -255,15 +255,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final boolean isMinorTickVisible() {
+    public boolean isMinorTickVisible() {
         return minorTickVisible.get();
     }
 
-    public final void setMinorTickVisible(boolean value) {
+    public void setMinorTickVisible(boolean value) {
         minorTickVisible.set(value);
     }
 
-    public final BooleanProperty minorTickVisibleProperty() {
+    public BooleanProperty minorTickVisibleProperty() {
         return minorTickVisible;
     }
 
@@ -279,15 +279,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final double getScale() {
+    public double getScale() {
         return scale.get();
     }
 
-    protected final void setScale(double scale) {
+    protected void setScale(double scale) {
         this.scale.set(scale);
     }
 
-    public final ReadOnlyDoubleProperty scaleProperty() {
+    public ReadOnlyDoubleProperty scaleProperty() {
         return scale.getReadOnlyProperty();
     }
 
@@ -318,15 +318,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final double getUpperBound() {
+    public double getUpperBound() {
         return upperBound.get();
     }
 
-    public final void setUpperBound(double value) {
+    public void setUpperBound(double value) {
         upperBound.set(value);
     }
 
-    public final DoubleProperty upperBoundProperty() {
+    public DoubleProperty upperBoundProperty() {
         return upperBound;
     }
 
@@ -389,15 +389,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final double getMinorTickLength() {
+    public double getMinorTickLength() {
         return minorTickLength.get();
     }
 
-    public final void setMinorTickLength(double value) {
+    public void setMinorTickLength(double value) {
         minorTickLength.set(value);
     }
 
-    public final DoubleProperty minorTickLengthProperty() {
+    public DoubleProperty minorTickLengthProperty() {
         return minorTickLength;
     }
 
@@ -428,15 +428,15 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         }
     };
 
-    public final int getMinorTickCount() {
+    public int getMinorTickCount() {
         return minorTickCount.get();
     }
 
-    public final void setMinorTickCount(int value) {
+    public void setMinorTickCount(int value) {
         minorTickCount.set(value);
     }
 
-    public final IntegerProperty minorTickCountProperty() {
+    public IntegerProperty minorTickCountProperty() {
         return minorTickCount;
     }
 
@@ -578,13 +578,13 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
     protected void setRange(Object range, boolean animate) {
         if (range instanceof Object[] rangeProps) {
             double[] rangeObject = (double[]) rangeProps[0];
-            final double lowerBound = rangeObject[0];
-            final double upperBound = rangeObject[1];
-            final double tickUnit = rangeObject[2];
-            final double scale = rangeObject[3];
-            final String formatter = (String) rangeProps[1];
+            double lowerBound = rangeObject[0];
+            double upperBound = rangeObject[1];
+            double tickUnit = rangeObject[2];
+            double scale = rangeObject[3];
+            String formatter = (String) rangeProps[1];
             currentFormatterProperty.set(formatter);
-            final double oldLowerBound = getLowerBound();
+            double oldLowerBound = getLowerBound();
             setLowerBound(lowerBound);
             setUpperBound(upperBound);
             setTickUnit(tickUnit);
@@ -604,18 +604,18 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @return List of data values where to draw minor tick marks
      */
     protected List<Number> calculateMinorTickMarks() {
-        final List<Number> minorTickMarks = new ArrayList<>();
-        final double lowerBound = getLowerBound();
-        final double upperBound = getUpperBound();
-        final double tickUnit = getTickUnit();
-        final double minorUnit = tickUnit / Math.max(1, getMinorTickCount());
+        List<Number> minorTickMarks = new ArrayList<>();
+        double lowerBound = getLowerBound();
+        double upperBound = getUpperBound();
+        double tickUnit = getTickUnit();
+        double minorUnit = tickUnit / Math.max(1, getMinorTickCount());
         if (tickUnit > 0) {
             if (((upperBound - lowerBound) / minorUnit) > 10000) {
                 // This is a ridiculous amount of major tick marks, something has probably gone wrong
                 System.err.println("Warning we tried to create more than 10000 minor tick marks on a ObjectAxis. " + "Lower Bound=" + getLowerBound() + ", Upper Bound=" + getUpperBound() + ", Tick Unit=" + tickUnit);
                 return minorTickMarks;
             }
-            final boolean tickUnitIsInteger = Math.rint(tickUnit) == tickUnit;
+            boolean tickUnitIsInteger = Math.rint(tickUnit) == tickUnit;
             if (tickUnitIsInteger) {
                 double minor = Math.floor(lowerBound) + minorUnit;
                 int count = (int) Math.ceil((Math.ceil(lowerBound) - minor) / minorUnit);
@@ -628,7 +628,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
             double major = tickUnitIsInteger ? Math.ceil(lowerBound) : lowerBound;
             int count = (int) Math.ceil((upperBound - major) / tickUnit);
             for (int i = 0; major < upperBound && i < count; major += tickUnit, i++) {
-                final double next = Math.min(major + tickUnit, upperBound);
+                double next = Math.min(major + tickUnit, upperBound);
                 double minor = major + minorUnit;
                 int minorCount = (int) Math.ceil((next - minor) / minorUnit);
                 for (int j = 0; minor < next && j < minorCount; minor += minorUnit, j++) {
@@ -648,8 +648,8 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      */
     @Override
     protected Dimension2D measureTickMarkSize(D value, Object range) {
-        final Object[] rangeProps = (Object[]) range;
-        final String formatter = (String) rangeProps[1];
+        Object[] rangeProps = (Object[]) range;
+        String formatter = (String) rangeProps[1];
         return measureTickMarkSize(value, getTickLabelRotation(), formatter);
     }
 
@@ -700,8 +700,8 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
      * @param upperBound The upper bound value
      * @return new scale to fit the range from lower bound to upper bound in the given display length
      */
-    protected final double calculateNewScale(double length, double lowerBound, double upperBound) {
-        final Side side = getSide();
+    protected double calculateNewScale(double length, double lowerBound, double upperBound) {
+        Side side = getSide();
         double scale = (upperBound - lowerBound) == 0 ? length : length / (upperBound - lowerBound);
         if (side.isVertical()) {
             offset = length;
@@ -784,7 +784,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
 
         static {
-            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Axis.getClassCssMetaData());
+            List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Axis.getClassCssMetaData());
             styleables.add(TICK_UNIT);
             styleables.add(MINOR_TICK_COUNT);
             styleables.add(MINOR_TICK_LENGTH);
@@ -836,7 +836,7 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
          */
         public DefaultFormatter(DataAxis<D> axis) {
             formatter = axis.isAutoRanging() ? new DecimalFormat(axis.currentFormatterProperty.get()) : new DecimalFormat();
-            final ChangeListener<Object> axisListener = (observable, oldValue, newValue) -> {
+            ChangeListener<Object> axisListener = (observable, oldValue, newValue) -> {
                 formatter = axis.isAutoRanging() ? new DecimalFormat(axis.currentFormatterProperty.get()) : new DecimalFormat();
             };
             axis.currentFormatterProperty.addListener(axisListener);

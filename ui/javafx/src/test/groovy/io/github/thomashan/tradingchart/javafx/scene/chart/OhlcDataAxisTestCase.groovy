@@ -43,31 +43,31 @@ abstract class OhlcDataAxisTestCase<O extends OhlcData<O, P>, P extends PriceDat
     @Test
     void testGetDisplayPositionObject_Open() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData)
-        assert calculateFromTop(100, ohlcData.value) == displayPosition
+        assert calculateFromTop(100, ohlcData.getValue()) == displayPosition
     }
 
     @Test
     void testGetDisplayPositionDouble_Open() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData.open)
-        assert calculateFromTop(100, ohlcData.value) == displayPosition
+        assert calculateFromTop(100, ohlcData.getValue()) == displayPosition
     }
 
     @Test
     void testGetDisplayPosition_High() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData.high)
-        assert calculateFromTop(100, ohlcData.high) == displayPosition
+        assert calculateFromTop(100, ohlcData.getHigh()) == displayPosition
     }
 
     @Test
     void testGetDisplayPosition_Low() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData.low)
-        assert calculateFromTop(100, ohlcData.low) == displayPosition
+        assert calculateFromTop(100, ohlcData.getLow()) == displayPosition
     }
 
     @Test
     void testGetDisplayPosition_Close() {
         double displayPosition = ohlcDataAxis.getDisplayPosition(ohlcData.close)
-        assert calculateFromTop(100, ohlcData.close.value) == displayPosition
+        assert calculateFromTop(100, ohlcData.close.getValue()) == displayPosition
     }
 
     private autoRange(double height) {

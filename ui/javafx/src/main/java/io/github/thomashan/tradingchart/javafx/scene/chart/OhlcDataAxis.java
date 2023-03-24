@@ -130,8 +130,8 @@ public abstract class OhlcDataAxis<O extends OhlcData<O, ?>> extends DataAxis<O>
         double newScale = calculateNewScale(length, minRounded, maxRounded);
         // return new range
         double[] rangeObject = (double[]) autoRangeObject[0];
-        rangeObject[0] = paddedMin;
-        rangeObject[1] = paddedMax;
+        rangeObject[0] = minRounded;
+        rangeObject[1] = maxRounded;
         rangeObject[2] = tickUnit;
         rangeObject[3] = newScale;
         autoRangeObject[1] = formatter;

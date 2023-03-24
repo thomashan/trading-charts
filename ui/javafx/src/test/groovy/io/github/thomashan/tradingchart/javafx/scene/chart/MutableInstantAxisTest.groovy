@@ -21,22 +21,22 @@ class MutableInstantAxisTest extends ApplicationTest {
     void testAutoRange_OneTick() {
         Object[] autoRangeObjects = mutableInstantAxis.autoRange(0, 0, 100, 10)
 
-        assert -D1_VALUE / 2 == autoRangeObjects[0]
-        assert D1_VALUE / 2 == autoRangeObjects[1]
-        assert D1_VALUE == autoRangeObjects[2]
-        assert 100 / D1_VALUE == autoRangeObjects[3]
-        assert "yyyy-MM-dd" == autoRangeObjects[4]
+        assert -D1_VALUE / 2 == autoRangeObjects[0][0]
+        assert D1_VALUE / 2 == autoRangeObjects[0][1]
+        assert D1_VALUE == autoRangeObjects[0][2]
+        assert 100 / D1_VALUE == autoRangeObjects[0][3]
+        assert "yyyy-MM-dd" == autoRangeObjects[1]
     }
 
     @Test
     void testAutoRange_TwoTicks() {
         Object[] autoRangeObjects = mutableInstantAxis.autoRange(0, D1_VALUE, 100, 10)
 
-        assert -D1_VALUE / 2 == autoRangeObjects[0]
-        assert 3 * D1_VALUE / 2 == autoRangeObjects[1]
-        assert D1_VALUE == autoRangeObjects[2]
-        assert 100 / (2 * D1_VALUE) == autoRangeObjects[3]
-        assert "yyyy-MM-dd" == autoRangeObjects[4]
+        assert -D1_VALUE / 2 == autoRangeObjects[0][0]
+        assert 3 * D1_VALUE / 2 == autoRangeObjects[0][1]
+        assert D1_VALUE == autoRangeObjects[0][2]
+        assert 100 / (2 * D1_VALUE) == autoRangeObjects[0][3]
+        assert "yyyy-MM-dd" == autoRangeObjects[1]
     }
 
     @Test
