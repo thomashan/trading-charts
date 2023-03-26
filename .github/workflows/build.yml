@@ -37,13 +37,11 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build --scan
-        env:
-          JAVA_OPTS: "-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k"
       - name: Bytewatcher
         timeout-minutes: 30
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: bytewatcher
+          arguments: bytewatcher --scan
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: failure()

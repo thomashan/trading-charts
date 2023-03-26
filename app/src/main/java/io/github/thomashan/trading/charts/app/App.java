@@ -1,23 +1,19 @@
 package io.github.thomashan.trading.charts.app;
 
-import io.github.thomashan.tradingchart.javafx.scene.chart.MidOhlcAxis;
+import io.github.thomashan.tradingchart.javafx.component.chart.ChartSection;
+import io.github.thomashan.tradingchart.javafx.component.menu.MenuSection;
+import io.github.thomashan.tradingchart.javafx.scene.chart.MainScene;
 import io.github.thomashan.tradingchart.javafx.scene.chart.MutableInstantAxis;
 import io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChart;
 import io.github.thomashan.tradingchart.javafx.scene.chart.OhlcDataAxis;
-import io.github.thomashan.tradingchart.javafx.scene.chart.Series;
 import io.github.thomashan.tradingchart.ui.data.MidData;
 import io.github.thomashan.tradingchart.ui.data.MidOhlcData;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static io.github.thomashan.tradingchart.time.MutableInstant.EPOCH;
@@ -35,6 +31,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        App app = new App();
+
         // FIXME: there is an error calculating the bar width if only one data point is available
 //        midOhlcData.put(MutableInstantData.of(EPOCH), MidOhlcData.of(MidData.of(1), MidData.of(2), MidData.of(0), MidData.of(1.5), 0, D1));
 //        midOhlcData.put(MutableInstantData.of(EPOCH.newInstance().plus(Duration.ofDays(1))), MidOhlcData.of(MidData.of(1), MidData.of(2), MidData.of(0), MidData.of(1.5), 0, D1));
@@ -72,38 +70,20 @@ public class App extends Application {
         midOhlcData.put(MutableInstantData.of(EPOCH.newInstance().plus(Duration.ofDays(29))), MidOhlcData.of(MidData.of(1.58828), MidData.of(1.58883), MidData.of(1.58776), MidData.of(1.58883), 0, D1));
         midOhlcData.put(MutableInstantData.of(EPOCH.newInstance().plus(Duration.ofDays(30))), MidOhlcData.of(MidData.of(1.58769), MidData.of(1.58800), MidData.of(1.58654), MidData.of(1.58800), 0, D1));
 
-        launch(args);
+        app.start(args);
+    }
+
+    public void start(String... args) {
+        Application.launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setScene(new Scene(createContent()));
+        primaryStage.setTitle("Trading Charts by @thomashan");
+        MainScene mainScene = new MainScene();
+        mainScene.getMainContainer().getChildren().add(new MenuSection());
+        mainScene.getMainContainer().getChildren().add(new ChartSection(midOhlcData));
+        primaryStage.setScene(mainScene);
         primaryStage.show();
-    }
-
-    private Parent createContent() {
-        xAxis = new MutableInstantAxis();
-        xAxis.setMinorTickCount(0);
-        yAxis = new MidOhlcAxis();
-        ohlcChart = new OhlcChart<>(xAxis, yAxis);
-
-        // setup chart
-        xAxis.setLabel("Day");
-        yAxis.setLabel("Price");
-        // add starting data
-        Series<MidOhlcData> series = new Series<>();
-        series.setName("tradingChartSeries");
-        for (Map.Entry<MutableInstantData, MidOhlcData> entry : midOhlcData.entrySet()) {
-            final MidOhlcData midOhlc = entry.getValue();
-            series.getData().add(new OhlcChart.Data<>(entry.getKey(), midOhlc));
-        }
-        ObservableList<Series<MidOhlcData>> data = ohlcChart.getData();
-        if (data == null) {
-            data = FXCollections.observableList(List.of(series));
-            ohlcChart.setData(data);
-        } else {
-            ohlcChart.getData().add(series);
-        }
-        return ohlcChart;
     }
 }

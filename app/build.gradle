@@ -1,14 +1,34 @@
 plugins {
     id "io.github.thomashan.trading.charts.java-application-conventions"
+    id "io.github.thomashan.trading.charts.java-library-conventions"
     id "io.github.thomashan.trading.charts.javafx-conventions"
 }
 
 dependencies {
+    api project(":input:csv:api")
+    api project(":persistence:api")
+
     implementation project(":domain")
+    implementation project(":input:csv:charbuffer")
+    implementation project(":persistence:chronicle")
     implementation project(":ui:javafx")
+    implementation project(":util")
+
+    testImplementation "org.testfx:testfx-core:4.0.16-alpha"
+    testImplementation "org.testfx:testfx-junit5:4.0.16-alpha"
+    testImplementation "org.testfx:openjfx-monocle:jdk-12.0.1+2"
 }
 
 application {
     // Define the main class for the application.
     mainClass = "io.github.thomashan.trading.charts.app.App"
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "-Djava.awt.headless=true",
+        "-Dtestfx.robot=glass",
+        "-Dtestfx.headless=true",
+        "-Dprism.order=sw"
+    ]
 }
