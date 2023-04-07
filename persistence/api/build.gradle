@@ -11,3 +11,5 @@ plugins {
 dependencies {
     implementation project(':domain')
 }
+
+archivesBaseName = "persistence-api"

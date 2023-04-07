@@ -17,3 +17,5 @@ dependencies {
     testFixturesImplementation project(":io")
     testFixturesImplementation project(":util")
 }
+
+archivesBaseName = "input-api"
