@@ -16,6 +16,9 @@ dependencies {
     testFixturesImplementation project(":domain")
     testFixturesImplementation project(":io")
     testFixturesImplementation project(":util")
+    testFixturesImplementation testFixtures(project(":io"))
+
+    bytewatcherImplementation testFixtures(project(":io"))
 }
 
 archivesBaseName = "input-api"

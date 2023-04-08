@@ -20,12 +20,12 @@ public class DoubleParserJavaLangBwTest {
     @Test
     public void testParse_InputStream() {
         List<String> randomDoubles = random.doubles(1_000, 0, Double.MAX_VALUE)
-                .mapToObj(doubleValue -> Double.toString(doubleValue))
+                .mapToObj(Double::toString)
                 .toList();
-        Runnable runnable = () -> randomDoubles.forEach(doubleString -> DoubleParserJavaLang.parseApprox(doubleString));
+        Runnable runnable = () -> randomDoubles.forEach(DoubleParserJavaLang::parseApprox);
 
         byteWatcherRegressionTestHelper
-                .warmUp(runnable, 200)
+                .warmUp(runnable, 1000)
                 .testAllocationNotExceeded(runnable, 0, 1);
     }
 }

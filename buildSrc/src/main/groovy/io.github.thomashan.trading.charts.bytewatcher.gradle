@@ -5,7 +5,6 @@ testing {
         bytewatcher(JvmTestSuite) {
             dependencies {
                 implementation project(":bytewatcher")
-                implementation project()
             }
         }
     }

@@ -10,4 +10,9 @@ public class CsvParserUnivocityBwTest extends CsvParserBwTestCase<BidAskOhlc> {
     protected CsvParser<BidAskOhlc> createCsvParser() {
         return new CsvParserUnivocity<>(true, OhlcCreatorNoGc.CREATE_BID_ASK);
     }
+
+    @Override
+    protected long byteLimitPerIteration() {
+        return 46349336;
+    }
 }

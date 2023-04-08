@@ -19,6 +19,8 @@ dependencies {
     testImplementation project(":persistence:api").sourceSets.test.output
 }
 
+// add --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-exports=java.base/sun.nio.ch=ALL-UNNAMED to intellij runners
+
 extraJavaModuleInfo {
 //    module("net.openhft:chronicle-core", "chronicle.core") {
 //        requires("java.base")

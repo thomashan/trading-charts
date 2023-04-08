@@ -10,4 +10,9 @@ public class CsvParserStreamSplitBwTest extends CsvParserBwTestCase<BidAskOhlc> 
     protected CsvParser<BidAskOhlc> createCsvParser() {
         return new CsvParserStreamSplit<>(OhlcCreatorNoGc.CREATE_BID_ASK);
     }
+
+    @Override
+    protected long byteLimitPerIteration() {
+        return 61027104;
+    }
 }

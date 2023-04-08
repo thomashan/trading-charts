@@ -12,7 +12,6 @@ class BytesInOutChronicleTest implements BytesInOutTestCase<BytesOutChronicle, B
     @BeforeEach
     void setUp() {
         this.chronicleDir = File.createTempDir(this.class.simpleName)
-        print(chronicleDir.toString())
         this.chronicleQueue = ChronicleQueue.single(chronicleDir.toString())
         BytesInOutTestCase.super.setUp()
     }

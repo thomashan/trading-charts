@@ -6,7 +6,7 @@ import io.github.thomashan.tradingchart.ui.data.Granularity
 
 class BidAskOhlcAxisTest extends OhlcDataAxisTestCase<BidAskOhlcData, BidAskData> {
     @Override
-    protected OhlcDataAxis<BidAskData> createOhlcDataAxis() {
+    protected OhlcDataAxis<BidAskOhlcData> createOhlcDataAxis() {
         return new BidAskOhlcAxis()
     }
 
