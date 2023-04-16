@@ -58,7 +58,7 @@ jobs:
       - name: Sonarqube
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -Dorg.gradle.parallel=false sonarqube --info
+          arguments: -Dorg.gradle.parallel=false sonar --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
