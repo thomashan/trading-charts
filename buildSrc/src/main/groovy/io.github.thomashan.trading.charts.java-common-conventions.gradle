@@ -5,6 +5,7 @@
  */
 
 plugins {
+    id "io.github.thomashan.trading.charts.java-compiler-args"
     id "io.github.thomashan.trading.charts.lib-versions"
 
     // Apply the java Plugin to add support for Java.
@@ -81,7 +82,7 @@ test {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += ["-Xlint:all"]
+    options.compilerArgs += [compilerArgs]
 }
 
 if (System.getenv("CI")) {
