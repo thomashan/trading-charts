@@ -2,6 +2,7 @@ import java.nio.file.Files
 
 plugins {
     id "io.github.thomashan.trading.charts.java-common-conventions"
+    id "io.github.thomashan.trading.charts.java-compiler-args"
 }
 
 configurations {
@@ -25,9 +26,16 @@ boolean benchmarksExist = sourceSets.jmh.output.classesDirs.files.stream()
 if (benchmarksExist) {
     // only run add the jmh task and run the tests if META-INF/BenchmarkList is present
     // run jmh with `./gradlew -Dorg.gradle.parallel=false jmh --args="-f 1"` or else all the benchmarks will run in parallel
-    task jmh(type: JavaExec, dependsOn: jmhClasses) {
+    tasks.register('jmh', JavaExec) {
+        dependsOn jmhClasses
         mainClass = "org.openjdk.jmh.Main"
         classpath = sourceSets.jmh.runtimeClasspath
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (it.name.containsIgnoreCase("jmh")) {
+        options.compilerArgs -= [compilerArgs]
     }
 }
 
