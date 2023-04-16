@@ -9,11 +9,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.zip.ZipInputStream;
 
 public abstract class CsvParserBwTestCase<O extends Ohlc<O, ?>> {
@@ -29,7 +29,7 @@ public abstract class CsvParserBwTestCase<O extends Ohlc<O, ?>> {
         this.byteWatcherRegressionTestHelper = new ByteWatcherRegressionTestHelper();
         this.csvParser = createCsvParser();
 
-        ZipInputStream zipInputStream = new ZipInputStream(this.getClass().getClassLoader().getResourceAsStream(File.separator + "GBPAUD-M30.csv.zip"));
+        ZipInputStream zipInputStream = new ZipInputStream(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("GBPAUD-M30.csv.zip")));
         zipInputStream.getNextEntry();
         this.path = Files.createTempFile(getClass().getSimpleName(), ".csv");
         Files.copy(zipInputStream, path, StandardCopyOption.REPLACE_EXISTING);
@@ -45,11 +45,11 @@ public abstract class CsvParserBwTestCase<O extends Ohlc<O, ?>> {
     protected abstract CsvParser<O> createCsvParser();
 
     /**
-     * The limit should be 0 if no allocation were made
+     * The limit should be 0 if no allocation was made
      *
-     * @return
+     * @return byte limit
      */
-    protected long limitPerIteration() {
+    protected long byteLimitPerIteration() {
         return 0;
     }
 
@@ -58,6 +58,6 @@ public abstract class CsvParserBwTestCase<O extends Ohlc<O, ?>> {
         Runnable csvParserRunner = () -> csvParser.parse(reusableInputStream, Consumers.nullConsumer());
         byteWatcherRegressionTestHelper
                 .warmUp(csvParserRunner, warmUpIterations)
-                .testAllocationNotExceeded(csvParserRunner, iterations * limitPerIteration(), iterations);
+                .testAllocationNotExceeded(csvParserRunner, iterations * byteLimitPerIteration(), iterations);
     }
 }

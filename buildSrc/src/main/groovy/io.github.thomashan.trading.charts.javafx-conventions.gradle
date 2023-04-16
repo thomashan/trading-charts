@@ -8,7 +8,7 @@ plugins {
     id "io.github.thomashan.trading.charts.lib-versions"
 }
 
-String getOperatingSystem() {
+static String getOperatingSystem() {
     DefaultOperatingSystem operatingSystem = DefaultNativePlatform.currentOperatingSystem
     switch (operatingSystem) {
         case { operatingSystem.linux }: return "linux"
@@ -18,7 +18,7 @@ String getOperatingSystem() {
     }
 }
 
-String getArchitecture(String os) {
+static String getArchitecture(String os) {
     Architecture architecture = DefaultNativePlatform.currentArchitecture
     switch (architecture) {
         case { architecture.name == "aarch64" && (os == "linux" || os == "mac") }: return "aarch64"
@@ -28,7 +28,7 @@ String getArchitecture(String os) {
     }
 }
 
-String getClassifier() {
+static String getClassifier() {
     String operatingSystem = getOperatingSystem()
     return Stream.of(operatingSystem, getArchitecture(operatingSystem))
         .flatMap(Stream::ofNullable)

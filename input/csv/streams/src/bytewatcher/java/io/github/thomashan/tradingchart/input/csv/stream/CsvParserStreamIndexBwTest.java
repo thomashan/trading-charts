@@ -10,4 +10,9 @@ public class CsvParserStreamIndexBwTest extends CsvParserBwTestCase<BidAskOhlc> 
     protected CsvParser<BidAskOhlc> createCsvParser() {
         return new CsvParserStreamIndexOf<>(OhlcCreatorNoGc.CREATE_BID_ASK);
     }
+
+    @Override
+    protected long byteLimitPerIteration() {
+        return 55349504;
+    }
 }

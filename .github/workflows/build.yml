@@ -30,20 +30,38 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
       - name: Build
-        run: ./gradlew build --scan
+        timeout-minutes: 30
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build --scan
+        env:
+          JAVA_OPTS: "-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k"
       - name: Bytewatcher
         timeout-minutes: 30
-        run: ./gradlew bytewatcher
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: bytewatcher
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: failure()
+        with:
+          report_paths: "**/build/test-results/**/TEST-*.xml"
       - name: Coverall
-        run: ./gradlew jacocoTestReport coveralls
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jacocoTestReport coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}  # Needed to get PR information, if any
       - name: Sonarqube
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: -Dorg.gradle.parallel=false sonarqube --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew -Dorg.gradle.parallel=false sonarqube --info
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

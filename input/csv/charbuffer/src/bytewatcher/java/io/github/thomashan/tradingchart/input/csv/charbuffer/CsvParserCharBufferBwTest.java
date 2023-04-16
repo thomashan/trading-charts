@@ -15,7 +15,7 @@ public class CsvParserCharBufferBwTest extends CsvParserBwTestCase<BidAskOhlc> {
     }
 
     @Override
-    protected long limitPerIteration() {
+    protected long byteLimitPerIteration() {
         // FIXME: why are 40824 bytes used?
         return 40824;
     }

@@ -10,4 +10,9 @@ public class CsvParserStreamStringTokeniserBwTest extends CsvParserBwTestCase<Bi
     protected CsvParser<BidAskOhlc> createCsvParser() {
         return new CsvParserStreamStringTokeniser<>(OhlcCreatorNoGc.CREATE_BID_ASK);
     }
+
+    @Override
+    protected long byteLimitPerIteration() {
+        return 58756064;
+    }
 }

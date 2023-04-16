@@ -11,5 +11,6 @@ plugins {
 }
 
 dependencies {
-    bytewatcherImplementation project(path: ':bytewatcher')
+    bytewatcherImplementation project(path: ":bytewatcher")
+    bytewatcherImplementation project(":util")
 }
