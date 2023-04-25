@@ -4,4 +4,6 @@ module trading.charts.persistence.chronicle {
     requires chronicle.bytes;
     requires chronicle.queue;
     requires chronicle.wire;
+
+    exports io.github.thomashan.tradingchart.persistence.chronicle;
 }

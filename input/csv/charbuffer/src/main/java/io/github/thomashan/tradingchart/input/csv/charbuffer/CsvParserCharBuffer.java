@@ -20,13 +20,13 @@ import java.util.function.Function;
 public class CsvParserCharBuffer<O extends Ohlc<O, ?>> implements CsvParser<O> {
     private static final int DEFAULT_LINE_LENGTH = 128;
     private static final int DEFAULT_COLUMN_LENGTH = 128;
-    private static final Function<InputStream, LineReader> CREATE_NEW_LINE_READER = inputStream -> new LineReader(inputStream);
+    private static final Function<InputStream, LineReader> CREATE_NEW_LINE_READER = LineReader::new;
     private final CharBuffer lineBuffer;
     private final CharBuffer columnBuffer;
     private int numberOfColumns;
     private CsvHeader csvHeader;
     private BiFunction<Integer, CharSequence, O> ohlcCreator;
-    private Map<InputStream, LineReader> lineReaderCache = new HashMap<>();
+    private final Map<InputStream, LineReader> lineReaderCache = new HashMap<>();
 
     public CsvParserCharBuffer() {
         this.lineBuffer = CharBuffer.allocate(DEFAULT_LINE_LENGTH);

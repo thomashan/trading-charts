@@ -19,28 +19,34 @@ class MutableInstantAxisTest extends ApplicationTest {
 
     @Test
     void testAutoRange_OneTick() {
-        Object[] autoRangeObjects = mutableInstantAxis.autoRange(0, 0, 100, 10)
-
-        assert -D1_VALUE / 2 == autoRangeObjects[0][0]
-        assert D1_VALUE / 2 == autoRangeObjects[0][1]
-        assert D1_VALUE == autoRangeObjects[0][2]
-        assert 100 / D1_VALUE == autoRangeObjects[0][3]
-        assert "yyyy-MM-dd" == autoRangeObjects[1]
+        int numberOfTicks = 1
+        Object[] autoRangeObjects = createAutoRangeObjects(numberOfTicks)
+        assertAutoRangeObjects(numberOfTicks, autoRangeObjects)
     }
 
     @Test
     void testAutoRange_TwoTicks() {
-        Object[] autoRangeObjects = mutableInstantAxis.autoRange(0, D1_VALUE, 100, 10)
-
-        assert -D1_VALUE / 2 == autoRangeObjects[0][0]
-        assert 3 * D1_VALUE / 2 == autoRangeObjects[0][1]
-        assert D1_VALUE == autoRangeObjects[0][2]
-        assert 100 / (2 * D1_VALUE) == autoRangeObjects[0][3]
-        assert "yyyy-MM-dd" == autoRangeObjects[1]
+        int numberOfTicks = 2
+        Object[] autoRangeObjects = createAutoRangeObjects(numberOfTicks)
+        assertAutoRangeObjects(numberOfTicks, autoRangeObjects)
     }
 
     @Test
     void testAutoRange_MoreThanTwentyTicks() {
+        int numberOfTicks = 21
+        Object[] autoRangeObjects = createAutoRangeObjects(numberOfTicks)
+        assertAutoRangeObjects(numberOfTicks, autoRangeObjects)
+    }
 
+    private Object[] createAutoRangeObjects(int numberOfTicks) {
+        return mutableInstantAxis.autoRange(0, (numberOfTicks - 1) * D1_VALUE, 100, 10)
+    }
+
+    private void assertAutoRangeObjects(int numberOfTicks, Object[] autoRangeObjects) {
+        assert -D1_VALUE / 2 == autoRangeObjects[0][0]
+        assert (2 * numberOfTicks - 1) * D1_VALUE / 2 == autoRangeObjects[0][1]
+        assert D1_VALUE == autoRangeObjects[0][2]
+        assert 100 / (numberOfTicks * D1_VALUE) == autoRangeObjects[0][3]
+        assert "yyyy-MM-dd" == autoRangeObjects[1]
     }
 }
