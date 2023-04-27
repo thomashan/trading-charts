@@ -5,6 +5,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '45 */24 * * *'
 jobs:
   build:
     name: Build
@@ -38,6 +40,7 @@ jobs:
         with:
           arguments: build --scan
       - name: Bytewatcher
+        if: ${{ github.event_name == 'schedule' }}
         timeout-minutes: 30
         uses: gradle/gradle-build-action@v2
         with:
