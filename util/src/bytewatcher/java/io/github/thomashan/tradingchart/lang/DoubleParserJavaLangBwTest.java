@@ -25,7 +25,7 @@ public class DoubleParserJavaLangBwTest {
         Runnable runnable = () -> randomDoubles.forEach(DoubleParserJavaLang::parseApprox);
 
         byteWatcherRegressionTestHelper
-                .warmUp(runnable, 1000)
+                .warmUp(runnable, 10_000)
                 .testAllocationNotExceeded(runnable, 0, 1);
     }
 }
