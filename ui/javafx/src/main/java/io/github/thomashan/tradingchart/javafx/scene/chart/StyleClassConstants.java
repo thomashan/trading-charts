@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class StyleClassConstants {
     public static final String PLOT_CONTENT = "plot-content";
     public static final String CHART_PLOT_BACKGROUND = "chart-plot-background";
@@ -15,6 +17,6 @@ public class StyleClassConstants {
     public static final String CANDLESTICK_CHART_CSS = "CandleStickChart.css";
 
     private StyleClassConstants() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 }

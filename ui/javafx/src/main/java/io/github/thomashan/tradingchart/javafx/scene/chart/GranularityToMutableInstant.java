@@ -5,9 +5,9 @@ import io.github.thomashan.tradingchart.ui.data.Granularity;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.D1;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.H1;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.H12;
@@ -35,7 +35,7 @@ import static io.github.thomashan.tradingchart.ui.data.Granularity.m45;
 import static io.github.thomashan.tradingchart.ui.data.Granularity.m5;
 
 public class GranularityToMutableInstant {
-    private static final Map<Granularity, MutableInstantData> MUTABLE_INSTANT = new HashMap<>();
+    private static final EnumMap<Granularity, MutableInstantData> MUTABLE_INSTANT = new EnumMap<>(Granularity.class);
 
     static {
         MUTABLE_INSTANT.put(M12, MutableInstantData.of(MutableInstant.EPOCH.newInstance().plus(Duration.ofDays(365)).toImmutable()));
@@ -66,7 +66,7 @@ public class GranularityToMutableInstant {
     }
 
     private GranularityToMutableInstant() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     public static MutableInstantData getMutableInstant(Granularity granularity) {

@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class AxisConstants {
     public static final String ANIMATED = "animated";
     public static final String AUTO_RANGING = "autoRanging";
@@ -31,6 +33,6 @@ public class AxisConstants {
 
 
     private AxisConstants() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 }

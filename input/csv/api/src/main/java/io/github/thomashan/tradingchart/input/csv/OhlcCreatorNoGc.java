@@ -7,13 +7,15 @@ import io.github.thomashan.tradingchart.time.MutableInstant;
 
 import java.util.function.BiFunction;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class OhlcCreatorNoGc {
     private static final ThreadLocal<BidAskOhlc> THREAD_LOCAL_BID_ASK_OHLC = ThreadLocal.withInitial(() -> BidAskOhlc.emptyFull());
     private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
     private static final MutableInstant EPOCH = MutableInstant.EPOCH;
 
     private OhlcCreatorNoGc() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     @SuppressWarnings("unchecked")
