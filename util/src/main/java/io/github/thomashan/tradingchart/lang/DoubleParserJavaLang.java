@@ -3,6 +3,8 @@ package io.github.thomashan.tradingchart.lang;
 import java.nio.CharBuffer;
 import java.util.Objects;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 /**
  * Original implementation from {@link java.lang.Double#parseDouble(String)}
  */
@@ -31,7 +33,7 @@ class DoubleParserJavaLang {
 
 
     private DoubleParserJavaLang() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     @SuppressWarnings("fallthrough")

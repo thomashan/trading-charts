@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class CssMetaDataConstants {
     public static final String TICK_UNIT = "-fx-tick-unit";
     public static final String MINOR_TICK_COUNT = "-fx-minor-tick-count";
@@ -13,6 +15,6 @@ public class CssMetaDataConstants {
     public static final String ALTERNATIVE_COLUMN_FILL_VISIBLE = "-fx-alternative-column-fill-visible";
 
     private CssMetaDataConstants() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 }

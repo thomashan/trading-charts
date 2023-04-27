@@ -2,9 +2,11 @@ package io.github.thomashan.tradingchart.input.csv;
 
 import java.util.Map;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class DefaultCsvHeader {
     private DefaultCsvHeader() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     private static final CsvHeader VALUE_BID_ASK = CsvHeader.getCsvHeader(Map.of("dateTime", 0,

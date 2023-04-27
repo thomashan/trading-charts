@@ -3,6 +3,8 @@ package io.github.thomashan.tradingchart.lang;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class DoubleUtil {
     private static final Map<Integer, Double> DECIMAL_PLACE_CACHE = new HashMap<>(Map.of(15, Math.pow(10, 15)));
     private static final Map<Integer, Double> LARGEST_ROUNDABLE_VALUES = new HashMap<>();
@@ -26,7 +28,7 @@ public class DoubleUtil {
     }
 
     private DoubleUtil() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     public static double round(double value, int decimalPlaces) {

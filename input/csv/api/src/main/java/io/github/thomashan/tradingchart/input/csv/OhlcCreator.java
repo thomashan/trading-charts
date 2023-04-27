@@ -8,6 +8,7 @@ import io.github.thomashan.tradingchart.time.MutableInstant;
 
 import java.util.function.BiFunction;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
 import static io.github.thomashan.tradingchart.time.format.DateTimeFormatters.DATE_TIME_FORMATTER;
 
 public class OhlcCreator {
@@ -15,7 +16,7 @@ public class OhlcCreator {
     private static final ThreadLocal<MidOhlc> THREAD_LOCAL_MID_OHLC = ThreadLocal.withInitial(() -> MidOhlc.emptyFull());
 
     private OhlcCreator() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     @SuppressWarnings("unchecked")

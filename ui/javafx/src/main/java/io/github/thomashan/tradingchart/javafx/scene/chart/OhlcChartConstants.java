@@ -1,5 +1,7 @@
 package io.github.thomashan.tradingchart.javafx.scene.chart;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class OhlcChartConstants {
     public static final String VERTICAL_ZERO_LINE_VISIBLE = "verticalZeroLineVisible";
     public static final String ALTERNATIVE_COLUMN_FILL_VISIBLE = "alternativeColumnFillVisible";
@@ -13,6 +15,6 @@ public class OhlcChartConstants {
 
 
     private OhlcChartConstants() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 }

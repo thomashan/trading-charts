@@ -1,8 +1,10 @@
 package io.github.thomashan.tradingchart.lang;
 
+import static io.github.thomashan.tradingchart.lang.ObjectConstruction.NOT_INSTANTIABLE;
+
 public class DoubleParser {
     private DoubleParser() {
-        throw new AssertionError("not instantiable");
+        throw NOT_INSTANTIABLE;
     }
 
     public static double parseApprox(CharSequence charSequence) {
