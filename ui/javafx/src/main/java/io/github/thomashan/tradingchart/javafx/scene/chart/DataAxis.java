@@ -731,6 +731,21 @@ public abstract class DataAxis<D extends AxisData<D>> extends Axis<D> {
         super.invalidateRange(data);
     }
 
+    @Override
+    public void setWidth(double value) {
+        super.setWidth(value);
+    }
+
+    @Override
+    public void setHeight(double value) {
+        super.setHeight(value);
+    }
+
+    @Override
+    public void layoutChildren() {
+        super.layoutChildren();
+    }
+
     // -------------- STYLESHEET HANDLING ------------------------------------------------------------------------------
 
     private static class StyleableProperties {

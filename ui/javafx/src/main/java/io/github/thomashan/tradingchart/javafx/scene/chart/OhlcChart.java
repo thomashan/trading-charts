@@ -2,7 +2,6 @@ package io.github.thomashan.tradingchart.javafx.scene.chart;
 
 import io.github.thomashan.tradingchart.javafx.collections.NonIterableChange;
 import io.github.thomashan.tradingchart.ui.candlestick.Candle;
-import io.github.thomashan.tradingchart.ui.data.Granularity;
 import io.github.thomashan.tradingchart.ui.data.MutableInstantData;
 import io.github.thomashan.tradingchart.ui.data.OhlcData;
 import javafx.animation.FadeTransition;
@@ -24,6 +23,7 @@ import javafx.css.StyleableProperty;
 import javafx.css.converter.BooleanConverter;
 import javafx.event.ActionEvent;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
@@ -239,8 +239,9 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 displayedSeries.sort((o1, o2) -> series.indexOf(o2) - series.indexOf(o1));
             }
 
-            if (changedSeries.getRemoved().size() > 0) updateLegend();
-
+            if (!changedSeries.getRemoved().isEmpty()) {
+                updateLegend();
+            }
             Set<Series<O>> dupCheck = new HashSet<>(displayedSeries);
             dupCheck.removeAll(changedSeries.getRemoved());
             for (Series<O> d : changedSeries.getAddedSubList()) {
@@ -411,6 +412,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
      * @param yAxis Y Axis for this XY chart
      */
     public OhlcChart(MutableInstantAxis xAxis, OhlcDataAxis<O> yAxis) {
+        setRenderedCursor(Cursor.CROSSHAIR);
         this.xAxis = xAxis;
         if (xAxis.getSide() == null) {
             xAxis.setSide(Side.BOTTOM);
@@ -459,6 +461,12 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         setAnimated(false);
         xAxis.setAnimated(false);
         yAxis.setAnimated(false);
+    }
+
+    private void setRenderedCursor(Cursor cursor) {
+        plotBackground.setCursor(cursor);
+        plotContent.setCursor(cursor);
+        plotArea.setCursor(cursor);
     }
 
     @Override
@@ -722,7 +730,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 // (i.e. the highest element will have x value of zero and lowest position x value of xMax)
                 double open = yAxis.getDisplayPosition(ohlcData);
                 Node itemNode = item.getNode();
-                if (itemNode instanceof Candle candle && ohlcData != null) {
+                if (itemNode instanceof Candle candle) {
                     double high = yAxis.getDisplayPosition(ohlcData.high.getValue());
                     double low = yAxis.getDisplayPosition(ohlcData.low.getValue());
                     double close = yAxis.getDisplayPosition(ohlcData.close.getValue());
@@ -830,7 +838,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         }
         legend.getItems().setAll(legendList);
-        if (legendList.size() > 0) {
+        if (!legendList.isEmpty()) {
             if (getLegend() == null) {
                 setLegend(legend);
             }
