@@ -38,6 +38,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -51,9 +52,11 @@ import java.util.Set;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_ROW_FILL_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DATA;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DOMAIN_CROSSHAIR_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_ZERO_LINE_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.NODE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.RANGE_CROSSHAIR_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_ZERO_LINE_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CANDLESTICK_CHART_CSS;
@@ -61,6 +64,7 @@ import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassCons
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_ALTERNATIVE_ROW_FILL;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_HORIZONTAL_GRID_LINES;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_HORIZONTAL_ZERO_LINE;
+import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_PLOT_BACKGROUND;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_VERTICAL_GRID_LINES;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CHART_VERTICAL_ZERO_LINE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.PLOT_CONTENT;
@@ -96,53 +100,20 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     private Legend legend = new Legend();
 
     private final MutableInstantAxis xAxis;
-
     private final OhlcDataAxis<O> yAxis;
+    private final Line crosshairVertical = new Line();
+    private final Line crosshairHorizontal = new Line();
+    private final CursorCrosshair<O> cursorCrosshair;
+    private final StyleableBooleanProperty domainCrosshairVisible = createStyleableBooleanProperty(DOMAIN_CROSSHAIR_VISIBLE, true, StyleableProperties.DOMAIN_CROSSHAIR_VISIBLE);
+    private final StyleableBooleanProperty rangeCrosshairVisible = createStyleableBooleanProperty(RANGE_CROSSHAIR_VISIBLE, true, StyleableProperties.RANGE_CROSSHAIR_VISIBLE);
+    private final StyleableBooleanProperty verticalZeroLineVisible = createStyleableBooleanProperty(VERTICAL_ZERO_LINE_VISIBLE, true, StyleableProperties.VERTICAL_ZERO_LINE_VISIBLE);
+    private final StyleableBooleanProperty alternativeColumnFillVisible = createStyleableBooleanProperty(ALTERNATIVE_COLUMN_FILL_VISIBLE, false, StyleableProperties.ALTERNATIVE_COLUMN_FILL_VISIBLE);
+    /**
+     * True if vertical grid lines should be drawn
+     */
+    private final StyleableBooleanProperty verticalGridLinesVisible = createStyleableBooleanProperty(VERTICAL_GRID_LINES_VISIBLE, true, StyleableProperties.VERTICAL_GRID_LINE_VISIBLE);
 
-    private BooleanProperty verticalZeroLineVisible = new StyleableBooleanProperty(true) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
-
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
-
-        @Override
-        public String getName() {
-            return VERTICAL_ZERO_LINE_VISIBLE;
-        }
-
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.VERTICAL_ZERO_LINE_VISIBLE;
-        }
-    };
-
-    private BooleanProperty alternativeColumnFillVisible = new StyleableBooleanProperty(false) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
-
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
-
-        @Override
-        public String getName() {
-            return ALTERNATIVE_COLUMN_FILL_VISIBLE;
-        }
-
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.ALTERNATIVE_COLUMN_FILL_VISIBLE;
-        }
-    };
-
+    private final StyleableBooleanProperty alternativeRowFillVisible = createStyleableBooleanProperty(ALTERNATIVE_ROW_FILL_VISIBLE, true, StyleableProperties.ALTERNATIVE_ROW_FILL_VISIBLE);
 
     /**
      * If this is true and the horizontal axis has both positive and negative values then a additional axis line
@@ -150,53 +121,32 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
      *
      * @defaultValue true
      */
-    private BooleanProperty horizontalZeroLineVisible = new StyleableBooleanProperty(true) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
-
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
-
-        @Override
-        public String getName() {
-            return HORIZONTAL_ZERO_LINE_VISIBLE;
-        }
-
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.HORIZONTAL_ZERO_LINE_VISIBLE;
-        }
-    };
+    private final StyleableBooleanProperty horizontalZeroLineVisible = createStyleableBooleanProperty(HORIZONTAL_ZERO_LINE_VISIBLE, true, StyleableProperties.HORIZONTAL_ZERO_LINE_VISIBLE);
 
 
     /**
      * True if horizontal grid lines should be drawn
      */
-    private BooleanProperty horizontalGridLinesVisible = new StyleableBooleanProperty(true) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
+    private final StyleableBooleanProperty horizontalGridLinesVisible = createStyleableBooleanProperty(HORIZONTAL_GRID_LINES_VISIBLE, true, StyleableProperties.HORIZONTAL_GRID_LINE_VISIBLE);
 
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
+    protected static StyleableBooleanProperty createStyleableBooleanProperty(String name, boolean defaultValue, CssMetaData<? extends Styleable, Boolean> cssMetaData) {
+        return new StyleableBooleanProperty(defaultValue) {
+            @Override
+            public Object getBean() {
+                return OhlcChart.class;
+            }
 
-        @Override
-        public String getName() {
-            return HORIZONTAL_GRID_LINES_VISIBLE;
-        }
+            @Override
+            public String getName() {
+                return name;
+            }
 
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.HORIZONTAL_GRID_LINE_VISIBLE;
-        }
-    };
+            @Override
+            public CssMetaData<? extends Styleable, Boolean> getCssMetaData() {
+                return cssMetaData;
+            }
+        };
+    }
 
     private boolean useChartContentMirroring = true;
 
@@ -325,7 +275,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                         }
                     });
                 }
-            } else if (old != null && old.size() > 0) {
+            } else if (old != null && !old.isEmpty()) {
                 // let series listener know all old series have been removed
                 seriesChanged.onChanged(new NonIterableChange<>(0, 0, current) {
                     @Override
@@ -340,8 +290,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 });
             }
             // restore animated on chart.
-            if (current != null && current.size() > 0 && saveAnimationState != -1) {
-                current.get(0).getChart().setAnimated((saveAnimationState == 1) ? true : false);
+            if (current != null && !current.isEmpty() && saveAnimationState != -1) {
+                current.get(0).getChart().setAnimated(saveAnimationState == 1);
             }
             old = current;
         }
@@ -352,54 +302,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
         public String getName() {
             return DATA;
-        }
-    };
-
-
-    /**
-     * True if vertical grid lines should be drawn
-     */
-    private BooleanProperty verticalGridLinesVisible = new StyleableBooleanProperty(true) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
-
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
-
-        @Override
-        public String getName() {
-            return VERTICAL_GRID_LINES_VISIBLE;
-        }
-
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.VERTICAL_GRID_LINE_VISIBLE;
-        }
-    };
-
-    private BooleanProperty alternativeRowFillVisible = new StyleableBooleanProperty(true) {
-        @Override
-        protected void invalidated() {
-            requestChartLayout();
-        }
-
-        @Override
-        public Object getBean() {
-            return OhlcChart.this;
-        }
-
-        @Override
-        public String getName() {
-            return ALTERNATIVE_ROW_FILL_VISIBLE;
-        }
-
-        @Override
-        public CssMetaData<OhlcChart<?>, Boolean> getCssMetaData() {
-            return StyleableProperties.ALTERNATIVE_ROW_FILL_VISIBLE;
         }
     };
 
@@ -433,10 +335,21 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         plotAreaClip.setSmooth(false);
         plotArea.setClip(plotAreaClip);
         // add children to plot area
-        plotArea.getChildren().addAll(verticalRowFill, horizontalRowFill, verticalGridLines, horizontalGridLines, verticalZeroLine, horizontalZeroLine, plotContent);
+        this.cursorCrosshair = new CursorCrosshair<>(crosshairVertical, crosshairHorizontal, xAxis, yAxis, domainCrosshairVisible, rangeCrosshairVisible, plotBackground);
+        plotArea.getChildren().addAll(
+                verticalRowFill,
+                horizontalRowFill,
+                verticalGridLines,
+                horizontalGridLines,
+                verticalZeroLine,
+                horizontalZeroLine,
+                plotContent,
+                crosshairVertical,
+                crosshairHorizontal
+        );
         // setup css style classes
         plotContent.getStyleClass().setAll(PLOT_CONTENT);
-        plotBackground.getStyleClass().setAll(StyleClassConstants.CHART_PLOT_BACKGROUND);
+        plotBackground.getStyleClass().setAll(CHART_PLOT_BACKGROUND);
         verticalRowFill.getStyleClass().setAll(CHART_ALTERNATIVE_COLUMN_FILL);
         horizontalRowFill.getStyleClass().setAll(CHART_ALTERNATIVE_ROW_FILL);
         verticalGridLines.getStyleClass().setAll(CHART_VERTICAL_GRID_LINES);
@@ -456,7 +369,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         });
         setLegend(legend);
-        final String candleStickChartCss = getClass().getClassLoader().getResource(CANDLESTICK_CHART_CSS).toExternalForm();
+        URL cssUrl = Objects.requireNonNull(getClass().getClassLoader().getResource(CANDLESTICK_CHART_CSS), String.format("No CSS %s found", CANDLESTICK_CHART_CSS));
+        String candleStickChartCss = cssUrl.toExternalForm();
         getStylesheets().add(candleStickChartCss);
         setAnimated(false);
         xAxis.setAnimated(false);
@@ -1344,12 +1258,12 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         private static final CssMetaData<OhlcChart<?>, Boolean> HORIZONTAL_GRID_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.HORIZONTAL_GRID_LINES_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.horizontalGridLinesVisible == null || !node.horizontalGridLinesVisible.isBound();
+                return !node.horizontalGridLinesVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.horizontalGridLinesVisibleProperty();
+                return node.horizontalGridLinesVisible;
             }
         };
 
@@ -1357,24 +1271,24 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.horizontalZeroLineVisible == null || !node.horizontalZeroLineVisible.isBound();
+                return !node.horizontalZeroLineVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.horizontalZeroLineVisibleProperty();
+                return node.horizontalZeroLineVisible;
             }
         };
 
         private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_ROW_FILL_VISIBLE = new CssMetaData<>(CssMetaDataConstants.ALTERNATIVE_ROW_FILL_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.alternativeRowFillVisible == null || !node.alternativeRowFillVisible.isBound();
+                return !node.alternativeRowFillVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.alternativeRowFillVisibleProperty();
+                return node.alternativeRowFillVisible;
             }
         };
 
@@ -1382,36 +1296,60 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.verticalGridLinesVisible == null || !node.verticalGridLinesVisible.isBound();
+                return !node.verticalGridLinesVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.verticalGridLinesVisibleProperty();
+                return node.verticalGridLinesVisible;
+            }
+        };
+
+        private static final CssMetaData<OhlcChart<?>, Boolean> DOMAIN_CROSSHAIR_VISIBLE = new CssMetaData<>(CssMetaDataConstants.DOMAIN_CROSSHAIR_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
+            @Override
+            public boolean isSettable(OhlcChart<?> node) {
+                return !node.domainCrosshairVisible.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
+                return node.domainCrosshairVisible;
+            }
+        };
+
+        private static final CssMetaData<OhlcChart<?>, Boolean> RANGE_CROSSHAIR_VISIBLE = new CssMetaData<>(CssMetaDataConstants.RANGE_CROSSHAIR_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
+            @Override
+            public boolean isSettable(OhlcChart<?> node) {
+                return !node.rangeCrosshairVisible.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
+                return node.verticalZeroLineVisible;
             }
         };
 
         private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_ZERO_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.VERTICAL_ZERO_LINE_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.verticalZeroLineVisible == null || !node.verticalZeroLineVisible.isBound();
+                return !node.verticalZeroLineVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.verticalZeroLineVisibleProperty();
+                return node.verticalZeroLineVisible;
             }
         };
 
         private static final CssMetaData<OhlcChart<?>, Boolean> ALTERNATIVE_COLUMN_FILL_VISIBLE = new CssMetaData<>(CssMetaDataConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
-                return node.alternativeColumnFillVisible == null || !node.alternativeColumnFillVisible.isBound();
+                return !node.alternativeColumnFillVisible.isBound();
             }
 
             @Override
             public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return (StyleableProperty<Boolean>) node.alternativeColumnFillVisibleProperty();
+                return node.alternativeColumnFillVisible;
             }
         };
 
@@ -1425,6 +1363,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             styleables.add(VERTICAL_GRID_LINE_VISIBLE);
             styleables.add(VERTICAL_ZERO_LINE_VISIBLE);
             styleables.add(ALTERNATIVE_COLUMN_FILL_VISIBLE);
+            styleables.add(DOMAIN_CROSSHAIR_VISIBLE);
+            styleables.add(RANGE_CROSSHAIR_VISIBLE);
             STYLEABLES = Collections.unmodifiableList(styleables);
         }
     }

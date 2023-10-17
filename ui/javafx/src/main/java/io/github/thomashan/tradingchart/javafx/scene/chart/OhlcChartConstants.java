@@ -9,6 +9,8 @@ public class OhlcChartConstants {
     public static final String HORIZONTAL_ZERO_LINE_VISIBLE = "horizontalZeroLineVisible";
     public static final String HORIZONTAL_GRID_LINES_VISIBLE = "horizontalGridLinesVisible";
     public static final String VERTICAL_GRID_LINES_VISIBLE = "verticalGridLinesVisible";
+    public static final String DOMAIN_CROSSHAIR_VISIBLE = "domainCrosshairVisible";
+    public static final String RANGE_CROSSHAIR_VISIBLE = "rangeCrosshairVisible";
     public static final String DATA = "data";
     public static final String NODE = "node";
     public static final String CHART = "chart";
