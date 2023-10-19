@@ -12,6 +12,8 @@ public class CssMetaDataConstants {
     public static final String ALTERNATIVE_ROW_FILL_VISIBLE = "-fx-alternative-row-fill-visible";
     public static final String VERTICAL_GRID_LINE_VISIBLE = "-fx-vertical-grid-lines-visible";
     public static final String VERTICAL_ZERO_LINE_VISIBLE = "-fx-vertical-zero-line-visible";
+    public static final String DOMAIN_CROSSHAIR_VISIBLE = "-fx-domain-crosshair-visible";
+    public static final String RANGE_CROSSHAIR_VISIBLE = "-fx-range-crosshair-visible";
     public static final String ALTERNATIVE_COLUMN_FILL_VISIBLE = "-fx-alternative-column-fill-visible";
 
     private CssMetaDataConstants() {
