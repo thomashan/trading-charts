@@ -40,20 +40,30 @@ public class ChartSection extends VBox {
         xAxis.setLabel("Day");
         yAxis.setLabel("Price");
         // add starting data
+        Series<MidOhlcData> series = createSeries(midOhlcData, "tradingChartSeries");
+        setUpData(ohlcChart, series);
+        return ohlcChart;
+    }
+
+    private Series<MidOhlcData> createSeries(Map<MutableInstantData, MidOhlcData> midOhlcData,
+                                             String name) {
         Series<MidOhlcData> series = new Series<>();
-        series.setName("tradingChartSeries");
+        series.setName(name);
         for (Map.Entry<MutableInstantData, MidOhlcData> entry : midOhlcData.entrySet()) {
-            final MidOhlcData midOhlc = entry.getValue();
+            MidOhlcData midOhlc = entry.getValue();
             series.getData().add(new OhlcChart.Data<>(entry.getKey(), midOhlc));
         }
+        return series;
+    }
+
+    private void setUpData(OhlcChart<MidOhlcData> ohlcChart,
+                           Series<MidOhlcData> series) {
         ObservableList<Series<MidOhlcData>> data = ohlcChart.getData();
         if (data == null) {
-            data = FXCollections.observableList(List.of(series));
-            ohlcChart.setData(data);
-        } else {
-            ohlcChart.getData().add(series);
+            ohlcChart.setData(FXCollections.observableList(List.of(series)));
+            return;
         }
-        return ohlcChart;
+        ohlcChart.getData().add(series);
     }
 
     public OhlcChart<MidOhlcData> getOhlcChart() {
