@@ -5,16 +5,15 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.css.StyleableBooleanProperty;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeType;
 
 /**
  * Render a crosshair like guide across the chart
  */
 public class CursorCrosshair<O extends OhlcData<O, ?>> {
-    private final StyleableBooleanProperty domainCrosshairVisible;
-    private final StyleableBooleanProperty rangeCrosshairVisible;
     private final Line verticalLine;
     private final Line horizontalLine;
     private final MutableInstantAxis xAxis;
@@ -23,41 +22,65 @@ public class CursorCrosshair<O extends OhlcData<O, ?>> {
     private final DoubleProperty y = new SimpleDoubleProperty();
     private final Region plotBackground;
 
-    // FIXME: there is a crosshair flickering issue, which I think is due to re-render on mouse over the lines
-    public CursorCrosshair(Line verticalLine, Line horizontalLine,
-                           MutableInstantAxis xAxis, OhlcDataAxis<O> yAxis,
-                           StyleableBooleanProperty domainCrosshairVisible, StyleableBooleanProperty rangeCrosshairVisible,
+    public CursorCrosshair(MutableInstantAxis xAxis, OhlcDataAxis<O> yAxis,
                            Region plotBackground) {
-        verticalLine.getStrokeDashArray().addAll(10d, 10d);
-        horizontalLine.getStrokeDashArray().addAll(10d, 10d);
-        verticalLine.setStrokeWidth(1);
-        horizontalLine.setStrokeWidth(1);
-        this.verticalLine = verticalLine;
-        this.horizontalLine = horizontalLine;
+        this.verticalLine = new Line();
+        this.horizontalLine = new Line();
         this.xAxis = xAxis;
         this.yAxis = yAxis;
-        this.domainCrosshairVisible = domainCrosshairVisible;
-        this.rangeCrosshairVisible = rangeCrosshairVisible;
         this.plotBackground = plotBackground;
-        plotBackground.setOnMouseExited(mouseEvent -> {
-            verticalLine.visibleProperty().set(false);
-            horizontalLine.visibleProperty().set(false);
-        });
-        plotBackground.setOnMouseEntered(mouseEvent -> {
-            verticalLine.visibleProperty().set(rangeCrosshairVisible.get());
-            horizontalLine.visibleProperty().set(domainCrosshairVisible.get());
-        });
+        styleCursorLines();
+        backgroundMouseEvents();
+        DoubleBinding xValueBinding = Bindings.createDoubleBinding(() -> plotBackground.getWidth() + yAxis.getWidth(), plotBackground.widthProperty(), xAxis.widthProperty());
+        DoubleBinding yValueBinding = Bindings.createDoubleBinding(() -> plotBackground.getHeight() + xAxis.getHeight(), plotBackground.heightProperty(), xAxis.heightProperty());
+        verticalLine.endYProperty().bind(yValueBinding);
+        horizontalLine.endXProperty().bind(xValueBinding);
+    }
 
+    public Line getVerticalLine() {
+        return verticalLine;
+    }
+
+    public Line getHorizontalLine() {
+        return horizontalLine;
+    }
+
+    private void styleCursorLines() {
+        verticalLine.getStrokeDashArray().addAll(10d, 10d);
+        horizontalLine.getStrokeDashArray().addAll(10d, 10d);
+        verticalLine.setStrokeType(StrokeType.CENTERED);
+        horizontalLine.setStrokeType(StrokeType.CENTERED);
+        verticalLine.setStrokeLineCap(StrokeLineCap.BUTT);
+        horizontalLine.setStrokeLineCap(StrokeLineCap.BUTT);
+        // FIXME: pull out crosshair stroke width into styleable property
+        verticalLine.setStrokeWidth(0.25);
+        horizontalLine.setStrokeWidth(0.25);
+    }
+
+    private void backgroundMouseEvents() {
+        plotBackground.setOnMouseExited(mouseEvent -> {
+            if (!plotBackground.getBoundsInLocal().contains(mouseEvent.getX(), mouseEvent.getY())) {
+                hideCrosshairLines();
+            }
+        });
+        plotBackground.setOnMouseEntered(mouseEvent -> showCrosshairLines());
         plotBackground.setOnMouseMoved(mouseEvent -> {
             double labelHeight = 10;
             verticalLine.setStartX(mouseEvent.getX() + yAxis.getWidth() + labelHeight); // FIXME: need to + label height
             verticalLine.setEndX(mouseEvent.getX() + yAxis.getWidth() + labelHeight);  // FIXME: need to + label height
             horizontalLine.setStartY(mouseEvent.getY() + labelHeight); // FIXME: need to + label height
             horizontalLine.setEndY(mouseEvent.getY() + labelHeight); // FIXME: need to + label height
+            showCrosshairLines();
         });
-        DoubleBinding xValueBinding = Bindings.createDoubleBinding(() -> plotBackground.getWidth() + yAxis.getWidth(), plotBackground.widthProperty(), xAxis.widthProperty());
-        DoubleBinding yValueBinding = Bindings.createDoubleBinding(() -> plotBackground.getHeight() + xAxis.getHeight(), plotBackground.heightProperty(), xAxis.heightProperty());
-        verticalLine.endYProperty().bind(yValueBinding);
-        horizontalLine.endXProperty().bind(xValueBinding);
+    }
+
+    private void showCrosshairLines() {
+        verticalLine.visibleProperty().set(true);
+        horizontalLine.visibleProperty().set(true);
+    }
+
+    private void hideCrosshairLines() {
+        verticalLine.visibleProperty().set(false);
+        horizontalLine.visibleProperty().set(false);
     }
 }
