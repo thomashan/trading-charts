@@ -310,13 +310,9 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
     public OhlcChart(MutableInstantAxis xAxis, OhlcDataAxis<O> yAxis) {
         setRenderedCursor(Cursor.CROSSHAIR);
         this.xAxis = xAxis;
-        if (xAxis.getSide() == null) {
-            xAxis.setSide(Side.BOTTOM);
-        }
         this.yAxis = yAxis;
-        if (yAxis.getSide() == null) {
-            yAxis.setSide(Side.LEFT);
-        }
+
+        setAxesSides();
         // RT-23123 autoranging leads to charts incorrect appearance.
         xAxis.autoRangingProperty().addListener((ov, t, t1) -> updateAxisRange());
         yAxis.autoRangingProperty().addListener((ov, t, t1) -> updateAxisRange());
@@ -353,15 +349,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         // mark plotContent as unmanaged as its preferred size changes do not effect our layout
         plotContent.setManaged(false);
         plotArea.setManaged(false);
-        // listen to animation on/off and sync to axis
-        animatedProperty().addListener((valueModel, oldValue, newValue) -> {
-            if (getXAxis() != null) {
-                getXAxis().setAnimated(newValue);
-            }
-            if (getYAxis() != null) {
-                getYAxis().setAnimated(newValue);
-            }
-        });
+        setAxisAnimatedProperties();
         setLegend(legend);
         URL cssUrl = Objects.requireNonNull(getClass().getClassLoader().getResource(CANDLESTICK_CHART_CSS), String.format("No CSS %s found", CANDLESTICK_CHART_CSS));
         String candleStickChartCss = cssUrl.toExternalForm();
@@ -369,6 +357,27 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         setAnimated(false);
         xAxis.setAnimated(false);
         yAxis.setAnimated(false);
+    }
+
+    private void setAxisAnimatedProperties() {
+        // listen to animation on/off and sync to axis
+        animatedProperty().addListener((valueModel, oldValue, newValue) -> {
+            if (xAxis != null) {
+                xAxis.setAnimated(newValue);
+            }
+            if (yAxis != null) {
+                yAxis.setAnimated(newValue);
+            }
+        });
+    }
+
+    private void setAxesSides() {
+        if (xAxis.getSide() == null) {
+            xAxis.setSide(Side.BOTTOM);
+        }
+        if (yAxis.getSide() == null) {
+            yAxis.setSide(Side.LEFT);
+        }
     }
 
     private void setRenderedCursor(Cursor cursor) {
@@ -396,10 +405,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         final ObservableList<Axis.TickMark<MutableInstantData>> xaTickMarks = xAxis.getTickMarks();
         final OhlcDataAxis<O> yAxis = getYAxis();
         final ObservableList<Axis.TickMark<O>> yaTickMarks = yAxis.getTickMarks();
-        // check we have 2 axises and know their sides
-        if (xAxis == null || yAxis == null) {
-            return;
-        }
+        checkAxes();
+
         // try and work out width and height of axises
         double xAxisWidth = 0;
         double xAxisHeight = 30; // guess x axis height to start with
@@ -492,34 +499,13 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         plotAreaClip.setY(top);
         plotAreaClip.setWidth(xAxisWidth + 1);
         plotAreaClip.setHeight(yAxisHeight + 1);
-//        plotArea.setClip(new Rectangle(left, top, xAxisWidth, yAxisHeight));
+        // plotArea.setClip(new Rectangle(left, top, xAxisWidth, yAxisHeight));
         // position plot group, its origin is the bottom left corner of the plot area
         plotContent.setLayoutX(left);
         plotContent.setLayoutY(top);
         plotContent.requestLayout(); // Note: not sure this is right, maybe plotContent should be resizeable
-        // update vertical grid lines
-        verticalGridLines.getElements().clear();
-        if (getVerticalGridLinesVisible()) {
-            for (int i = 0; i < xaTickMarks.size(); i++) {
-                final double x = xAxis.getDisplayPosition(xaTickMarks.get(i).getValue());
-                if ((x != xAxisZero || !isVerticalZeroLineVisible()) && x > 0 && x <= xAxisWidth) {
-                    verticalGridLines.getElements().add(new MoveTo(left + x + 0.5, top));
-                    verticalGridLines.getElements().add(new LineTo(left + x + 0.5, top + yAxisHeight));
-                }
-            }
-        }
-        // update horizontal grid lines
-        horizontalGridLines.getElements().clear();
-        if (isHorizontalGridLinesVisible()) {
-            for (int i = 0; i < yaTickMarks.size(); i++) {
-                Axis.TickMark<O> tick = yaTickMarks.get(i);
-                final double y = yAxis.getDisplayPosition(tick.getValue());
-                if ((y != yAxisZero || !isHorizontalZeroLineVisible()) && y >= 0 && y < yAxisHeight) {
-                    horizontalGridLines.getElements().add(new MoveTo(left, top + y + 0.5));
-                    horizontalGridLines.getElements().add(new LineTo(left + xAxisWidth, top + y + 0.5));
-                }
-            }
-        }
+        drawVerticalGridLines(xaTickMarks, xAxisZero, xAxisWidth, left, top, yAxisHeight);
+        drawHorizontalGridLines(yaTickMarks, yAxisZero, yAxisHeight, left, top, xAxisWidth);
         // Note: is there a more efficient way to calculate horizontal and vertical row fills?
         // update vertical row fill
         verticalRowFill.getElements().clear();
@@ -592,6 +578,53 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                     horizontalRowFill.getElements().addAll(new MoveTo(left, top + y1), new LineTo(left + xAxisWidth, top + y1), new LineTo(left + xAxisWidth, top + y2), new LineTo(left, top + y2), new ClosePath());
                 }
             }
+        }
+    }
+
+    private void drawHorizontalGridLines(ObservableList<Axis.TickMark<O>> yaTickMarks,
+                                         double yAxisZero,
+                                         double yAxisHeight,
+                                         double left,
+                                         double top,
+                                         double xAxisWidth) {
+        // update horizontal grid lines
+        horizontalGridLines.getElements().clear();
+        if (isHorizontalGridLinesVisible()) {
+            for (Axis.TickMark<O> tick : yaTickMarks) {
+                final double y = yAxis.getDisplayPosition(tick.getValue());
+                if ((y != yAxisZero || !isHorizontalZeroLineVisible()) && y >= 0 && y < yAxisHeight) {
+                    horizontalGridLines.getElements().add(new MoveTo(left, top + y + 0.5));
+                    horizontalGridLines.getElements().add(new LineTo(left + xAxisWidth, top + y + 0.5));
+                }
+            }
+        }
+    }
+
+    private void drawVerticalGridLines(ObservableList<Axis.TickMark<MutableInstantData>> xaTickMarks,
+                                       double xAxisZero,
+                                       double xAxisWidth,
+                                       double left,
+                                       double top,
+                                       double yAxisHeight) {
+        // update vertical grid lines
+        verticalGridLines.getElements().clear();
+        if (getVerticalGridLinesVisible()) {
+            for (Axis.TickMark<MutableInstantData> xaTickMark : xaTickMarks) {
+                final double x = xAxis.getDisplayPosition(xaTickMark.getValue());
+                if ((x != xAxisZero || !isVerticalZeroLineVisible()) && x > 0 && x <= xAxisWidth) {
+                    verticalGridLines.getElements().add(new MoveTo(left + x + 0.5, top));
+                    verticalGridLines.getElements().add(new LineTo(left + x + 0.5, top + yAxisHeight));
+                }
+            }
+        }
+    }
+
+    private void checkAxes() {
+        if (xAxis == null) {
+            throw new IllegalStateException("X axis is null");
+        }
+        if (yAxis == null) {
+            throw new IllegalStateException("Y axis is null");
         }
     }
 
