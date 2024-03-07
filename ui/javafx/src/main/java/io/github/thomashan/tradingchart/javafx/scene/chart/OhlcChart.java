@@ -52,11 +52,9 @@ import java.util.Set;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_COLUMN_FILL_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.ALTERNATIVE_ROW_FILL_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DATA;
-import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.DOMAIN_CROSSHAIR_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.HORIZONTAL_ZERO_LINE_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.NODE;
-import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.RANGE_CROSSHAIR_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_GRID_LINES_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.OhlcChartConstants.VERTICAL_ZERO_LINE_VISIBLE;
 import static io.github.thomashan.tradingchart.javafx.scene.chart.StyleClassConstants.CANDLESTICK_CHART_CSS;
@@ -101,11 +99,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
 
     private final MutableInstantAxis xAxis;
     private final OhlcDataAxis<O> yAxis;
-    private final Line crosshairVertical = new Line();
-    private final Line crosshairHorizontal = new Line();
     private final CursorCrosshair<O> cursorCrosshair;
-    private final StyleableBooleanProperty domainCrosshairVisible = createStyleableBooleanProperty(DOMAIN_CROSSHAIR_VISIBLE, true, StyleableProperties.DOMAIN_CROSSHAIR_VISIBLE);
-    private final StyleableBooleanProperty rangeCrosshairVisible = createStyleableBooleanProperty(RANGE_CROSSHAIR_VISIBLE, true, StyleableProperties.RANGE_CROSSHAIR_VISIBLE);
     private final StyleableBooleanProperty verticalZeroLineVisible = createStyleableBooleanProperty(VERTICAL_ZERO_LINE_VISIBLE, true, StyleableProperties.VERTICAL_ZERO_LINE_VISIBLE);
     private final StyleableBooleanProperty alternativeColumnFillVisible = createStyleableBooleanProperty(ALTERNATIVE_COLUMN_FILL_VISIBLE, false, StyleableProperties.ALTERNATIVE_COLUMN_FILL_VISIBLE);
     /**
@@ -335,7 +329,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
         plotAreaClip.setSmooth(false);
         plotArea.setClip(plotAreaClip);
         // add children to plot area
-        this.cursorCrosshair = new CursorCrosshair<>(crosshairVertical, crosshairHorizontal, xAxis, yAxis, domainCrosshairVisible, rangeCrosshairVisible, plotBackground);
+        this.cursorCrosshair = new CursorCrosshair<>(xAxis, yAxis, plotBackground);
         plotArea.getChildren().addAll(
                 verticalRowFill,
                 horizontalRowFill,
@@ -344,8 +338,8 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
                 verticalZeroLine,
                 horizontalZeroLine,
                 plotContent,
-                crosshairVertical,
-                crosshairHorizontal
+                cursorCrosshair.getHorizontalLine(),
+                cursorCrosshair.getVerticalLine()
         );
         // setup css style classes
         plotContent.getStyleClass().setAll(PLOT_CONTENT);
@@ -1165,7 +1159,7 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
          *
          * @return The XValue property
          */
-        public ObjectProperty<MutableInstantData> XValueProperty() {
+        public ObjectProperty<MutableInstantData> xValueProperty() {
             return xValue;
         }
 
@@ -1305,30 +1299,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             }
         };
 
-        private static final CssMetaData<OhlcChart<?>, Boolean> DOMAIN_CROSSHAIR_VISIBLE = new CssMetaData<>(CssMetaDataConstants.DOMAIN_CROSSHAIR_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
-            @Override
-            public boolean isSettable(OhlcChart<?> node) {
-                return !node.domainCrosshairVisible.isBound();
-            }
-
-            @Override
-            public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return node.domainCrosshairVisible;
-            }
-        };
-
-        private static final CssMetaData<OhlcChart<?>, Boolean> RANGE_CROSSHAIR_VISIBLE = new CssMetaData<>(CssMetaDataConstants.RANGE_CROSSHAIR_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
-            @Override
-            public boolean isSettable(OhlcChart<?> node) {
-                return !node.rangeCrosshairVisible.isBound();
-            }
-
-            @Override
-            public StyleableProperty<Boolean> getStyleableProperty(OhlcChart<?> node) {
-                return node.verticalZeroLineVisible;
-            }
-        };
-
         private static final CssMetaData<OhlcChart<?>, Boolean> VERTICAL_ZERO_LINE_VISIBLE = new CssMetaData<>(CssMetaDataConstants.VERTICAL_ZERO_LINE_VISIBLE, BooleanConverter.getInstance(), Boolean.TRUE) {
             @Override
             public boolean isSettable(OhlcChart<?> node) {
@@ -1363,8 +1333,6 @@ public class OhlcChart<O extends OhlcData<O, ?>> extends Chart {
             styleables.add(VERTICAL_GRID_LINE_VISIBLE);
             styleables.add(VERTICAL_ZERO_LINE_VISIBLE);
             styleables.add(ALTERNATIVE_COLUMN_FILL_VISIBLE);
-            styleables.add(DOMAIN_CROSSHAIR_VISIBLE);
-            styleables.add(RANGE_CROSSHAIR_VISIBLE);
             STYLEABLES = Collections.unmodifiableList(styleables);
         }
     }
